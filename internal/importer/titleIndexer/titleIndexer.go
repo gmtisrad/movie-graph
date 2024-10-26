@@ -32,9 +32,6 @@ func Find(id string) *models.Title {
 			break
 		}
 		if err != nil {
-			panic(err)
-		}
-		if err != nil {
 			// Log the error and continue
 			log.Printf("Error reading record: %v", err)
 			continue
