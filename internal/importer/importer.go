@@ -7,9 +7,11 @@ import (
 	"movie-graph/internal/importer/nameIndexer"
 	"movie-graph/internal/importer/titleIndexer"
 	"os"
+	"time"
 )
 
 func GenerateGraph() *graph.Graph {
+	startTime := time.Now()
 	movieGraph := graph.CreateGraph()
 
 	principalsFile, err := os.Open("./data/title.principals.tsv")
@@ -18,7 +20,6 @@ func GenerateGraph() *graph.Graph {
 	}
 	defer principalsFile.Close()
 
-
 	principalsReader := csv.NewReader(principalsFile)
 	principalsReader.Comma = '\t'
 	principalsReader.LazyQuotes = true
@@ -26,6 +27,7 @@ func GenerateGraph() *graph.Graph {
 	// Throw away the first line, headers
 	principalsReader.Read()
 	var i int = 0
+	lastUpdateTime := startTime
 
 	for principalRecord, err := principalsReader.Read(); principalRecord != nil; principalRecord, err = principalsReader.Read() {
 		if err != nil {
@@ -59,15 +61,18 @@ func GenerateGraph() *graph.Graph {
 		}
 
 		if principalPersonNode != nil && principalTitleNode != nil {
-			fmt.Printf("Adding edge between %s and %s\n", principalPersonNode.ID, principalTitleNode.ID)
-			if i%1000 == 0 && i != 0 {
-				graph.ExportGraph(movieGraph, "./export")
-				break
-			}
 			graph.AddEdge(movieGraph, principalPersonNode, principalTitleNode, false)
 		}
 		i++
+
+		// Update terminal every 15 seconds
+		if time.Since(lastUpdateTime) >= 15*time.Second {
+			fmt.Printf("Processed %d records in %v\n", i, time.Since(startTime))
+			lastUpdateTime = time.Now()
+		}
 	}
 	
+	endTime := time.Now()
+	fmt.Printf("Graph creation completed. Total time: %v\n", endTime.Sub(startTime))
 	return movieGraph
 }
