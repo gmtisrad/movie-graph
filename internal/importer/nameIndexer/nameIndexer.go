@@ -12,6 +12,7 @@ import (
 var index map[string]*models.Person = make(map[string]*models.Person)
 
 func Find(id string) *models.Person {
+	// Check if the person is already in the index
 	if person, ok := index[id]; ok {
 		return person
 	}
@@ -35,8 +36,7 @@ func Find(id string) *models.Person {
 		return nil
 	}
 
-	for {
-		nameRecord, err := nameBasicsReader.Read()
+	for nameRecord, err := nameBasicsReader.Read(); nameRecord != nil; nameRecord, err = nameBasicsReader.Read() {
 		if err == io.EOF {
 			break
 		}

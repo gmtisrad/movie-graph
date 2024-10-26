@@ -12,6 +12,11 @@ import (
 var index map[string]*models.Title = make(map[string]*models.Title)
 
 func Find(id string) *models.Title {
+	// Check if the title is already in the index
+	if title, ok := index[id]; ok {
+		return title
+	}
+
 	// Reads file title.basics.tsv into a reader and then reads the file line by line
 	titleBasicsFile, err := os.Open("./data/title.basics.tsv")
 	if err != nil {
@@ -67,6 +72,6 @@ func Find(id string) *models.Title {
 			return index[titleID]
 		}
 	}
-
+	index[id] = nil
 	return nil
 }

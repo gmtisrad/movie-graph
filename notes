@@ -1,0 +1,80 @@
+PRE GOROUTINES
+Processed 362325 records in 3h52m50.975763541s
+362325 edges created in 3h52m50.975763541s
+1555 edges/min
+
+POST GOROUTINES ON NAME/TITLE INDEXING | performance improves over time with indexing
+Processed 15218 records in 9m58.923858625s
+1521.8 edges/min
+
+/*
+	title.principals
+		tconst - Title ID - string
+		ordering - Order of entries when Title ID is the same - int
+		nconst - Person ID - string
+		job - name of the job - string
+		category - category of job - string
+
+	name.basics
+		nconst - Person ID - string
+		primaryName - Name of person - string
+		birthYear - ... - int
+		deathYear - ... - int
+		primaryProfession - listed professions on IMDB - []string
+
+	title.basics
+		tconst - Title ID - string
+		titleType - Type of title - string
+		primaryTitle - Movie's title - string
+		originalTitle - original title? - string
+		isAdult - is it pornog? - int (0 | 1)
+
+	title.principals is a record of every "principal" in every title
+
+	To generate graph + index
+	1. Iterate over title.principals
+	2. Check if the "title" has a record created
+	2.a. If not, fetch title information from title.basics
+	2.b. Create a title object and add it to the Graph Index + Vertices
+	3. Check if the "principal" has a record in the graph
+	3.a. If not, fetch "principal" information from name.basics
+	3.b. Create a "Person" object and add it to the Graph Index + Vertices
+
+	Export Graph to CSV
+	Generate 2 files: Index.csv, Edges.csv
+
+	Index.csv
+	ID,       Value
+	<string>, <serialized JSON>
+
+	Edges.csv
+	ID, Edges
+	<string>, <[]ID[Node]>
+
+	Import Graph from CSV
+		file, err := os.Open("data.tsv")
+    if err != nil {
+        panic(err)
+    }
+    defer file.Close()
+
+		// Create a new CSV reader with tab as the delimiter
+    reader := csv.NewReader(file)
+    reader.Comma = '\t'
+
+    // Read all records from the TSV file
+    records, err := reader.ReadAll()
+    if err != nil {
+        panic(err)
+    }
+
+		type IndexImportRow struct {
+			ID,
+			Value
+		}
+		var indexData []IndexImportRow = OS.open
+		var vertices []Node = OS.open('Index.csv')
+		
+		var edges []ID[Node] = OS.open('Vertices.csv')
+		graph := createGraph(vertices, edges)
+*/
