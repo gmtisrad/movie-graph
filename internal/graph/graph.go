@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sync"
 )
 
 type Node struct {
@@ -19,13 +20,43 @@ type Graph struct {
 	Index map[string]*Node
 }
 
+var indexMutex sync.RWMutex
+var edgesMutex sync.RWMutex
+
 func AddVertex(graph *Graph, vertex *Node) {
 	// Prevent duplicates
+	indexMutex.RLock()
 	if _, ok := graph.Index[vertex.ID]; ok {
+		indexMutex.RUnlock()
 		return
 	}
-
 	graph.Index[vertex.ID] = vertex
+	indexMutex.RUnlock()
+}
+
+func AddEdge(graph *Graph, vertexA *Node, vertexB *Node, directed bool) {
+	addUniqueEdge := func(from, to string) {
+		edgesMutex.RLock()
+		edges := graph.Edges[from]
+		edgesMutex.RUnlock()
+		if edges == nil {
+			edges = []string{}
+		}
+		for _, edge := range edges {
+			if edge == to {
+				return // Edge already exists
+			}
+		}
+		edgesMutex.Lock()
+		graph.Edges[from] = append(edges, to)
+		edgesMutex.Unlock()
+	}
+
+	addUniqueEdge(vertexA.ID, vertexB.ID)
+
+	if !directed {
+		addUniqueEdge(vertexB.ID, vertexA.ID)
+	}
 }
 
 func ExportGraph(graph *Graph, path string) {
@@ -76,26 +107,6 @@ func ExportGraph(graph *Graph, path string) {
 				return
 			}
 		}
-	}
-}
-
-func AddEdge(graph *Graph, vertexA *Node, vertexB *Node, directed bool) {
-	addUniqueEdge := func(from, to string) {
-		edges := graph.Edges[from]
-		if edges == nil {
-			edges = []string{}
-		}
-		for _, edge := range edges {
-			if edge == to {
-				return // Edge already exists
-			}
-		}
-		graph.Edges[from] = append(edges, to)
-	}
-
-	addUniqueEdge(vertexA.ID, vertexB.ID)
-	if !directed {
-		addUniqueEdge(vertexB.ID, vertexA.ID)
 	}
 }
 

@@ -7,32 +7,43 @@ import (
 	"movie-graph/internal/models"
 	"os"
 	"strconv"
+	"sync"
 )
 
+var csvReader *csv.Reader
+func getCsvReader() *csv.Reader {
+	if csvReader == nil {
+		nameBasicsFile, err := os.Open("./data/name.basics.tsv")
+		if err != nil {
+			log.Printf("Error opening file: %v", err)
+			return nil
+		}
+		csvReader = csv.NewReader(nameBasicsFile)
+		csvReader.Comma = '\t'
+		csvReader.LazyQuotes = true
+		csvReader.FieldsPerRecord = -1
+	}
+	return csvReader
+}
+
 var index map[string]*models.Person = make(map[string]*models.Person)
+var indexMutex sync.RWMutex
 
 func Find(id string) *models.Person {
 	// Check if the person is already in the index
+	indexMutex.RLock()
 	if person, ok := index[id]; ok {
+		indexMutex.RUnlock()
 		return person
 	}
+	indexMutex.RUnlock()
 
-	nameBasicsFile, err := os.Open("./data/name.basics.tsv")
-	if err != nil {
-		log.Printf("Error opening file: %v", err)
-		return nil
-	}
-	defer nameBasicsFile.Close()
-
-	nameBasicsReader := csv.NewReader(nameBasicsFile)
-	nameBasicsReader.Comma = '\t'
-	nameBasicsReader.LazyQuotes = true  // Allow lazy quotes
-	nameBasicsReader.FieldsPerRecord = -1  // Allow variable number of fields
+	nameBasicsReader := getCsvReader()
 
 	// Throw away the first line, headers
-	_, err = nameBasicsReader.Read()
-	if err != nil {
-		log.Printf("Error reading header: %v", err)
+	_, readerErr := nameBasicsReader.Read()
+	if readerErr != nil {
+		log.Printf("Error reading header: %v", readerErr)
 		return nil
 	}
 
@@ -63,12 +74,18 @@ func Find(id string) *models.Person {
 			DeathYear:   deathYearInt,
 		}
 
+		indexMutex.Lock()
 		index[nconst] = person
+		indexMutex.Unlock()
 
 		if nconst == id {
 			return person
 		}
 	}
+
+	indexMutex.Lock()
+	index[id] = nil
+	indexMutex.Unlock()
 
 	return nil
 }
