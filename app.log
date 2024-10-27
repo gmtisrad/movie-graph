@@ -1,0 +1,37 @@
+2024/10/27 09:49:33 Starting graph generation
+2024/10/27 09:49:33 Getting CSV reader
+2024/10/27 09:49:33 Worker started
+2024/10/27 09:49:33 Processing principal record
+2024/10/27 09:49:33 Indexing title node for tconst: tt0000001
+2024/10/27 09:49:33 Finding title with ID: tt0000001
+2024/10/27 09:49:33 Getting CSV reader
+2024/10/27 09:49:33 Indexing person node for nconst: nm0005690
+2024/10/27 09:49:33 Finding person with ID: nm0005690
+2024/10/27 09:49:33 Getting CSV reader
+2024/10/27 09:49:33 CSV reader created successfully
+2024/10/27 09:49:33 Error converting end year to int for ID tt0000001: strconv.Atoi: parsing "\\N": invalid syntax
+2024/10/27 09:49:33 Found title tt0000001
+2024/10/27 09:49:33 Added title node to graph: tt0000001
+2024/10/27 09:49:33 CSV reader created successfully
+2024/10/27 09:49:33 Found person: nm0005690
+2024/10/27 09:49:33 Added person node to graph: nm0005690
+2024/10/27 09:49:33 Added edge between person nm0005690 and title tt0000001
+2024/10/27 09:49:33 Processing principal record
+2024/10/27 09:49:33 Indexing title node for tconst: tt0000001
+2024/10/27 09:49:33 Indexing person node for nconst: nm0005690
+2024/10/27 09:49:33 Finding person with ID: nm0005690
+2024/10/27 09:49:33 Person found in index: nm0005690
+2024/10/27 09:49:33 Added person node to graph: nm0005690
+2024/10/27 09:49:33 Finding title with ID: tt0000001
+2024/10/27 09:49:33 Title found in index for ID: tt0000001
+2024/10/27 09:49:33 Added title node to graph: tt0000001
+2024/10/27 09:49:33 Added edge between person nm0005690 and title tt0000001
+2024/10/27 09:49:33 Processing principal record
+2024/10/27 09:49:33 Indexing title node for tconst: tt0000001
+2024/10/27 09:49:33 Finding title with ID: tt0000001
+2024/10/27 09:49:33 Title found in index for ID: tt0000001
+2024/10/27 09:49:33 Added title node to graph: tt0000001
+2024/10/27 09:49:33 Indexing person node for nconst: nm0374658
+2024/10/27 09:49:33 Finding person with ID: nm0374658
+2024/10/27 09:49:33 Getting CSV reader
+2024/10/27 09:49:33 CSV reader created successfully

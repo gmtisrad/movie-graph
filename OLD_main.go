@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/csv"
-	"fmt"
+	"log"
 	"os"
 )
 
@@ -157,5 +157,5 @@ func GenerateGraphFromFiles() *Graph {
 */
 
 func main() {
-	fmt.Println("hello world")
+	log.Println("hello world")
 }

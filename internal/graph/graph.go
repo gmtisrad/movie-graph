@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"sync"
@@ -30,8 +31,11 @@ func AddVertex(graph *Graph, vertex *Node) {
 		indexMutex.RUnlock()
 		return
 	}
-	graph.Index[vertex.ID] = vertex
 	indexMutex.RUnlock()
+	
+	indexMutex.Lock()
+	graph.Index[vertex.ID] = vertex
+	indexMutex.Unlock()
 }
 
 func AddEdge(graph *Graph, vertexA *Node, vertexB *Node, directed bool) {
@@ -62,14 +66,14 @@ func AddEdge(graph *Graph, vertexA *Node, vertexB *Node, directed bool) {
 func ExportGraph(graph *Graph, path string) {
 	// Create the directory if it doesn't exist
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
-		fmt.Printf("Error creating directory: %v\n", err)
+		log.Printf("Error creating directory: %s\n", err)
 		return
 	}
 
 	// Export Index.csv
 	indexFile, err := os.Create(filepath.Join(path, "Index.csv"))
 	if err != nil {
-		fmt.Printf("Error creating Index.csv: %v\n", err)
+		log.Printf("Error creating Index.csv: %s\n", err)
 		return
 	}
 	defer indexFile.Close()
@@ -80,11 +84,11 @@ func ExportGraph(graph *Graph, path string) {
 	for id, node := range graph.Index {
 		jsonValue, err := json.Marshal(node.Value)
 		if err != nil {
-			fmt.Printf("Error marshaling node value: %v\n", err)
+			log.Printf("Error marshaling node value: %s\n", err)
 			continue
 		}
 		if err := indexWriter.Write([]string{id, string(jsonValue)}); err != nil {
-			fmt.Printf("Error writing to Index.csv: %v\n", err)
+			log.Printf("Error writing to Index.csv: %s\n", err)
 			return
 		}
 	}
@@ -92,7 +96,7 @@ func ExportGraph(graph *Graph, path string) {
 	// Export Edges.csv
 	edgesFile, err := os.Create(filepath.Join(path, "Edges.csv"))
 	if err != nil {
-		fmt.Printf("Error creating Edges.csv: %v\n", err)
+		log.Printf("Error creating Edges.csv: %s\n", err)
 		return
 	}
 	defer edgesFile.Close()
@@ -103,7 +107,7 @@ func ExportGraph(graph *Graph, path string) {
 	for fromID, toIDs := range graph.Edges {
 		for _, toID := range toIDs {
 			if err := edgesWriter.Write([]string{fromID, toID}); err != nil {
-				fmt.Printf("Error writing to Edges.csv: %v\n", err)
+				log.Printf("Error writing to Edges.csv: %s\n", err)
 				return
 			}
 		}
@@ -134,7 +138,7 @@ func ImportGraph(path string) (*Graph, error) {
 			break
 		}
 		if err != nil {
-			return nil, fmt.Errorf("error reading Index.csv: %v", err)
+			return nil, fmt.Errorf("error reading Index.csv: %s", err)
 		}
 		if len(record) != 2 {
 			return nil, fmt.Errorf("invalid record in Index.csv: %v", record)
