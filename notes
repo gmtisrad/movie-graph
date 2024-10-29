@@ -7,6 +7,19 @@ POST GOROUTINES ON NAME/TITLE INDEXING | performance improves over time with ind
 Processed 15218 records in 9m58.923858625s
 1521.8 edges/min
 
+
+// NOTE Bottleneck is the principal CSV reader. It's the largest file by 10x.
+// Once the name/title indexing is done, the processing speeds up substantially.
+// If we could distribute the principal CSV reader, we could speed up the processing even more.
+// Could line up reader workers sequentially, each reading from their own reader iterator. Give them each an offset of 1000 and let them read until EOF.
+DIFFERENT MEASUREMENT STARTS HERE
+4 Workers - Each opening the csv and reading from line 0 - Processed 5827 records in 20m54.061481334s
+4 workers - Processed 58766000 records in 1h21m47.311783084s Holy shit
+4 workers - Processed 7261000 records in 1m32.7195415s less logging
+8 workers - Processed 7686000 records in 1m32.716717334s
+16 workers - Processed 86711837 records in 15m15.001473375s Really ramps up once the title/name indexing is done
+32 workers - 
+
 /*
 	title.principals
 		tconst - Title ID - string
@@ -78,3 +91,11 @@ Processed 15218 records in 9m58.923858625s
 		var edges []ID[Node] = OS.open('Vertices.csv')
 		graph := createGraph(vertices, edges)
 */
+
+// Could preprocess the csv files to make the indexing faster.
+// Could also use a database to store the graph.
+
+// Read about force directed layout for visualizing the graph
+
+// Could add hidden edges connecting films by category
+// Could add a "search" function to search for a person or movie and see a force directed graph of the results up to n nodes from the search

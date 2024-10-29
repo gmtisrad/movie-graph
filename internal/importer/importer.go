@@ -129,15 +129,18 @@ func GenerateGraph() *graph.Graph {
 	lastUpdateTime := startTime
 
 	var wg sync.WaitGroup
-	const numWorkers = 16
+	var workerWg sync.WaitGroup // Separate wait group for workers
+	// Dynamic workers that scale with demand, or spin up as indexers complete
+	const numWorkers = 64
 	jobs := make(chan []string, numWorkers)
 	results := make(chan interface{}, numWorkers)
 
 	for i := 0; i < numWorkers; i++ {
-		wg.Add(1)
-		go worker(&wg, jobs, results, movieGraph)
+		workerWg.Add(1)
+		go worker(&workerWg, jobs, results, movieGraph)
 	}
 
+	// Goroutine to read records and send them to the jobs channel
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
@@ -162,9 +165,15 @@ func GenerateGraph() *graph.Graph {
 		}
 	}()
 
+	// Goroutine to close the results channel after all workers are done
+	go func() {
+		workerWg.Wait() // Wait for all workers to finish
+		close(results)
+	}()
+
+	// Goroutine to handle results
 	wg.Add(1)
 	go func() {
-		defer close(results)
 		defer wg.Done()
 		for range results {
 			if edgeCount % 1000000 == 0 {
@@ -184,5 +193,4 @@ func GenerateGraph() *graph.Graph {
 	fmt.Printf("Graph creation completed. Total time: %v\n", endTime.Sub(startTime))
 	log.Printf("Graph generation finished. Total edges: %d", edgeCount)
 	return movieGraph
-
-	}
+}
