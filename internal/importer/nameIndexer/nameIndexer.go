@@ -8,10 +8,15 @@ import (
 	"os"
 	"strconv"
 	"sync"
+	"time"
 )
 
+var csvReader *csv.Reader
 func getCsvReader() *csv.Reader {
-	log.Println("Getting CSV reader")
+	if csvReader != nil {
+		return csvReader
+	}
+	log.Println("Creating CSV Singleton")
 	nameBasicsFile, err := os.Open("./data/name.basics.tsv")
 	if err != nil {
 		log.Printf("Error reading header: %s", err)
@@ -36,27 +41,64 @@ func getCsvReader() *csv.Reader {
 var index map[string]*models.Person = make(map[string]*models.Person)
 var indexMutex sync.RWMutex
 var indexComplete bool = false
+var indexerOnce sync.Once
+
+func spawnIndexer() {
+	go func() {
+		log.Println("Spawning name indexer")
+		csvReader := getCsvReader()
+		for {
+			nameRecord, err := csvReader.Read()
+			if err == io.EOF {
+				indexComplete = true
+				log.Println("Name indexer complete")
+				break
+			}
+			if err != nil {
+				log.Printf("Error reading record: %s", err)
+				continue
+			}
+			if len(nameRecord) <= 4 {
+				// Swallow error silently
+				// log.Printf("Record has less than 4 fields: %s", nameRecord)
+				continue
+			}
+
+			nconst, primaryName, birthYear, deathYear := nameRecord[0], nameRecord[1], nameRecord[2], nameRecord[3]
+
+			birthYearInt, err := strconv.Atoi(birthYear)
+			if err != nil {
+				// swallow error silently
+				continue
+			}
+			deathYearInt, err := strconv.Atoi(deathYear)
+			if err != nil {
+				// swallow error silently
+				continue
+			}
+			principalPerson := &models.Person{
+				ID:          nconst,
+				PrimaryName: primaryName,
+				BirthYear:   birthYearInt,
+				DeathYear:   deathYearInt,
+			}
+
+			indexMutex.Lock()
+			index[nconst] = principalPerson
+			indexMutex.Unlock()
+		}
+	}()
+}
 
 
 func Find(id string) *models.Person {
+	// Ensure only one indexer is spawned. Find will be called from multiple workers.
+	indexerOnce.Do(spawnIndexer)
+
 	log.Printf("Finding person with ID: %s", id)
 	// Check if the person is already in the index
-	indexMutex.RLock()
-	if person, ok := index[id]; ok {
-		// If the index doesn't have the person, and we've completed indexing, return nil
-		if person == nil && indexComplete {
-			log.Printf("Index complete, but person not found: %s\n", id)
-			indexMutex.RUnlock()
-			return nil
-		}
-		indexMutex.RUnlock()
-		log.Printf("Person found in index: %s", id)
-		return person
-	}
-	indexMutex.RUnlock()
-
-	reader := getCsvReader()
 	for {
+		log.Printf("Checking if person is in index: %s", id)
 		// Check if the person is already in the index, other workers are indexing the same file
 		indexMutex.RLock()
 		person, ok := index[id]
@@ -67,76 +109,11 @@ func Find(id string) *models.Person {
 			return person
 		}
 
-
-		nameRecord, err := reader.Read()
-
-		if err == io.EOF {
-			log.Printf("Indexing names complete\n")
-			indexMutex.Lock()
-			index[id] = nil
-			indexMutex.Unlock()
-			indexComplete = true
-			break
-		}
-		if err != nil {
-			log.Printf("Error reading record: %s", err)
-			continue
+		if indexComplete {
+			log.Printf("Index complete, but person not found: %s\n", id)
+			return nil
 		}
 
-		// indexMutex.RLock()
-		// log.Printf("Index: %v\n", index)
-		// indexMutex.RUnlock()
-
-		// Check if the person is already in the index at the start of each loop. Other workers are indexing the same file.
-		indexMutex.RLock()
-		if person, ok := index[id]; ok {
-			indexMutex.RUnlock()
-			log.Printf("Person found in index during iteration: %s", id)
-			return person
-		}
-		indexMutex.RUnlock()
-
-		if len(nameRecord) <= 4 {
-			log.Printf("Record has less than 4 fields: %s", id)
-			continue
-		}
-
-		nconst, primaryName, birthYear, deathYear := nameRecord[0], nameRecord[1], nameRecord[2], nameRecord[3]
-
-
-		birthYearInt, err := strconv.Atoi(birthYear)
-		if err != nil {
-			// swallow error silently
-			// log.Printf("Error converting birth year to int for ID %s: %v", nconst, err)
-			continue
-		}
-		deathYearInt, err := strconv.Atoi(deathYear)
-		if err != nil {
-			// swallow error silently
-			// log.Printf("Error converting death year to int for ID %s: %v", nconst, err)
-			continue
-		}
-
-		principalPerson := &models.Person{
-			ID:          nconst,
-			PrimaryName: primaryName,
-			BirthYear:   birthYearInt,
-			DeathYear:   deathYearInt,
-		}
-
-		indexMutex.Lock()
-		index[nconst] = principalPerson
-		indexMutex.Unlock()
-
-		if nconst == id {
-			log.Printf("Found person: %s", id)
-			return principalPerson     
-		}
+		time.Sleep(10 * time.Millisecond)
 	}
-
-	indexMutex.Lock()	
-	index[id] = nil
-	indexMutex.Unlock()
-	log.Printf("Person not found: %s", id)
-	return nil
 }
