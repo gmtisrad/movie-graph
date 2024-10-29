@@ -95,10 +95,10 @@ func Find(id string) *models.Person {
 	// Ensure only one indexer is spawned. Find will be called from multiple workers.
 	indexerOnce.Do(spawnIndexer)
 
-	log.Printf("Finding person with ID: %s", id)
+	// log.Printf("Finding person with ID: %s", id)
 	// Check if the person is already in the index
 	for {
-		log.Printf("Checking if person is in index: %s", id)
+		// log.Printf("Checking if person is in index: %s", id)
 		// Check if the person is already in the index, other workers are indexing the same file
 		indexMutex.RLock()
 		person, ok := index[id]

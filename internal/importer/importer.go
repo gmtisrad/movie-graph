@@ -14,7 +14,7 @@ import (
 )
 
 func IndexTitleNode(tconst string, movieGraph *graph.Graph) *graph.Node {
-	log.Printf("Indexing title node for tconst: %s", tconst)
+	// log.Printf("Indexing title node for tconst: %s", tconst)
 	principalTitle := titleIndexer.Find(tconst)
 
 	var principalTitleNode *graph.Node
@@ -24,16 +24,16 @@ func IndexTitleNode(tconst string, movieGraph *graph.Graph) *graph.Node {
 			Value: principalTitle,
 		}
 		graph.AddVertex(movieGraph, principalTitleNode)
-		log.Printf("Added title node to graph: %s", principalTitle.ID)
+		// log.Printf("Added title node to graph: %s", principalTitle.ID)
 		return principalTitleNode
 	} else {
-		log.Printf("Principal Title not found for tconst: %s", tconst)
+		// log.Printf("Principal Title not found for tconst: %s", tconst)
 	}
 	return nil
 }
 
 func IndexPersonNode(nconst string, movieGraph *graph.Graph) *graph.Node {
-	log.Printf("Indexing person node for nconst: %s", nconst)
+	// log.Printf("Indexing person node for nconst: %s", nconst)
 	principalPerson := nameIndexer.Find(nconst)
 
 	var principalPersonNode *graph.Node
@@ -43,16 +43,16 @@ func IndexPersonNode(nconst string, movieGraph *graph.Graph) *graph.Node {
 			Value: principalPerson,
 		}
 		graph.AddVertex(movieGraph, principalPersonNode)
-		log.Printf("Added person node to graph: %s", principalPerson.ID)
+		// log.Printf("Added person node to graph: %s", principalPerson.ID)
 	} else {
-		log.Printf("Principal Person not found for nconst: %s", nconst)
+		// log.Printf("Principal Person not found for nconst: %s", nconst)
 		// fmt.Printf("Principal Person not found for nconst: %s\n", nconst)
 	}
 	return principalPersonNode
 }
 
 func ProcessPrincipalRecord(principalRecord []string, movieGraph *graph.Graph) { 
-	log.Printf("Processing principal record")
+	// log.Printf("Processing principal record")
 	tconst, nconst := principalRecord[0], principalRecord[2]
 
 	var wg sync.WaitGroup
@@ -79,7 +79,7 @@ func ProcessPrincipalRecord(principalRecord []string, movieGraph *graph.Graph) {
 
 	if principalPersonNode != nil && principalTitleNode != nil {
 		graph.AddEdge(movieGraph, principalPersonNode, principalTitleNode, false)
-		log.Printf("Added edge between person %s and title %s", principalPersonNode.ID, principalTitleNode.ID)
+		// log.Printf("Added edge between person %s and title %s", principalPersonNode.ID, principalTitleNode.ID)
 	}
 }
 
@@ -129,7 +129,7 @@ func GenerateGraph() *graph.Graph {
 	lastUpdateTime := startTime
 
 	var wg sync.WaitGroup
-	const numWorkers = 4
+	const numWorkers = 16
 	jobs := make(chan []string, numWorkers)
 	results := make(chan interface{}, numWorkers)
 
@@ -142,6 +142,8 @@ func GenerateGraph() *graph.Graph {
 	go func() {
 		defer wg.Done()
 		defer close(jobs)
+		i := 0
+
 		for {
 			principalRecord, err := principalsReader.Read()
 			if err != nil {
@@ -153,6 +155,10 @@ func GenerateGraph() *graph.Graph {
 				panic(err)
 			}
 			jobs <- principalRecord
+			if i % 1000000 == 0 {
+				fmt.Printf("Processed %d records in %v\n", edgeCount, time.Since(startTime))
+			}
+			i++
 		}
 	}()
 
@@ -161,7 +167,7 @@ func GenerateGraph() *graph.Graph {
 		defer close(results)
 		defer wg.Done()
 		for range results {
-			if edgeCount % 1000 == 0 {
+			if edgeCount % 1000000 == 0 {
 				fmt.Printf("Processed %d records in %v\n", edgeCount, time.Since(startTime))
 			}
 			if time.Since(lastUpdateTime) >= 15*time.Second {		

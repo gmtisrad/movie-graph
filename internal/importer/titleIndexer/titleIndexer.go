@@ -56,7 +56,7 @@ func spawnIndexer() {
 				break
 			}
 			if err != nil {
-				log.Printf("Error reading record: %v\n", err)
+				log.Printf("Error reading record: %s\n", err)
 				continue
 			}
 
@@ -96,10 +96,10 @@ func Find(id string) *models.Title {
 	// Ensure only one indexer is spawned. Find will be called from multiple workers.
 	indexerOnce.Do(spawnIndexer)
 
-	log.Printf("Finding title with ID: %s", id)
+	// log.Printf("Finding title with ID: %s", id)
 	// Check if the title is already in the index
 	for {
-		log.Printf("Checking if title is in index: %s", id)
+		// log.Printf("Checking if title is in index: %s", id)
 		// Check if the title is already in the index, other workers are indexing the same file
 		indexMutex.RLock()
 		title, ok := index[id]
