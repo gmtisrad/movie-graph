@@ -62,14 +62,9 @@ func Find(id string) *models.Person {
 		person, ok := index[id]
 		indexMutex.RUnlock()
 
-		if person != nil && ok {			
+		if person != nil && ok {
 			log.Printf("Person Cache Hit: %s", id)
-			if indexComplete {
-				log.Printf("Index complete, but person not found: %s\n", id)
-				return nil
-			}
-			log.Printf("Index complete, but person not found: %s\n", id)
-			return nil
+			return person
 		}
 
 
@@ -109,14 +104,24 @@ func Find(id string) *models.Person {
 		nconst, primaryName, birthYear, deathYear := nameRecord[0], nameRecord[1], nameRecord[2], nameRecord[3]
 
 
-		birthYearInt, _ := strconv.Atoi(birthYear)
-		deathYearIntd, _ := strconv.Atoi(deathYear)
+		birthYearInt, err := strconv.Atoi(birthYear)
+		if err != nil {
+			// swallow error silently
+			// log.Printf("Error converting birth year to int for ID %s: %v", nconst, err)
+			continue
+		}
+		deathYearInt, err := strconv.Atoi(deathYear)
+		if err != nil {
+			// swallow error silently
+			// log.Printf("Error converting death year to int for ID %s: %v", nconst, err)
+			continue
+		}
 
 		principalPerson := &models.Person{
 			ID:          nconst,
 			PrimaryName: primaryName,
 			BirthYear:   birthYearInt,
-			DeathYear:   deathYearIntd,
+			DeathYear:   deathYearInt,
 		}
 
 		indexMutex.Lock()
@@ -124,9 +129,6 @@ func Find(id string) *models.Person {
 		indexMutex.Unlock()
 
 		if nconst == id {
-			// log.Printf("Found person %v\n", person)
-			// log.Printf("index %v\n", index)
-			indexMutex.RLock()
 			log.Printf("Found person: %s", id)
 			return principalPerson     
 		}

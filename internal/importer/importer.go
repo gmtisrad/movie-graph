@@ -161,8 +161,6 @@ func GenerateGraph() *graph.Graph {
 		defer close(results)
 		defer wg.Done()
 		for range results {
-		fmt.Printf("Processed result\n")
-			edgeCount++
 			if edgeCount % 1000 == 0 {
 				fmt.Printf("Processed %d records in %v\n", edgeCount, time.Since(startTime))
 			}
@@ -170,6 +168,7 @@ func GenerateGraph() *graph.Graph {
 				fmt.Printf("Processed %d records in %v\n", edgeCount, time.Since(startTime))
 				lastUpdateTime = time.Now()
 			}
+			edgeCount++
 		}
 	}()
 

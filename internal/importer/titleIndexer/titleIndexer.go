@@ -61,7 +61,7 @@ func Find(id string) *models.Title {
 		indexMutex.RLock()
 		if title, ok := index[id]; ok && title != nil {
 			indexMutex.RUnlock()
-			log.Printf("Title found in index during iteration for ID: %s", id)
+			log.Printf("Title Cache Hit: %s", id)
 			return title
 		}
 		indexMutex.RUnlock()
@@ -106,13 +106,15 @@ func Find(id string) *models.Title {
 
 		startYearInt, err := strconv.Atoi(startYear)
 		if err != nil {
-			log.Printf("Error converting start year to int for ID %s: %v", titleID, err)
+			// swallow error silently
+			// log.Printf("Error converting start year to int for ID %s: %v", titleID, err)
 			startYearInt = -1
 		}
 
 		endYearInt, err := strconv.Atoi(endYear)
 		if err != nil {
-			log.Printf("Error converting end year to int for ID %s: %v", titleID, err)
+			// swallow error silently
+			// log.Printf("Error converting end year to int for ID %s: %v", titleID, err)
 			endYearInt = -1
 		}
 
