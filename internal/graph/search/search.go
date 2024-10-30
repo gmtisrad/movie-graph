@@ -79,7 +79,10 @@ func BFS(searchGraph *graph.Graph, startNode *graph.Node, endNode *graph.Node) [
 	// Prints path nodes with `->` between them and a new line at the end of each path
 	for _, path := range paths {
 		for _, node := range path {
-			fmt.Print(node.ID, "->")
+			fmt.Print(node.ID)
+			if node.ID != path[len(path)-1].ID {
+				fmt.Print("->")
+			}
 		}
 		fmt.Println()
 	}	
