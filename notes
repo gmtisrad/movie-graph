@@ -18,7 +18,10 @@ DIFFERENT MEASUREMENT STARTS HERE
 4 workers - Processed 7261000 records in 1m32.7195415s less logging
 8 workers - Processed 7686000 records in 1m32.716717334s
 16 workers - Processed 86711837 records in 15m15.001473375s Really ramps up once the title/name indexing is done
-32 workers - 
+32 workers - Processed 86000000 records in 14m45.452652542s Diminishing returns on workers. Bottlenecked by principals
+
+FIXING NAME INDEXING AND GROOMING THE NAMES CSV
+16 workers - Processed 86712988 records in 7m45.004030625s Fixed the indexer, daaang
 
 /*
 	title.principals

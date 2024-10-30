@@ -131,7 +131,7 @@ func GenerateGraph() *graph.Graph {
 	var wg sync.WaitGroup
 	var workerWg sync.WaitGroup // Separate wait group for workers
 	// Dynamic workers that scale with demand, or spin up as indexers complete
-	const numWorkers = 64
+	const numWorkers = 16
 	jobs := make(chan []string, numWorkers)
 	results := make(chan interface{}, numWorkers)
 
@@ -151,7 +151,8 @@ func GenerateGraph() *graph.Graph {
 			principalRecord, err := principalsReader.Read()
 			if err != nil {
 				if err == io.EOF {
-					log.Printf("Reached end of file")
+					log.Printf("Queued all principal records\n")
+					fmt.Printf("Queued all principal records\n")
 					break
 				}
 				log.Printf("Error reading record: %v", err)

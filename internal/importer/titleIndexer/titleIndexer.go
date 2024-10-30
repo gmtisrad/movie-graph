@@ -2,6 +2,7 @@ package titleIndexer
 
 import (
 	"encoding/csv"
+	"fmt"
 	"io"
 	"log"
 	"movie-graph/internal/models"
@@ -52,11 +53,13 @@ func spawnIndexer() {
 			titleRecord, err := csvReader.Read()
 			if err == io.EOF {
 				log.Println("Title indexer complete")
+				fmt.Println("Title indexer complete\n")
 				indexComplete = true
 				break
 			}
 			if err != nil {
 				log.Printf("Error reading record: %s\n", err)
+				fmt.Printf("Error reading record: %s\n", err)
 				continue
 			}
 
@@ -106,7 +109,7 @@ func Find(id string) *models.Title {
 		indexMutex.RUnlock()
 
 		if title != nil && ok {
-			log.Printf("Title Cache Hit: %s", id)
+			// log.Printf("Title Cache Hit: %s", id)
 			return title
 		}
 

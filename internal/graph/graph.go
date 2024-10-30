@@ -81,6 +81,7 @@ func ExportGraph(graph *Graph, path string) {
 	indexWriter := csv.NewWriter(indexFile)
 	defer indexWriter.Flush()
 
+	indexMutex.RLock()
 	for id, node := range graph.Index {
 		jsonValue, err := json.Marshal(node.Value)
 		if err != nil {
@@ -89,9 +90,11 @@ func ExportGraph(graph *Graph, path string) {
 		}
 		if err := indexWriter.Write([]string{id, string(jsonValue)}); err != nil {
 			log.Printf("Error writing to Index.csv: %s\n", err)
+			indexMutex.RUnlock()
 			return
 		}
 	}
+	indexMutex.RUnlock()
 
 	// Export Edges.csv
 	edgesFile, err := os.Create(filepath.Join(path, "Edges.csv"))
@@ -104,14 +107,17 @@ func ExportGraph(graph *Graph, path string) {
 	edgesWriter := csv.NewWriter(edgesFile)
 	defer edgesWriter.Flush()
 
+	edgesMutex.RLock()
 	for fromID, toIDs := range graph.Edges {
 		for _, toID := range toIDs {
 			if err := edgesWriter.Write([]string{fromID, toID}); err != nil {
 				log.Printf("Error writing to Edges.csv: %s\n", err)
+				edgesMutex.RUnlock()
 				return
 			}
 		}
 	}
+	edgesMutex.RUnlock()
 }
 
 func CreateGraph() *Graph {
@@ -131,8 +137,12 @@ func ImportGraph(path string) (*Graph, error) {
 	}
 	defer indexFile.Close()
 
+	var indexCount int = 0
 	indexReader := csv.NewReader(indexFile)
 	for {
+		if indexCount % 1000000 == 0 {
+			log.Printf("Index count: %d\n", indexCount)
+		}
 		record, err := indexReader.Read()
 		if err == io.EOF {
 			break
@@ -152,6 +162,7 @@ func ImportGraph(path string) (*Graph, error) {
 
 		node := &Node{ID: id, Value: value}
 		AddVertex(graph, node)
+		indexCount++
 	}
 
 	// Import Edges.csv
@@ -161,8 +172,12 @@ func ImportGraph(path string) (*Graph, error) {
 	}
 	defer edgesFile.Close()
 
+	var edgesCount int = 0
 	edgesReader := csv.NewReader(edgesFile)
 	for {
+		if edgesCount % 1000000 == 0 {
+			log.Printf("Edges count: %d\n", edgesCount)
+		}
 		record, err := edgesReader.Read()
 		if err == io.EOF {
 			break
@@ -175,17 +190,36 @@ func ImportGraph(path string) (*Graph, error) {
 		}
 
 		fromID, toID := record[0], record[1]
+		indexMutex.RLock()
 		fromNode, ok := graph.Index[fromID]
 		if !ok {
+			indexMutex.RUnlock()
 			return nil, fmt.Errorf("node not found for ID: %s", fromID)
 		}
 		toNode, ok := graph.Index[toID]
 		if !ok {
+			indexMutex.RUnlock()
 			return nil, fmt.Errorf("node not found for ID: %s", toID)
 		}
+		indexMutex.RUnlock()
 
 		AddEdge(graph, fromNode, toNode, true) // Assuming directed edges
+		edgesCount++
 	}
 
 	return graph, nil
+}
+
+func GetNeighbors(graph *Graph, node *Node) []string {
+	edgesMutex.RLock()
+	neighbors := graph.Edges[node.ID]
+	edgesMutex.RUnlock()
+	return neighbors
+}
+
+func GetNode(graph *Graph, id string) *Node {
+	indexMutex.RLock()
+	node := graph.Index[id]
+	indexMutex.RUnlock()
+	return node
 }
