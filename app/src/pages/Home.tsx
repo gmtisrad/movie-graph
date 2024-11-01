@@ -13,9 +13,15 @@ export const Home = (): FunctionComponent => {
 	};
 
 	return (
-		<div className="bg-blue-300  font-bold w-screen h-screen flex flex-col justify-center items-center">
-			<p className="text-white text-6xl">{t("home.greeting")}</p>
-			<button type="submit" onClick={onTranslateButtonClick}>
+		<div className="bg-gray-100 dark:bg-gray-900 font-bold w-screen h-screen flex flex-col justify-center items-center">
+			<p className="text-gray-900 dark:text-white text-6xl">
+				{t("home.greeting")}
+			</p>
+			<button
+				type="submit"
+				onClick={onTranslateButtonClick}
+				className="mt-4 px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
+			>
 				translate
 			</button>
 		</div>

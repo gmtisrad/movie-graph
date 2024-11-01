@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"movie-graph/internal/graph"
 	"movie-graph/internal/importer/nameIndexer"
 	"movie-graph/internal/importer/titleIndexer"
@@ -18,10 +19,15 @@ func IndexTitleNode(tconst string, movieGraph *graph.Graph) *graph.Node {
 	principalTitle := titleIndexer.Find(tconst)
 
 	var principalTitleNode *graph.Node
+	randomX := rand.Intn(40000000) - 20000000
+	randomY := rand.Intn(40000000) - 20000000
+	randomZ := rand.Intn(40000000) - 20000000
+
 	if principalTitle != nil {
 		principalTitleNode = &graph.Node{
 			ID: principalTitle.ID,
 			Value: principalTitle,
+			Position: [3]float64{float64(randomX), float64(randomY), float64(randomZ)},
 		}
 		graph.AddVertex(movieGraph, principalTitleNode)
 		// log.Printf("Added title node to graph: %s", principalTitle.ID)
@@ -36,11 +42,17 @@ func IndexPersonNode(nconst string, movieGraph *graph.Graph) *graph.Node {
 	// log.Printf("Indexing person node for nconst: %s", nconst)
 	principalPerson := nameIndexer.Find(nconst)
 
+	// Random X,Y,Z coordinates between -20000000 and 20000000
+	randomX := rand.Intn(40000000) - 20000000
+	randomY := rand.Intn(40000000) - 20000000
+	randomZ := rand.Intn(40000000) - 20000000
+
 	var principalPersonNode *graph.Node
 	if principalPerson != nil {
 		principalPersonNode = &graph.Node{
 			ID: principalPerson.ID,
 			Value: principalPerson,
+			Position: [3]float64{float64(randomX), float64(randomY), float64(randomZ)},
 		}
 		graph.AddVertex(movieGraph, principalPersonNode)
 		// log.Printf("Added person node to graph: %s", principalPerson.ID)

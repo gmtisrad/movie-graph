@@ -14,6 +14,7 @@ import (
 type Node struct {
 	ID    string
 	Value interface{}
+	Position [3]float64
 }
 
 type Graph struct {
@@ -248,11 +249,6 @@ func GetNodeAndNeighborsToNDepth(graph *Graph, node *Node, depth int) ([]*Node, 
 		
 		for _, currentNode := range currentNodes {
 			neighbors := GetNeighborNodes(graph, currentNode)
-			// Temporary CODE
-			// Limit to maximum 4 neighbors, but only if we have that many
-			// if len(neighbors) > 4 {
-			// 	neighbors = neighbors[:4]
-			// }
 			
 			for _, neighbor := range neighbors {
 				// Skip if we've already visited this node
@@ -271,4 +267,47 @@ func GetNodeAndNeighborsToNDepth(graph *Graph, node *Node, depth int) ([]*Node, 
 	}
 	
 	return vertices, edges
+}
+
+func GetNodeAndNeighborsToNDepthJSON(graph *Graph, node *Node, depth int) ([]byte, error) {
+	visited := make(map[string]bool)
+	var vertices []*Node
+	var edges [][2]string
+	
+	// Add initial node
+	vertices = append(vertices, node)
+	visited[node.ID] = true
+	
+	currentNodes := []*Node{node}
+	for currentDepth := 0; currentDepth < depth; currentDepth++ {
+		var nextNodes []*Node
+		
+		for _, currentNode := range currentNodes {
+			neighbors := GetNeighborNodes(graph, currentNode)
+			
+			for _, neighbor := range neighbors {
+				// Skip if we've already visited this node
+				if visited[neighbor.ID] {
+					continue
+				}
+				
+				visited[neighbor.ID] = true
+				vertices = append(vertices, neighbor)
+				edges = append(edges, [2]string{currentNode.ID, neighbor.ID})
+				nextNodes = append(nextNodes, neighbor)
+			}
+		}
+		
+		currentNodes = nextNodes
+	}
+
+	type response struct {
+		Vertices []*Node     `json:"vertices"`
+		Edges    [][2]string `json:"edges"`
+	}
+
+	return json.Marshal(response{
+		Vertices: vertices,
+		Edges:    edges,
+	})
 }

@@ -9,6 +9,7 @@ import (
 	"movie-graph/internal/graph"
 	"movie-graph/internal/graph/search"
 	"movie-graph/internal/importer"
+	"movie-graph/internal/webServer"
 	"os"
 	"path/filepath"
 	"strings"
@@ -22,6 +23,7 @@ func main() {
 	var movieGraph *graph.Graph
 	reader := bufio.NewReader(os.Stdin)
 
+	// Existing CLI loop
 	for {
 		fmt.Println("\n=== Movie Graph CLI ===")
 		fmt.Println("1. Import existing graph")
@@ -46,6 +48,13 @@ func main() {
 		}
 
 		if movieGraph != nil {
+			// Start HTTP server in a goroutine
+			go func() {
+				if err := webServer.StartServer(3009, movieGraph); err != nil {
+					log.Printf("HTTP server error: %v\n", err)
+				}
+			}()
+			fmt.Println("HTTP server started on :8080")
 			searchMenu(movieGraph, reader)
 		}
 	}

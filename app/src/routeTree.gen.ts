@@ -11,14 +11,14 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as CanvasImport } from './routes/canvas'
+import { Route as CosmographImport } from './routes/cosmograph'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
-const CanvasRoute = CanvasImport.update({
-  id: '/canvas',
-  path: '/canvas',
+const CosmographRoute = CosmographImport.update({
+  id: '/cosmograph',
+  path: '/cosmograph',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -39,11 +39,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/canvas': {
-      id: '/canvas'
-      path: '/canvas'
-      fullPath: '/canvas'
-      preLoaderRoute: typeof CanvasImport
+    '/cosmograph': {
+      id: '/cosmograph'
+      path: '/cosmograph'
+      fullPath: '/cosmograph'
+      preLoaderRoute: typeof CosmographImport
       parentRoute: typeof rootRoute
     }
   }
@@ -53,37 +53,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/canvas': typeof CanvasRoute
+  '/cosmograph': typeof CosmographRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/canvas': typeof CanvasRoute
+  '/cosmograph': typeof CosmographRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/canvas': typeof CanvasRoute
+  '/cosmograph': typeof CosmographRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/canvas'
+  fullPaths: '/' | '/cosmograph'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/canvas'
-  id: '__root__' | '/' | '/canvas'
+  to: '/' | '/cosmograph'
+  id: '__root__' | '/' | '/cosmograph'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CanvasRoute: typeof CanvasRoute
+  CosmographRoute: typeof CosmographRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CanvasRoute: CanvasRoute,
+  CosmographRoute: CosmographRoute,
 }
 
 export const routeTree = rootRoute
@@ -99,14 +99,14 @@ export const routeTree = rootRoute
       "filePath": "__root.ts",
       "children": [
         "/",
-        "/canvas"
+        "/cosmograph"
       ]
     },
     "/": {
       "filePath": "index.ts"
     },
-    "/canvas": {
-      "filePath": "canvas.ts"
+    "/cosmograph": {
+      "filePath": "cosmograph.ts"
     }
   }
 }
