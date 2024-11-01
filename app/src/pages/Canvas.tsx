@@ -24,6 +24,11 @@ class OrbitControls {
 		this.update();
 	}
 
+	public setTarget(target: THREE.Vector3): void {
+		this.target.copy(target);
+		this.update();
+	}
+
 	private onMouseDown(event: MouseEvent): void {
 		this.isDragging = true;
 		this.previousMousePosition = {
@@ -80,6 +85,24 @@ class OrbitControls {
 	public update(): void {
 		this.camera.lookAt(this.target);
 	}
+
+	public rotateAroundTarget(deltaTheta: number, deltaPhi: number): void {
+		// Convert current camera position to spherical coordinates relative to target
+		const offset = this.camera.position.clone().sub(this.target);
+		this.spherical.setFromVector3(offset);
+
+		// Update angles
+		this.spherical.theta += deltaTheta;
+		this.spherical.phi = Math.max(
+			0.1,
+			Math.min(Math.PI - 0.1, this.spherical.phi + deltaPhi)
+		);
+
+		// Convert back to Cartesian coordinates
+		offset.setFromSpherical(this.spherical);
+		this.camera.position.copy(this.target).add(offset);
+		this.camera.lookAt(this.target);
+	}
 }
 
 const VERTICES = [
@@ -108,7 +131,7 @@ const EDGES = [
 const NODE_RADIUS = 0.5;
 const NODE_SPACING = 6;
 
-const BACKGROUND_COLOR = new THREE.Color(0x00ff00);
+const BACKGROUND_COLOR = new THREE.Color(0x000000);
 
 export const GraphCanvas = (): JSX.Element => {
 	const refContainer = useRef<HTMLDivElement>(null);
@@ -135,12 +158,53 @@ export const GraphCanvas = (): JSX.Element => {
 		const nodeGeometry = new THREE.SphereGeometry(NODE_RADIUS, 10, 10);
 		const nodeMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
 
+		const nodePositions = new Map<string, THREE.Vector3>();
+		const nodeMeshes = new Map<string, THREE.Mesh>();
+
+		const minDistance = NODE_SPACING * NODE_RADIUS;
+
+		// Helper function to check if a position is valid
+		const isValidPosition = (position: THREE.Vector3): boolean => {
+			for (const existingPosition of nodePositions.values()) {
+				if (position.distanceTo(existingPosition) < minDistance) {
+					return false;
+				}
+			}
+			return true;
+		};
+
+		// Helper function to get a random position
+		const getRandomPosition = (): THREE.Vector3 => {
+			return new THREE.Vector3(
+				Math.random() * NODE_SPACING * NODE_RADIUS * 2 -
+					NODE_SPACING * NODE_RADIUS,
+				Math.random() * NODE_SPACING * NODE_RADIUS * 2 -
+					NODE_SPACING * NODE_RADIUS,
+				Math.random() * NODE_SPACING * NODE_RADIUS * 2 -
+					NODE_SPACING * NODE_RADIUS
+			);
+		};
+
 		VERTICES.forEach((node: string) => {
 			console.log({ node });
 			const sphere = new THREE.Mesh(nodeGeometry, nodeMaterial);
-			sphere.position.x = Math.random() * NODE_SPACING * NODE_RADIUS;
-			sphere.position.y = Math.random() * NODE_SPACING * NODE_RADIUS;
-			sphere.position.z = Math.random() * NODE_SPACING * NODE_RADIUS;
+
+			// Try to find a valid position
+			let position: THREE.Vector3;
+			let attempts = 0;
+			const maxAttempts = 100;
+
+			do {
+				position = getRandomPosition();
+				attempts++;
+			} while (!isValidPosition(position) && attempts < maxAttempts);
+
+			sphere.position.copy(position);
+
+			// Store node position and mesh
+			nodePositions.set(node, sphere.position.clone());
+			nodeMeshes.set(node, sphere);
+
 			scene.add(sphere);
 		});
 
@@ -149,30 +213,60 @@ export const GraphCanvas = (): JSX.Element => {
 		// Add OrbitControls
 		const controls = new OrbitControls(camera, renderer.domElement);
 
-		// Keyboard controls setup
-		const keyState: { [key: string]: boolean } = {};
-		const moveSpeed = 0.1;
+		// Set initial focus to first node
+		const firstNodePosition = nodePositions.get(VERTICES[0]!);
+		if (firstNodePosition) {
+			controls.setTarget(firstNodePosition);
+		}
 
-		window.addEventListener("keydown", (e) => {
-			keyState[e.key.toLowerCase()] = true;
+		// Add click event listener for node selection
+		const raycaster = new THREE.Raycaster();
+		const mouse = new THREE.Vector2();
+
+		renderer.domElement.addEventListener("click", (event) => {
+			mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+			mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+			raycaster.setFromCamera(mouse, camera);
+			const intersects = raycaster.intersectObjects(
+				Array.from(nodeMeshes.values())
+			);
+
+			if (intersects.length > 0) {
+				const clickedMesh = intersects[0]?.object;
+				const clickedNode = Array.from(nodeMeshes.entries()).find(
+					([_, mesh]) => mesh === clickedMesh
+				);
+				if (clickedNode) {
+					const position = nodePositions.get(clickedNode[0]);
+					if (position) {
+						controls.setTarget(position);
+					}
+				}
+			}
 		});
 
-		window.addEventListener("keyup", (e) => {
-			keyState[e.key.toLowerCase()] = false;
+		// Keyboard controls setup
+		const keyState: { [key: string]: boolean } = {};
+		const rotateSpeed = 0.05;
+
+		window.addEventListener("keydown", (keydownEvent) => {
+			keyState[keydownEvent.key.toLowerCase()] = true;
+		});
+
+		window.addEventListener("keyup", (keyupEvent) => {
+			keyState[keyupEvent.key.toLowerCase()] = false;
 		});
 
 		// Update animate function to include controls
 		const animate = (): void => {
 			requestAnimationFrame(animate);
 
-			// Handle keyboard movement
-			if (keyState["w"] || keyState["arrowup"]) camera.position.y += moveSpeed;
-			if (keyState["s"] || keyState["arrowdown"])
-				camera.position.y -= moveSpeed;
-			if (keyState["a"] || keyState["arrowleft"])
-				camera.position.x -= moveSpeed;
-			if (keyState["d"] || keyState["arrowright"])
-				camera.position.x += moveSpeed;
+			// Handle keyboard rotation
+			if (keyState["w"]) controls.rotateAroundTarget(0, -rotateSpeed);
+			if (keyState["s"]) controls.rotateAroundTarget(0, rotateSpeed);
+			if (keyState["a"]) controls.rotateAroundTarget(-rotateSpeed, 0);
+			if (keyState["d"]) controls.rotateAroundTarget(rotateSpeed, 0);
 
 			controls.update();
 			renderer.render(scene, camera);
