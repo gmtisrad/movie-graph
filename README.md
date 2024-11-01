@@ -15,10 +15,6 @@ This project creates a graph structure from IMDB's dataset files, establishing r
 ## Installation
 
 1. Clone the repository:
-```bash
-git clone [your-repository-url]
-cd [repository-name]
-```
 
 2. Download required IMDB dataset files from https://developer.imdb.com/non-commercial-datasets/:
    - title.basics.tsv.gz
@@ -82,7 +78,7 @@ ID, Edges
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project currently has no license.
 
 ## Acknowledgments
 
