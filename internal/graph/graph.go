@@ -217,9 +217,58 @@ func GetNeighbors(graph *Graph, node *Node) []string {
 	return neighbors
 }
 
+func GetNeighborNodes(graph *Graph, node *Node) []*Node {
+	neighbors := GetNeighbors(graph, node)
+	var neighborNodes []*Node
+	for _, neighbor := range neighbors {
+		neighborNodes = append(neighborNodes, GetNode(graph, neighbor))
+	}
+	return neighborNodes
+}
+
 func GetNode(graph *Graph, id string) *Node {
 	indexMutex.RLock()
 	node := graph.Index[id]
 	indexMutex.RUnlock()
 	return node
+}
+
+func GetNodeAndNeighborsToNDepth(graph *Graph, node *Node, depth int) ([]*Node, [][2]string) {
+	visited := make(map[string]bool)
+	var vertices []*Node
+	var edges [][2]string
+	
+	// Add initial node
+	vertices = append(vertices, node)
+	visited[node.ID] = true
+	
+	currentNodes := []*Node{node}
+	for currentDepth := 0; currentDepth < depth; currentDepth++ {
+		var nextNodes []*Node
+		
+		for _, currentNode := range currentNodes {
+			neighbors := GetNeighborNodes(graph, currentNode)
+			// Temporary CODE
+			// Limit to maximum 4 neighbors, but only if we have that many
+			// if len(neighbors) > 4 {
+			// 	neighbors = neighbors[:4]
+			// }
+			
+			for _, neighbor := range neighbors {
+				// Skip if we've already visited this node
+				if visited[neighbor.ID] {
+					continue
+				}
+				
+				visited[neighbor.ID] = true
+				vertices = append(vertices, neighbor)
+				edges = append(edges, [2]string{currentNode.ID, neighbor.ID})
+				nextNodes = append(nextNodes, neighbor)
+			}
+		}
+		
+		currentNodes = nextNodes
+	}
+	
+	return vertices, edges
 }

@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { useEffect, useRef } from "react";
 
 // Custom orbit controls implementation
+
 class OrbitControls {
 	private readonly camera: THREE.Camera;
 	private readonly domElement: HTMLElement;
@@ -206,6 +207,22 @@ export const GraphCanvas = (): JSX.Element => {
 			nodeMeshes.set(node, sphere);
 
 			scene.add(sphere);
+		});
+
+		// Draw edges between nodes
+		const edgeGeometry = new THREE.BufferGeometry();
+		const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+
+		EDGES.forEach(([fromNode, toNode]) => {
+			const fromPosition = nodePositions.get(fromNode);
+			const toPosition = nodePositions.get(toNode);
+
+			if (fromPosition && toPosition) {
+				const points = [fromPosition, toPosition];
+				edgeGeometry.setFromPoints(points);
+				const line = new THREE.Line(edgeGeometry.clone(), edgeMaterial);
+				scene.add(line);
+			}
 		});
 
 		camera.position.z = 10;
