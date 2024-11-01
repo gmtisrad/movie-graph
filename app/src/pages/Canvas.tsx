@@ -1,6 +1,121 @@
 import * as THREE from "three";
 import { useEffect, useRef } from "react";
 
+const EDGES = [
+	["nm1894391", "tt0386757"],
+	["nm1894391", "tt0626104"],
+	["nm1894391", "tt0626121"],
+	["nm1894391", "tt0626124"],
+	["tt0386757", "nm0124132"],
+	["tt0386757", "nm0124133"],
+	["tt0386757", "nm0000285"],
+	["tt0386757", "nm0001051"],
+	["tt0626104", "nm0272401"],
+	["tt0626104", "nm1961678"],
+	["tt0626104", "nm1323599"],
+	["tt0626104", "nm1039205"],
+	["tt0626121", "nm0036250"],
+	["tt0626124", "nm1802686"],
+	["tt0626124", "nm1855023"],
+	["tt0626124", "nm0001458"],
+];
+
+const VERTICES = {
+	tt0626104: {
+		EndYear: -1,
+		ID: "tt0626104",
+		StartYear: 2005,
+		Title: "Episode #1.105",
+		Type: "tvEpisode",
+	},
+	tt0626121: {
+		EndYear: -1,
+		ID: "tt0626121",
+		StartYear: 2005,
+		Title: "Episode #1.121",
+		Type: "tvEpisode",
+	},
+	tt0626124: {
+		EndYear: -1,
+		ID: "tt0626124",
+		StartYear: 2005,
+		Title: "Episode #1.124",
+		Type: "tvEpisode",
+	},
+	nm0124132: {
+		BirthYear: 1924,
+		DeathYear: 2018,
+		ID: "nm0124132",
+		PrimaryName: "George Bush",
+	},
+	nm0124133: {
+		BirthYear: 1946,
+		DeathYear: 0,
+		ID: "nm0124133",
+		PrimaryName: "George W. Bush",
+	},
+	nm0000285: {
+		BirthYear: 1958,
+		DeathYear: 0,
+		ID: "nm0000285",
+		PrimaryName: "Alec Baldwin",
+	},
+	nm0001051: {
+		BirthYear: 1946,
+		DeathYear: 0,
+		ID: "nm0001051",
+		PrimaryName: "Bill Clinton",
+	},
+	nm0272401: {
+		BirthYear: 1962,
+		DeathYear: 0,
+		ID: "nm0272401",
+		PrimaryName: "Craig Ferguson",
+	},
+	nm1961678: {
+		BirthYear: 0,
+		DeathYear: 0,
+		ID: "nm1961678",
+		PrimaryName: "The Krumpers \u0026 Clowns",
+	},
+	nm1323599: {
+		BirthYear: 0,
+		DeathYear: 0,
+		ID: "nm1323599",
+		PrimaryName: "Brian McAloon",
+	},
+	nm1039205: {
+		BirthYear: 0,
+		DeathYear: 0,
+		ID: "nm1039205",
+		PrimaryName: "Ross Abrash",
+	},
+	nm0036250: {
+		BirthYear: 1934,
+		DeathYear: 0,
+		ID: "nm0036250",
+		PrimaryName: "Peter Arnett",
+	},
+	nm1802686: {
+		BirthYear: 0,
+		DeathYear: 0,
+		ID: "nm1802686",
+		PrimaryName: "Kip Madsen",
+	},
+	nm1855023: {
+		BirthYear: 0,
+		DeathYear: 0,
+		ID: "nm1855023",
+		PrimaryName: "Richard Malmos",
+	},
+	nm0001458: {
+		BirthYear: 1926,
+		DeathYear: 2021,
+		ID: "nm0001458",
+		PrimaryName: "Cloris Leachman",
+	},
+};
+
 // Custom orbit controls implementation
 
 class OrbitControls {
@@ -106,29 +221,6 @@ class OrbitControls {
 	}
 }
 
-const VERTICES = [
-	"nm0001412",
-	"tt0077089",
-	"nm0001063",
-	"tt1141783",
-	"nm2811587",
-	"tt1142453",
-	"nm0129287",
-	"tt2382807",
-	"nm0000120",
-];
-
-const EDGES = [
-	["nm0001412", "tt0077089"],
-	["tt0077089", "nm0001063"],
-	["nm0001063", "tt1141783"],
-	["tt1141783", "nm2811587"],
-	["nm2811587", "tt1142453"],
-	["tt1142453", "nm0129287"],
-	["nm0129287", "tt2382807"],
-	["tt2382807", "nm0000120"],
-];
-
 const NODE_RADIUS = 0.5;
 const NODE_SPACING = 6;
 
@@ -186,8 +278,8 @@ export const GraphCanvas = (): JSX.Element => {
 			);
 		};
 
-		VERTICES.forEach((node: string) => {
-			console.log({ node });
+		Object.entries(VERTICES).forEach(([nodeId, _]) => {
+			console.log({ nodeId });
 			const sphere = new THREE.Mesh(nodeGeometry, nodeMaterial);
 
 			// Try to find a valid position
@@ -203,8 +295,8 @@ export const GraphCanvas = (): JSX.Element => {
 			sphere.position.copy(position);
 
 			// Store node position and mesh
-			nodePositions.set(node, sphere.position.clone());
-			nodeMeshes.set(node, sphere);
+			nodePositions.set(nodeId, sphere.position.clone());
+			nodeMeshes.set(nodeId, sphere);
 
 			scene.add(sphere);
 		});
