@@ -89,14 +89,14 @@ This project currently has no license.
 This project is for educational and non-commercial use only, in accordance with IMDB's dataset terms of use.
 
 ## Running the React Frontend
+The graph visualization is on `[localhost:5173/cosmograph](http://localhost:5173/cosmograph)`
 
-The frontend requires that the Graph webserver is running. As long as the CLI above is running, the webserver should be running.
+The frontend requires that the Graph webserver is running and the graph is imported. As long as the CLI above is running with an imported graph, the webserver should be running.
 
 The project includes a React frontend for visualizing the graph data. To run it locally:
 
 ### Prerequisites
 - Node.js 18+ 
-- pnpm (recommended) or npm
 - OMDB API key (for movie search functionality)
 
 ### Installation (Mac/Linux)
@@ -112,7 +112,7 @@ pnpm install
 echo "VITE_OMDB_API_KEY=your_api_key_here" > .env
 
 # Start the development server
-pnpm dev
+npm run dev
 ```
 
 ### Installation (Windows)
@@ -127,7 +127,7 @@ pnpm install
 echo VITE_OMDB_API_KEY=your_api_key_here > .env
 
 # Start the development server
-pnpm dev
+npm run dev
 ```
 
 The React app will be available at `http://localhost:5173` by default.
