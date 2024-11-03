@@ -2,6 +2,7 @@ import { type FC, useMemo, useRef, useState } from "react";
 import { CosmographProvider, Cosmograph } from "@cosmograph/react";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "../hooks/useDebounce";
+import { CosmosInputNode } from "@cosmograph/cosmos";
 
 interface Node {
 	ID: string;
@@ -13,15 +14,39 @@ interface SearchResult {
 	title: string;
 	type: string;
 	year: string;
+	name?: string;
+	isActor?: boolean;
+}
+
+interface CustomNode extends CosmosInputNode {
+	id: string;
+	value?: {
+		PrimaryName?: string;
+		Title?: string;
+	};
+}
+
+interface OmdbSearchResponse {
+	Search?: Array<{
+		imdbID: string;
+		Title: string;
+		Type: string;
+		Year: string;
+	}>;
 }
 
 export const CosmographComponent: FC = () => {
-	const [startNode, setStartNode] = useState("nm0000093");
+	const [startNode, setStartNode] = useState("nm0042006");
 	const [searchTerm, setSearchTerm] = useState("");
 	const [searchResults, setSearchResults] = useState<Array<SearchResult>>([]);
 	const [isSearching, setIsSearching] = useState(false);
 	const debouncedSearchTerm = useDebounce(searchTerm, 300);
-	const [depth, setDepth] = useState(1);
+	const [depth, setDepth] = useState(2);
+
+	// Add new state for colors
+	const [actorColor, setActorColor] = useState("#2563eb"); // Default blue
+	const [movieColor, setMovieColor] = useState("#f25454"); // Default red
+	const [edgeColor, setEdgeColor] = useState("#999999"); // Default gray
 
 	const { data, refetch } = useQuery({
 		queryKey: ["graph", startNode, depth],
@@ -48,22 +73,20 @@ export const CosmographComponent: FC = () => {
 			}
 			setIsSearching(true);
 			try {
-				const response = await fetch(
+				const movieResponse = await fetch(
 					`http://www.omdbapi.com/?apikey=${import.meta.env["VITE_OMDB_API_KEY"]}&s=${debouncedSearchTerm}`
 				);
-				const data = await response.json();
-				if ((data as unknown as { Search: Array<any> })?.Search) {
-					setSearchResults(
-						data.Search.map((item: any) => ({
-							id: item.imdbID,
-							title: item.Title,
-							type: item.Type,
-							year: item.Year,
-						}))
-					);
-				} else {
-					setSearchResults([]);
-				}
+				const movieData = (await movieResponse.json()) as OmdbSearchResponse;
+
+				const movieResults =
+					movieData.Search?.map((item: any) => ({
+						id: item.imdbID,
+						title: item.Title,
+						type: item.Type,
+						year: item.Year,
+					})) || [];
+
+				setSearchResults(movieResults);
 			} catch (error) {
 				console.error("Search error:", error);
 				setSearchResults([]);
@@ -93,6 +116,22 @@ export const CosmographComponent: FC = () => {
 	const [gravity, setGravity] = useState(0.1);
 	const simulationRef = useRef(null);
 
+	// Add new state for collapsed sections
+	const [collapsedSections, setCollapsedSections] = useState<
+		Record<string, boolean>
+	>({
+		search: false,
+		simulation: true,
+		colors: true,
+	});
+
+	const toggleSection = (section: string) => {
+		setCollapsedSections((prev) => ({
+			...prev,
+			[section]: !prev[section],
+		}));
+	};
+
 	return (
 		<div className="relative w-screen h-screen">
 			<CosmographProvider nodes={nodes} links={links}>
@@ -100,12 +139,13 @@ export const CosmographComponent: FC = () => {
 					ref={simulationRef}
 					style={{ height: "100vh", width: "100vw" }}
 					linkWidth={1}
-					nodeColor={(node) => (node.id.includes("nm") ? "#2563eb" : "#f25454")}
-					nodeLabelAccessor={(node) => {
+					nodeColor={(node) =>
+						node.id.includes("nm") ? actorColor : movieColor
+					}
+					linkColor={() => edgeColor}
+					nodeLabelAccessor={(node: CustomNode) => {
 						if (!node?.value) return node.id;
-						return (node.value.PrimaryName ||
-							node.value.Title ||
-							node.id) as unknown as string;
+						return node.value["PrimaryName"] || node.value["Title"] || node.id;
 					}}
 					simulationLinkDistance={linkDistance}
 					simulationRepulsion={repulsion}
@@ -115,129 +155,254 @@ export const CosmographComponent: FC = () => {
 			</CosmographProvider>
 
 			{/* Floating Controls */}
-			<div className="absolute top-4 right-4 bg-white/90 p-4 rounded-lg shadow-lg">
+			<div className="absolute top-4 right-4 bg-white/90 p-4 rounded-lg shadow-lg max-w-sm">
 				<div className="space-y-4">
-					<div className="relative">
-						<label className="block text-sm font-medium text-gray-700">
-							Search Movies/People:
-						</label>
-						<input
-							type="text"
-							value={searchTerm}
-							onChange={(e) => setSearchTerm(e.target.value)}
-							className="w-full px-2 py-1 border rounded"
-							placeholder="Search..."
-						/>
-						{/* Autocomplete dropdown */}
-						{searchResults.length > 0 && (
-							<div className="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg max-h-60 overflow-auto">
-								{searchResults.map((result) => (
-									<button
-										key={result.id}
-										onClick={() => {
-											setStartNode(result.id);
-											setSearchTerm("");
-											setSearchResults([]);
-											refetch();
-										}}
-										className="w-full px-4 py-2 text-left hover:bg-gray-100 focus:outline-none"
-									>
-										<div className="text-sm">{result.title}</div>
-										<div className="text-xs text-gray-500">
-											{result.type} • {result.year}
+					{/* Search Section */}
+					<div className="border rounded-lg overflow-hidden">
+						<button
+							onClick={() => toggleSection("search")}
+							className="w-full px-4 py-2 text-left font-medium bg-gray-50 hover:bg-gray-100 flex justify-between items-center"
+						>
+							<span className="pr-8">Search & Navigation</span>
+							<span
+								className="transform transition-transform duration-200"
+								style={{
+									transform: collapsedSections["search"]
+										? "rotate(180deg)"
+										: "rotate(0deg)",
+								}}
+							>
+								▼
+							</span>
+						</button>
+						{!collapsedSections["search"] && (
+							<div className="p-4 space-y-4">
+								<div className="relative">
+									<label className="block text-sm font-medium text-gray-700">
+										Search Movies:
+									</label>
+									<input
+										type="text"
+										value={searchTerm}
+										onChange={(e) => setSearchTerm(e.target.value)}
+										className="w-full px-2 py-1 border rounded"
+										placeholder="Search..."
+									/>
+									{/* Autocomplete dropdown */}
+									{searchResults.length > 0 && (
+										<div className="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg max-h-60 overflow-auto">
+											{searchResults.map((result) => (
+												<button
+													key={result.id}
+													onClick={() => {
+														setStartNode(result.id);
+														setSearchTerm("");
+														setSearchResults([]);
+														refetch();
+													}}
+													className="w-full px-4 py-2 text-left hover:bg-gray-100 focus:outline-none"
+												>
+													<div className="text-sm">
+														{result.title}
+														{result.isActor && " (Actor)"}
+													</div>
+													<div className="text-xs text-gray-500">
+														{result.type}
+														{result.year && ` • ${result.year}`}
+													</div>
+												</button>
+											))}
 										</div>
-									</button>
-								))}
+									)}
+									{isSearching && (
+										<div className="absolute right-2 top-8">
+											<div className="animate-spin h-4 w-4 border-2 border-blue-500 rounded-full border-t-transparent"></div>
+										</div>
+									)}
+								</div>
+
+								<div>
+									<label className="block text-sm font-medium text-gray-700">
+										Start Node ID{" "}
+										<span>
+											<a
+												href="https://developer.imdb.com/documentation/key-concepts#imdb-ids"
+												target="_blank"
+												rel="noopener noreferrer"
+												className="text-xs"
+											>
+												(?)
+											</a>
+											:
+										</span>
+									</label>
+									<input
+										type="text"
+										value={startNode}
+										onChange={(event) => setStartNode(event.target.value)}
+										className="w-full px-2 py-1 border rounded"
+									/>
+								</div>
+
+								<div>
+									<label className="block text-sm font-medium text-gray-700">
+										Depth: {depth}
+									</label>
+									<input
+										type="range"
+										min="1"
+										max="5"
+										value={depth}
+										onChange={(event) => setDepth(Number(event.target.value))}
+										className="w-full"
+									/>
+								</div>
+
+								<button
+									onClick={() => refetch()}
+									className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+								>
+									Regenerate Graph
+								</button>
 							</div>
 						)}
-						{isSearching && (
-							<div className="absolute right-2 top-8">
-								<div className="animate-spin h-4 w-4 border-2 border-blue-500 rounded-full border-t-transparent"></div>
+					</div>
+
+					{/* Simulation Controls Section */}
+					<div className="border rounded-lg overflow-hidden">
+						<button
+							onClick={() => toggleSection("simulation")}
+							className="w-full px-4 py-2 text-left font-medium bg-gray-50 hover:bg-gray-100 flex justify-between items-center"
+						>
+							<span className="pr-8">Simulation Controls</span>
+							<span
+								className="transform transition-transform duration-200"
+								style={{
+									transform: collapsedSections["simulation"]
+										? "rotate(180deg)"
+										: "rotate(0deg)",
+								}}
+							>
+								▼
+							</span>
+						</button>
+						{!collapsedSections["simulation"] && (
+							<div className="p-4 space-y-4">
+								<div>
+									<label className="block text-sm font-medium text-gray-700">
+										Link Distance: {linkDistance}
+									</label>
+									<input
+										type="range"
+										min="10"
+										max="100"
+										value={linkDistance}
+										onChange={(event) => {
+											setLinkDistance(Number(event.target.value));
+										}}
+										className="w-full"
+									/>
+								</div>
+
+								<div>
+									<label className="block text-sm font-medium text-gray-700">
+										Repulsion: {repulsion}
+									</label>
+									<input
+										type="range"
+										min="0"
+										max="1"
+										step="0.1"
+										value={repulsion}
+										onChange={(event) => {
+											setRepulsion(Number(event.target.value));
+										}}
+										className="w-full"
+									/>
+								</div>
+
+								<div>
+									<label className="block text-sm font-medium text-gray-700">
+										Gravity: {gravity}
+									</label>
+									<input
+										type="range"
+										min="0"
+										max="1"
+										step="0.1"
+										value={gravity}
+										onChange={(event) => {
+											setGravity(Number(event.target.value));
+										}}
+										className="w-full"
+									/>
+								</div>
 							</div>
 						)}
 					</div>
 
-					<div>
-						<label className="block text-sm font-medium text-gray-700">
-							Start Node ID:
-						</label>
-						<input
-							type="text"
-							value={startNode}
-							onChange={(event) => setStartNode(event.target.value)}
-							className="w-full px-2 py-1 border rounded"
-						/>
-					</div>
-
-					<div>
-						<label className="block text-sm font-medium text-gray-700">
-							Depth: {depth}
-						</label>
-						<input
-							type="range"
-							min="1"
-							max="5"
-							value={depth}
-							onChange={(event) => setDepth(Number(event.target.value))}
-							className="w-full"
-						/>
-					</div>
-
-					<button
-						onClick={() => refetch()}
-						className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
-					>
-						Regenerate Graph
-					</button>
-
-					<div>
-						<label className="block text-sm font-medium text-gray-700">
-							Link Distance: {linkDistance}
-						</label>
-						<input
-							type="range"
-							min="10"
-							max="100"
-							value={linkDistance}
-							onChange={(event) => {
-								setLinkDistance(Number(event.target.value));
-							}}
-							className="w-full"
-						/>
-					</div>
-
-					<div>
-						<label className="block text-sm font-medium text-gray-700">
-							Repulsion: {repulsion}
-						</label>
-						<input
-							type="range"
-							min="0"
-							max="1"
-							step="0.1"
-							value={repulsion}
-							onChange={(event) => {
-								setRepulsion(Number(event.target.value));
-							}}
-							className="w-full"
-						/>
-					</div>
-
-					<div>
-						<label className="block text-sm font-medium text-gray-700">
-							Gravity: {gravity}
-						</label>
-						<input
-							type="range"
-							min="0"
-							max="1"
-							step="0.1"
-							value={gravity}
-							onChange={(event) => {
-								setGravity(Number(event.target.value));
-							}}
-							className="w-full"
-						/>
+					{/* Colors Section */}
+					<div className="border rounded-lg overflow-hidden">
+						<button
+							onClick={() => toggleSection("colors")}
+							className="w-full px-4 py-2 text-left font-medium bg-gray-50 hover:bg-gray-100 flex justify-between items-center"
+						>
+							<span>Colors</span>
+							<span
+								className="transform transition-transform duration-200"
+								style={{
+									transform: collapsedSections["colors"]
+										? "rotate(180deg)"
+										: "rotate(0deg)",
+								}}
+							>
+								▼
+							</span>
+						</button>
+						{!collapsedSections["colors"] && (
+							<div className="p-4">
+								<div className="space-y-2">
+									<label className="block text-sm font-medium text-gray-700">
+										Colors:
+									</label>
+									<div className="grid grid-cols-2 gap-2">
+										<div>
+											<label className="block text-xs text-gray-600">
+												Actor Nodes
+											</label>
+											<input
+												type="color"
+												value={actorColor}
+												onChange={(e) => setActorColor(e.target.value)}
+												className="w-full h-8"
+											/>
+										</div>
+										<div>
+											<label className="block text-xs text-gray-600">
+												Movie Nodes
+											</label>
+											<input
+												type="color"
+												value={movieColor}
+												onChange={(e) => setMovieColor(e.target.value)}
+												className="w-full h-8"
+											/>
+										</div>
+										<div className="col-span-2">
+											<label className="block text-xs text-gray-600">
+												Edges
+											</label>
+											<input
+												type="color"
+												value={edgeColor}
+												onChange={(e) => setEdgeColor(e.target.value)}
+												className="w-full h-8"
+											/>
+										</div>
+									</div>
+								</div>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
