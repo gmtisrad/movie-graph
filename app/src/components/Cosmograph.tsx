@@ -21,7 +21,7 @@ export const CosmographComponent: FC = () => {
 	const [searchResults, setSearchResults] = useState<Array<SearchResult>>([]);
 	const [isSearching, setIsSearching] = useState(false);
 	const debouncedSearchTerm = useDebounce(searchTerm, 300);
-	const [depth, setDepth] = useState(3);
+	const [depth, setDepth] = useState(1);
 
 	const { data, refetch } = useQuery({
 		queryKey: ["graph", startNode, depth],

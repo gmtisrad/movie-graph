@@ -70,7 +70,7 @@ const typescriptConfig = {
     "@typescript-eslint/explicit-function-return-type": "error",
     "@typescript-eslint/explicit-member-accessibility": "error",
     "@typescript-eslint/explicit-module-boundary-types": "error",
-    "@typescript-eslint/no-confusing-void-expression": "error",
+    "@typescript-eslint/no-confusing-void-expression": "off",
     "@typescript-eslint/no-import-type-side-effects": "error",
     "@typescript-eslint/no-require-imports": "error",
     "@typescript-eslint/no-unused-vars": "error",
@@ -80,6 +80,7 @@ const typescriptConfig = {
     "@typescript-eslint/no-unsafe-call": "off",
     "no-return-await": "off",
     "@typescript-eslint/return-await": "error",
+    "@typescript-eslint/no-floating-promises": "warns",
     "@typescript-eslint/no-misused-promises": [
     "error",
     {
