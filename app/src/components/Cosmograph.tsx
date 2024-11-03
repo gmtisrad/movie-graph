@@ -1,72 +1,55 @@
-import { type FC, useEffect, useRef } from "react";
-import { Graph } from "@cosmograph/cosmos";
+import { type FC, useEffect, useMemo, useRef } from "react";
+import { CosmographProvider, Cosmograph } from "@cosmograph/react";
+import { useQuery } from "@tanstack/react-query";
 
 interface Node {
-	id: string;
-	group: number;
+	ID: string;
+	Value: Record<string, string>;
 }
-
-interface Link {
-	source: string;
-	target: string;
-	value: number;
-}
-
-const nodes: Array<Node> = [
-	{ id: "Node 1", group: 1 },
-	{ id: "Node 2", group: 1 },
-	{ id: "Node 3", group: 2 },
-	{ id: "Node 4", group: 2 },
-	{ id: "Node 5", group: 3 },
-];
-
-const links: Array<Link> = [
-	{ source: "Node 1", target: "Node 2", value: 1 },
-	{ source: "Node 2", target: "Node 3", value: 1 },
-	{ source: "Node 3", target: "Node 4", value: 1 },
-	{ source: "Node 4", target: "Node 5", value: 1 },
-	{ source: "Node 5", target: "Node 1", value: 1 },
-];
 
 export const CosmographComponent: FC = () => {
-	const containerRef = useRef<HTMLDivElement>(null);
-	const graphRef = useRef<Graph<Node, Link> | null>(null);
-
-	useEffect(() => {
-		if (!containerRef.current) return;
-
-		// Clear any existing canvas elements
-		containerRef.current.innerHTML = "";
-
-		const canvas = document.createElement("canvas");
-		containerRef.current.appendChild(canvas);
-
-		graphRef.current = new Graph(canvas, {
-			backgroundColor: "#ffffff",
-			nodeColor: "#2563eb",
-			linkColor: "#94a3b8",
-			simulation: {
-				linkDistance: 10,
-				linkSpring: 0.3,
-				repulsion: 0.3,
-				gravity: 0.1,
-				decay: 1000,
-			},
-		});
-
-		graphRef.current.setData(nodes, links);
-
-		return (): void => {
-			if (graphRef.current) {
-				graphRef.current.destroy();
+	const { data } = useQuery({
+		queryKey: ["graph", "nm1894391", 3],
+		queryFn: async () => {
+			const response = await fetch(
+				"http://127.0.0.1:3000/node?startNode=nm1894391&depth=3"
+			);
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
 			}
-		};
-	}, []);
+			return response.json() as Promise<{
+				vertices: Array<Node>;
+				edges: Array<[string, string]>;
+			}>;
+		},
+	});
+
+	const links = useMemo(() => {
+		return data?.edges.map(([source, target]) => ({ source, target }));
+	}, [data?.edges]);
+
+	const nodes = useMemo(() => {
+		return data?.vertices.map((vertex) => {
+			return {
+				id: vertex.ID,
+				value: vertex.Value,
+			};
+		});
+	}, [data?.vertices]);
 
 	return (
-		<div
-			ref={containerRef}
-			className="w-full h-full bg-white dark:bg-gray-900"
-		/>
+		<CosmographProvider nodes={nodes} links={links}>
+			<Cosmograph
+				style={{ height: "100vh", width: "100vw" }}
+				linkWidth={1}
+				nodeColor={(node) => (node.id.includes("nm") ? "#2563eb" : "#f25454")}
+				nodeLabelAccessor={(node) => {
+					if (!node?.value) return node.id;
+					return (node.value.PrimaryName ||
+						node.value.Title ||
+						node.id) as unknown as string;
+				}}
+			/>
+		</CosmographProvider>
 	);
 };
