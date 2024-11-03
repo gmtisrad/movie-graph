@@ -93,6 +93,7 @@ export const CosmographComponent: FC = () => {
 			} finally {
 				setIsSearching(false);
 			}
+			return;
 		},
 		enabled: Boolean(debouncedSearchTerm),
 	});

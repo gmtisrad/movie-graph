@@ -90,6 +90,8 @@ This project is for educational and non-commercial use only, in accordance with 
 
 ## Running the React Frontend
 
+The frontend requires that the Graph webserver is running. As long as the CLI above is running, the webserver should be running.
+
 The project includes a React frontend for visualizing the graph data. To run it locally:
 
 ### Prerequisites
