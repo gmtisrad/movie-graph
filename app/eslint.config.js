@@ -77,6 +77,7 @@ const typescriptConfig = {
     "@typescript-eslint/no-useless-empty-export": "error",
     "@typescript-eslint/prefer-enum-initializers": "error",
     "@typescript-eslint/prefer-readonly": "error",
+    "@typescript-eslint/no-unsafe-call": "off",
     "no-return-await": "off",
     "@typescript-eslint/return-await": "error",
     "@typescript-eslint/no-misused-promises": [
