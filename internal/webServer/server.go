@@ -16,6 +16,17 @@ func StartServer(port int, serverGraph *graph.Graph) chan struct{} {
 	router := http.NewServeMux()
 
 	router.HandleFunc("/node", func(w http.ResponseWriter, r *http.Request) {
+		// Enable CORS
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		// Handle preflight requests
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
 		if r.Method != http.MethodGet {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			return
@@ -42,29 +53,21 @@ func StartServer(port int, serverGraph *graph.Graph) chan struct{} {
 			return
 		}
 
-		searchNode, ok := serverGraph.Index[startNode]
-		if !ok {
+		searchNode := graph.GetNode(serverGraph, startNode)
+		if searchNode == nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("startNode not found"))
 			return
 		}	
 		vertices, edges := graph.GetNodeAndNeighborsToNDepth(serverGraph, searchNode, depth)
-		//return vertices and edges as json
+		
+		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"vertices": vertices,
 			"edges": edges,
 		})
 
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(fmt.Sprintf("startNode: %s, depth: %d", startNode, depth)))
-	})
-	router.HandleFunc("/node", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("pong"))
+		fmt.Printf("startNode: %d, depth: %d\n", len(startNode), depth)
 	})
 	
 	server = &http.Server{

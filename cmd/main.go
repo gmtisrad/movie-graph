@@ -50,11 +50,11 @@ func main() {
 		if movieGraph != nil {
 			// Start HTTP server in a goroutine
 			go func() {
-				if err := webServer.StartServer(3009, movieGraph); err != nil {
+				if err := webServer.StartServer(3000, movieGraph); err != nil {
 					log.Printf("HTTP server error: %v\n", err)
 				}
 			}()
-			fmt.Println("HTTP server started on :8080")
+			fmt.Println("HTTP server started on :3000")
 			searchMenu(movieGraph, reader)
 		}
 	}

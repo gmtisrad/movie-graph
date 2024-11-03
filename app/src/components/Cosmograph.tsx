@@ -132,6 +132,10 @@ export const CosmographComponent: FC = () => {
 		}));
 	};
 
+	// Add computed values for counts
+	const nodeCount = useMemo(() => nodes?.length || 0, [nodes]);
+	const edgeCount = useMemo(() => links?.length || 0, [links]);
+
 	return (
 		<div className="relative w-screen h-screen">
 			<CosmographProvider nodes={nodes} links={links}>
@@ -157,6 +161,13 @@ export const CosmographComponent: FC = () => {
 			{/* Floating Controls */}
 			<div className="absolute top-4 right-4 bg-white/90 p-4 rounded-lg shadow-lg max-w-sm">
 				<div className="space-y-4">
+					{/* Add Graph Stats */}
+					<div className="text-sm text-gray-600 mb-2 flex justify-between">
+						<span>{nodeCount.toLocaleString()} nodes</span>
+						<span>•</span>
+						<span>{edgeCount.toLocaleString()} edges</span>
+					</div>
+
 					{/* Search Section */}
 					<div className="border rounded-lg overflow-hidden">
 						<button

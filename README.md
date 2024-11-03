@@ -87,3 +87,52 @@ This project currently has no license.
 ## Note
 
 This project is for educational and non-commercial use only, in accordance with IMDB's dataset terms of use.
+
+## Running the React Frontend
+
+The project includes a React frontend for visualizing the graph data. To run it locally:
+
+### Prerequisites
+- Node.js 18+ 
+- pnpm (recommended) or npm
+- OMDB API key (for movie search functionality)
+
+### Installation (Mac/Linux)
+```bash
+# Navigate to the app directory
+cd app
+
+# Install dependencies using pnpm
+pnpm install
+
+# Create a .env file for your OMDB API key
+# If you don't have one, it's fine. Search just won't work. Get imdb IDs from the url of the imdb website
+echo "VITE_OMDB_API_KEY=your_api_key_here" > .env
+
+# Start the development server
+pnpm dev
+```
+
+### Installation (Windows)
+```bash
+# Navigate to the app directory
+cd app
+
+# Install dependencies using pnpm
+pnpm install
+
+# Create a .env file for your OMDB API key
+echo VITE_OMDB_API_KEY=your_api_key_here > .env
+
+# Start the development server
+pnpm dev
+```
+
+The React app will be available at `http://localhost:5173` by default.
+
+### Features
+- Interactive 3D graph visualization
+- Movie and actor search functionality
+- Customizable graph appearance
+- Keyboard controls for navigation (W,A,S,D)
+- Dark/Light mode support
