@@ -1,5 +1,12 @@
 {
-  "dependencies": {
-    "three": "^0.169.0"
+  "name": "movie-graph",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r dev",
+    "test": "pnpm -r test"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
   }
 }
