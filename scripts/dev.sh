@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit on error
+set -e
+
 # Function to check if a command exists
 command_exists() {
     command -v "$1" >/dev/null 2>&1
@@ -7,12 +10,12 @@ command_exists() {
 
 # Check for required commands
 if ! command_exists docker; then
-    echo "Docker is not installed. Please install Docker first."
+    echo "Error: docker is not installed"
     exit 1
 fi
 
 if ! command_exists docker-compose; then
-    echo "Docker Compose is not installed. Please install Docker Compose first."
+    echo "Error: docker-compose is not installed"
     exit 1
 fi
 
@@ -24,7 +27,7 @@ wait_for_service() {
 
     echo "Waiting for $service to be healthy..."
     while [ $attempt -le $max_attempts ]; do
-        if docker-compose ps "$service" | grep -q "healthy"; then
+        if docker-compose ps $service | grep -q "healthy"; then
             echo "$service is healthy!"
             return 0
         fi
@@ -33,8 +36,8 @@ wait_for_service() {
         attempt=$((attempt + 1))
     done
 
-    echo "Timeout waiting for $service to be healthy"
-    return 1
+    echo "Error: $service failed to become healthy after $max_attempts attempts"
+    exit 1
 }
 
 # Start services
@@ -42,34 +45,28 @@ echo "Starting services..."
 docker-compose up -d
 
 # Wait for databases to be ready
-wait_for_service postgres || exit 1
-wait_for_service neptune || exit 1
+wait_for_service postgres
+wait_for_service gremlin-server
 
-# Run database migrations
+# Run database migrations if needed
 echo "Running database migrations..."
-docker-compose exec metadata-api pnpm migrate
+cd services/metadata-api && pnpm migrate
 
-# Check if data directory is provided
+# If data directory is provided, load data
 if [ -n "$1" ]; then
-    DATA_DIR=$1
-    echo "Loading data from $DATA_DIR..."
-    
-    # Run the Go data loader for metadata
-    echo "Loading metadata..."
-    cd services/metadata-api
-    go run cmd/loader/main.go -data "$DATA_DIR"
-    cd ../..
-
-    # Run the graph builder
-    echo "Loading graph data..."
-    cd services/graph-builder
-    go run main.go -data "$DATA_DIR"
-    cd ../..
+    echo "Loading data from $1..."
+    cd ../graph-builder && go run cmd/loader/main.go -data "$1"
 fi
 
-echo "Development environment is ready!"
-echo "Services:"
-echo "  - Metadata API: http://localhost:3001"
-echo "  - Graph API: http://localhost:3002"
-echo "  - PostgreSQL: localhost:5432"
-echo "  - Neptune: localhost:8182" 
+# Show service URLs
+echo "
+Services are ready!
+==================
+Metadata API: http://localhost:3001
+Graph API: http://localhost:3002
+PostgreSQL: localhost:5432
+Gremlin Server: ws://localhost:8182/gremlin
+"
+
+# Follow logs
+docker-compose logs -f 

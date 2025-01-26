@@ -17,16 +17,17 @@ services:
       timeout: 5s
       retries: 5
 
-  neptune:
-    image: amazon/neptune-gremlin-server:latest
+  gremlin-server:
+    image: tinkerpop/gremlin-server:3.6
     ports:
       - "8182:8182"
+    volumes:
+      - ./graph-builder/data:/data
+      - ./graph-builder/conf:/opt/gremlin-server/conf
     environment:
       GREMLIN_SERVER_PORT: 8182
-      NEPTUNE_CLUSTER_ENDPOINT: localhost
-      NEPTUNE_PORT: 8182
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8182/status"]
+      test: ["CMD", "curl", "-f", "http://localhost:8182"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -35,38 +36,59 @@ services:
     build:
       context: .
       dockerfile: services/metadata-api/Dockerfile
+      target: development
     ports:
       - "3001:3001"
     environment:
       NODE_ENV: development
       PORT: 3001
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/movie_metadata
-      CORS_ORIGIN: http://localhost:3000
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/movie_metadata
+    volumes:
+      - ./services/metadata-api:/app/services/metadata-api
+      - ./shared:/app/shared
+      - /app/node_modules
     depends_on:
       postgres:
         condition: service_healthy
-    volumes:
-      - ./services/metadata-api:/app
-      - /app/node_modules
 
   graph-api:
     build:
       context: .
       dockerfile: services/graph-api/Dockerfile
+      target: development
     ports:
       - "3002:3002"
     environment:
       NODE_ENV: development
       PORT: 3002
-      NEPTUNE_ENDPOINT: neptune
-      NEPTUNE_PORT: 8182
-      CORS_ORIGIN: http://localhost:3000
-    depends_on:
-      neptune:
-        condition: service_healthy
+      GREMLIN_ENDPOINT: ws://gremlin-server:8182/gremlin
     volumes:
-      - ./services/graph-api:/app
+      - ./services/graph-api:/app/services/graph-api
+      - ./shared:/app/shared
       - /app/node_modules
+    depends_on:
+      gremlin-server:
+        condition: service_healthy
+
+  gateway-api:
+    build:
+      context: .
+      dockerfile: services/gateway-api/Dockerfile
+      target: development
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      METADATA_API_URL: http://metadata-api:3001
+      GRAPH_API_URL: http://graph-api:3002
+    volumes:
+      - ./services/gateway-api:/app/services/gateway-api
+      - ./shared:/app/shared
+      - /app/node_modules
+    depends_on:
+      - metadata-api
+      - graph-api
 
 volumes:
   postgres_data: 

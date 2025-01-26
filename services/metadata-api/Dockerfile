@@ -1,42 +1,64 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:20-alpine as builder
+
+# Install pnpm
+RUN npm install -g pnpm
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package.json pnpm-lock.yaml ./
+# Copy workspace config and package files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY shared/types/package.json ./shared/types/
 COPY services/metadata-api/package.json ./services/metadata-api/
 
-# Install pnpm and dependencies
-RUN npm install -g pnpm && \
-    pnpm install --frozen-lockfile
+# Install dependencies
+RUN pnpm install
 
 # Copy source code
+COPY shared/types ./shared/types
 COPY services/metadata-api ./services/metadata-api
-COPY shared ./shared
 
-# Build the application
+# Build packages
+RUN pnpm --filter @movie-graph/types build
 RUN pnpm --filter @movie-graph/metadata-api build
 
-# Production stage
-FROM node:20-alpine
+# Development stage
+FROM node:20-alpine as development
 
-# Install Lambda Runtime Interface Client
-RUN npm install aws-lambda-ric
-
-# Set working directory
 WORKDIR /app
 
-# Copy built files and dependencies
-COPY --from=builder /app/services/metadata-api/dist ./dist
-COPY --from=builder /app/services/metadata-api/node_modules ./node_modules
-COPY --from=builder /app/node_modules ./node_modules
+# Copy workspace config and package files
+COPY --from=builder /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
+COPY --from=builder /app/shared/types/package.json ./shared/types/
+COPY --from=builder /app/services/metadata-api/package.json ./services/metadata-api/
 
-# Set environment variables
-ENV NODE_ENV=production
-ENV AWS_LAMBDA_RUNTIME_API=3.2
+# Install dependencies including devDependencies
+RUN npm install -g pnpm && pnpm install
 
-# Use Lambda Runtime Interface Client as entrypoint
-ENTRYPOINT ["/usr/local/bin/npx", "aws-lambda-ric"]
-CMD ["dist/index.handler"] 
+# Copy source code and built files
+COPY --from=builder /app/shared/types ./shared/types
+COPY --from=builder /app/services/metadata-api ./services/metadata-api
+
+# Start development server
+CMD ["pnpm", "--filter", "@movie-graph/metadata-api", "dev"]
+
+# Production stage
+FROM node:20-alpine as production
+
+WORKDIR /app
+
+# Copy workspace config and package files
+COPY --from=builder /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
+COPY --from=builder /app/shared/types/package.json ./shared/types/
+COPY --from=builder /app/services/metadata-api/package.json ./services/metadata-api/
+
+# Install production dependencies only
+RUN npm install -g pnpm && pnpm install --prod
+
+# Copy built files
+COPY --from=builder /app/shared/types/dist ./shared/types/dist
+COPY --from=builder /app/services/metadata-api/dist ./services/metadata-api/dist
+
+# Start production server
+CMD ["node", "services/metadata-api/dist/index.js"] 

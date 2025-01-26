@@ -4,6 +4,7 @@ import { APIGatewayProxyHandler } from 'aws-lambda';
 import cors from 'cors';
 import { driver, process as gprocess } from 'gremlin';
 import { config } from 'dotenv';
+import { EventEmitter } from 'events';
 
 // Load environment variables
 config();
@@ -17,19 +18,19 @@ app.use(express.json());
 
 // Configure Gremlin client
 const client = new driver.Client(
-  'wss://' + process.env.NEPTUNE_ENDPOINT + ':' + process.env.NEPTUNE_PORT + '/gremlin',
+  process.env.GREMLIN_ENDPOINT || 'ws://localhost:8182/gremlin',
   {
     traversalSource: 'g',
     mimeType: 'application/vnd.gremlin-v2.0+json',
-    rejectUnauthorized: process.env.NODE_ENV !== 'production',
+    rejectUnauthorized: false,
     connectOnStartup: true,
     maxInProcessPerConnection: 32,
     maxConnectionPoolSize: 10,
   }
-);
+) as driver.Client & EventEmitter;
 
 // Add client error handler
-client.on('error', (err) => {
+client.on('error', (err: Error) => {
   console.error('Gremlin client error:', err);
 });
 

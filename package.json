@@ -2,9 +2,10 @@
   "name": "movie-graph",
   "private": true,
   "scripts": {
+    "dev": "./scripts/dev.sh",
     "build": "pnpm -r build",
-    "dev": "pnpm -r dev",
-    "test": "pnpm -r test"
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint"
   },
   "devDependencies": {
     "typescript": "^5.3.3"

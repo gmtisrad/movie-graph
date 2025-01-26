@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { Vertex, Edge, PaginatedResponse, ErrorResponse } from '@movie-graph/types';
-import { GremlinClient } from '../services/graph/client';
+import { GraphClient } from '../services/graph/client';
+import asyncHandler from 'express-async-handler';
 
 const router = Router();
-const client = new GremlinClient();
+const client = new GraphClient(process.env.GREMLIN_ENDPOINT || 'ws://localhost:8182/gremlin');
 
 // Input validation schemas
 const DirectionSchema = z.enum(['in', 'out', 'both']).default('both');
@@ -34,7 +35,7 @@ router.get<{ id: string }, Edge[] | ErrorResponse>(
   async (req, res) => {
     try {
       const direction = DirectionSchema.parse(req.query.direction);
-      const edges = await client.getEdges(req.params.id, direction);
+      const edges = await client.getConnectedEdges(req.params.id, direction);
       res.json(edges);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -57,7 +58,7 @@ router.get<{ id: string }, Vertex[] | ErrorResponse>(
     try {
       const direction = DirectionSchema.parse(req.query.direction);
       const label = LabelSchema.parse(req.query.label);
-      const neighbors = await client.getVertexNeighbors(req.params.id, direction, label);
+      const neighbors = await client.getConnectedVertices(req.params.id, direction, label);
       res.json(neighbors);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -87,7 +88,7 @@ router.get<{}, PaginatedResponse<Vertex> | ErrorResponse>(
       }
 
       const { limit, offset } = PaginationSchema.parse(req.query);
-      const results = await client.searchVertices(label, limit, offset);
+      const results = await client.getVerticesByLabel(label, limit, offset);
       res.json(results);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -102,5 +103,70 @@ router.get<{}, PaginatedResponse<Vertex> | ErrorResponse>(
     }
   }
 );
+
+// Movie cast endpoint
+router.get('/movies/:id/cast', asyncHandler(async (req, res) => {
+  const { id } = z.object({
+    id: z.string(),
+  }).parse(req.params);
+  const { limit, offset } = z.object({
+    limit: z.string().optional().transform(val => parseInt(val || '10')),
+    offset: z.string().optional().transform(val => parseInt(val || '0')),
+  }).parse(req.query);
+
+  try {
+    const result = await client.getMovieCast(id, limit, offset);
+    res.json(result);
+  } catch (error) {
+    const response: ErrorResponse = {
+      error: 'Failed to fetch movie cast',
+      details: error instanceof Error ? error.message : undefined
+    };
+    res.status(500).json(response);
+  }
+}));
+
+// Person movies endpoint
+router.get('/people/:id/movies', asyncHandler(async (req, res) => {
+  const { id } = z.object({
+    id: z.string(),
+  }).parse(req.params);
+  const { limit, offset } = z.object({
+    limit: z.string().optional().transform(val => parseInt(val || '10')),
+    offset: z.string().optional().transform(val => parseInt(val || '0')),
+  }).parse(req.query);
+
+  try {
+    const result = await client.getPersonMovies(id, limit, offset);
+    res.json(result);
+  } catch (error) {
+    const response: ErrorResponse = {
+      error: 'Failed to fetch person movies',
+      details: error instanceof Error ? error.message : undefined
+    };
+    res.status(500).json(response);
+  }
+}));
+
+// Movie recommendations endpoint
+router.get('/movies/:id/recommendations', asyncHandler(async (req, res) => {
+  const { id } = z.object({
+    id: z.string(),
+  }).parse(req.params);
+  const { limit } = z.object({
+    limit: z.string().optional().transform(val => parseInt(val || '10')),
+  }).parse(req.query);
+
+  try {
+    const result = await client.getMovieRecommendations(id, limit);
+    res.json(result);
+  } catch (error) {
+    const response: ErrorResponse = {
+      error: 'Failed to fetch movie recommendations',
+      details: error instanceof Error ? error.message : undefined
+    };
+    res.status(500).json(response);
+  }
+}));
 
 export default router; 
