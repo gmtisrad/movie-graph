@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: movie_metadata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  neptune:
+    image: amazon/neptune-gremlin-server:latest
+    ports:
+      - "8182:8182"
+    environment:
+      GREMLIN_SERVER_PORT: 8182
+      NEPTUNE_CLUSTER_ENDPOINT: localhost
+      NEPTUNE_PORT: 8182
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8182/status"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  metadata-api:
+    build:
+      context: .
+      dockerfile: services/metadata-api/Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/movie_metadata
+      CORS_ORIGIN: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./services/metadata-api:/app
+      - /app/node_modules
+
+  graph-api:
+    build:
+      context: .
+      dockerfile: services/graph-api/Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      NODE_ENV: development
+      PORT: 3002
+      NEPTUNE_ENDPOINT: neptune
+      NEPTUNE_PORT: 8182
+      CORS_ORIGIN: http://localhost:3000
+    depends_on:
+      neptune:
+        condition: service_healthy
+    volumes:
+      - ./services/graph-api:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data: 
