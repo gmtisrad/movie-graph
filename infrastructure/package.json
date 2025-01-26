@@ -7,17 +7,23 @@
     "build": "tsc",
     "watch": "tsc -w",
     "cdk": "cdk",
-    "deploy": "cdk deploy",
+    "deploy": "ts-node scripts/deploy.ts",
     "destroy": "cdk destroy",
     "diff": "cdk diff",
     "synth": "cdk synth"
   },
   "dependencies": {
+    "@aws-cdk/aws-apigatewayv2-alpha": "^2.124.0-alpha.0",
+    "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.124.0-alpha.0",
     "aws-cdk-lib": "^2.124.0",
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
     "constructs": "^10.3.0",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "inquirer": "^8.2.6"
   },
   "devDependencies": {
+    "@types/inquirer": "^8.2.10",
     "@types/node": "^20.10.5",
     "aws-cdk": "^2.124.0",
     "ts-node": "^10.9.2",
