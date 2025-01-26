@@ -1,5 +1,30 @@
 # Movie Graph Architecture
 
+## Cost Analysis & Service Split Rationale
+
+### Database Costs (us-west-2)
+
+1. **Graph Service (Neptune)**:
+   - Smallest instance (db.t3.medium): ~$85/month
+   - Serverless, pay as you go. minimum 0?
+   - Required for graph operations
+   - No zero-cost idle state
+   - Optimized for graph traversals and relationships
+
+2. **Metadata Service (RDS t4g.micro)**:
+   - Instance cost: ~$12.50/month
+   - Storage: $0.115/GB/month (gp2)
+   - Sufficient for metadata operations
+   - ARM-based for cost efficiency
+   - Burstable performance with CPU credits
+
+### Architecture Decision
+We've split the services based on both functionality and cost optimization:
+- **Graph Service**: Uses Neptune for relationship-heavy queries where graph traversal is essential
+- **Metadata Service**: Uses RDS for traditional relational queries where we just need fast lookups and joins
+- **Cost Efficiency**: ~$97.50/month base cost vs ~$170/month if using Neptune for everything
+- **Performance**: Each database is optimized for its specific query patterns
+
 ## Repository Structure
 
 ```
