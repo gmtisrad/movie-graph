@@ -1,29 +1,135 @@
 # Movie Graph Architecture
 
-## Cost Analysis & Service Split Rationale
+## System Overview
+Movie Graph is a cloud-native application that combines graph and relational databases to provide rich movie data exploration capabilities. The system is built using a serverless architecture to optimize costs and scalability.
 
-### Database Costs (us-west-2)
+## Infrastructure Components
 
-1. **Graph Service (Neptune)**:
-   - Smallest instance (db.t3.medium): ~$85/month
-   - Serverless, pay as you go. minimum 0?
-   - Required for graph operations
-   - No zero-cost idle state
-   - Optimized for graph traversals and relationships
+### Database Layer
+1. **Neptune Graph Database** (~$85/month)
+   - Instance: db.t3.medium (smallest available)
+   - Purpose: Store and query movie relationship data
+   - Key Features:
+     - Graph traversal queries
+     - Gremlin query language support
+     - Highly available across AZs
 
-2. **Metadata Service (RDS t4g.micro)**:
-   - Instance cost: ~$12.50/month
-   - Storage: $0.115/GB/month (gp2)
-   - Sufficient for metadata operations
-   - ARM-based for cost efficiency
-   - Burstable performance with CPU credits
+2. **RDS PostgreSQL** (~$12.50/month)
+   - Instance: t4g.micro (ARM-based)
+   - Purpose: Store movie metadata and attributes
+   - Storage: GP2 ($0.115/GB/month)
+   - Key Features:
+     - Full-text search capabilities
+     - Structured metadata queries
+     - Cost-effective for relational data
 
-### Architecture Decision
-We've split the services based on both functionality and cost optimization:
-- **Graph Service**: Uses Neptune for relationship-heavy queries where graph traversal is essential
-- **Metadata Service**: Uses RDS for traditional relational queries where we just need fast lookups and joins
-- **Cost Efficiency**: ~$97.50/month base cost vs ~$170/month if using Neptune for everything
-- **Performance**: Each database is optimized for its specific query patterns
+### Compute Layer (Serverless)
+1. **Lambda Functions**
+   - Metadata API (Node.js)
+     - Memory: 1024MB
+     - Timeout: 30 seconds
+     - Container-based deployment
+     - Cost: Pay per request (~$0.20/million invocations + compute time)
+   
+   - Graph API (Node.js)
+     - Memory: 1024MB
+     - Timeout: 30 seconds
+     - Container-based deployment
+     - Cost: Pay per request (~$0.20/million invocations + compute time)
+
+2. **API Gateway**
+   - REST API with proxy integrations
+   - CORS enabled for frontend access
+   - Cost: ~$3.50/million requests
+
+### Networking
+1. **VPC Configuration**
+   - Public subnets: API Gateway endpoints
+   - Private subnets: Lambda functions
+   - Isolated subnets: Databases
+   - NAT Gateway: For Lambda internet access (~$32/month)
+
+### Container Registry
+1. **ECR Repositories**
+   - Store Lambda container images
+   - Versioned deployments
+   - Minimal storage costs (~$0.10/GB/month)
+
+## Cost Analysis
+
+### Base Infrastructure Costs (Monthly)
+- Neptune: $85
+- RDS: $12.50
+- NAT Gateway: $32
+- Total Base: ~$129.50
+
+### Variable Costs (Per Million Requests)
+- Lambda Invocations: $0.20
+- Lambda Compute: ~$0.50-$2.00 (depends on duration)
+- API Gateway: $3.50
+- Data Transfer: ~$0.09/GB
+- Total Variable: ~$4.29-$5.79 per million requests
+
+### Cost Optimization
+1. **Serverless Benefits**
+   - No idle compute costs
+   - Auto-scaling from zero
+   - Pay only for actual usage
+   - Ideal for variable/low traffic
+
+2. **Trade-offs**
+   - Cold starts (mitigated by provisioned concurrency if needed)
+   - API Gateway costs at high scale
+   - Lambda duration limits (30s)
+
+## Development Workflow
+1. Local Development
+   - Docker Compose for local databases
+   - Local Lambda debugging
+   - Hot reload for faster development
+
+2. Deployment
+   - AWS CDK for infrastructure
+   - Container-based Lambda deployments
+   - Automated via CI/CD
+
+## Security
+1. **Network Security**
+   - VPC isolation
+   - Security groups for service access
+   - Private subnets for compute
+
+2. **Authentication & Authorization**
+   - API Gateway authentication (to be implemented)
+   - IAM roles for Lambda functions
+   - Secrets Manager for credentials
+
+## Monitoring & Observability
+1. **Metrics**
+   - Lambda execution metrics
+   - API Gateway request metrics
+   - Database performance metrics
+
+2. **Logging**
+   - CloudWatch Logs
+   - Lambda function logs
+   - API Gateway access logs
+
+## Future Considerations
+1. **Scaling**
+   - Provisioned concurrency for high-traffic endpoints
+   - RDS vertical scaling if needed
+   - API Gateway caching
+
+2. **Features**
+   - GraphQL API layer
+   - Caching layer (ElastiCache/DAX)
+   - Full-text search (OpenSearch)
+
+3. **Cost Optimization**
+   - Request batching
+   - Response caching
+   - Cold start optimization
 
 ## Repository Structure
 
@@ -39,10 +145,6 @@ movie-graph/
 ├── infrastructure/        # AWS/Infrastructure code
 └── docs/                 # Documentation
 ```
-
-## System Overview
-
-The Movie Graph system is a graph-based movie and person relationship explorer, built with a microservices architecture. The system allows users to explore relationships between movies and people (actors, directors, etc.) through a graph-based API.
 
 ## Core Services
 
@@ -143,43 +245,6 @@ The Movie Graph system is a graph-based movie and person relationship explorer, 
    ```
    Client -> Frontend -> [Graph API + Metadata API] -> Frontend -> Client
    ```
-
-## Future Considerations
-
-1. **Caching Strategy**:
-   - Consider Redis for frequently accessed metadata
-   - Cache common graph traversal patterns
-   - Implement response caching at API gateway
-
-2. **Scaling**:
-   - Neptune read replicas for read scaling
-   - Metadata service horizontal scaling
-   - API gateway load balancing
-
-3. **Data Updates**:
-   - Batch update process for new IMDb data
-   - Real-time updates for user-generated content
-   - Consistency between graph and metadata
-
-4. **Monitoring & Observability**:
-   - Graph query performance metrics
-   - API response times
-   - Error rates and patterns
-   - Resource utilization
-
-## Security
-
-1. **API Security**:
-   - Rate limiting
-   - API key authentication
-   - Request validation
-   - Input sanitization
-
-2. **Data Security**:
-   - Neptune VPC configuration
-   - IAM roles and policies
-   - Encryption at rest
-   - Secure communication between services
 
 ## Open Questions
 

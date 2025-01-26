@@ -2,14 +2,21 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
-    "lib": ["ES2020"],
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "lib": ["es2020"],
+    "outDir": "dist",
+    "rootDir": "src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "types": [
+      "node",
+      "express",
+      "aws-lambda",
+      "gremlin"
+    ]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

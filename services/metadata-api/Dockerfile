@@ -1,58 +1,42 @@
 # Build stage
-FROM node:20-alpine as builder
+FROM node:20-alpine AS builder
 
+# Set working directory
 WORKDIR /app
 
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
 COPY services/metadata-api/package.json ./services/metadata-api/
 
-# Install pnpm
-RUN npm install -g pnpm
-
-# Install dependencies
-RUN pnpm install
+# Install pnpm and dependencies
+RUN npm install -g pnpm && \
+    pnpm install --frozen-lockfile
 
 # Copy source code
 COPY services/metadata-api ./services/metadata-api
 COPY shared ./shared
 
 # Build the application
-RUN cd services/metadata-api && pnpm build
-
-# Development stage
-FROM node:20-alpine as development
-
-WORKDIR /app
-
-# Copy package files and install dependencies
-COPY --from=builder /app/package.json /app/pnpm-lock.yaml ./
-COPY --from=builder /app/services/metadata-api/package.json ./services/metadata-api/
-RUN npm install -g pnpm && pnpm install
-
-# Copy source code
-COPY --from=builder /app/services/metadata-api ./services/metadata-api
-COPY --from=builder /app/shared ./shared
-
-# Install development dependencies
-RUN cd services/metadata-api && pnpm install
-
-# Start development server
-CMD ["pnpm", "--filter", "@movie-graph/metadata-api", "dev"]
+RUN pnpm --filter @movie-graph/metadata-api build
 
 # Production stage
-FROM node:20-alpine as production
+FROM node:20-alpine
 
+# Install Lambda Runtime Interface Client
+RUN npm install aws-lambda-ric
+
+# Set working directory
 WORKDIR /app
 
-# Copy package files and install production dependencies
-COPY --from=builder /app/package.json /app/pnpm-lock.yaml ./
-COPY --from=builder /app/services/metadata-api/package.json ./services/metadata-api/
-RUN npm install -g pnpm && pnpm install --prod
+# Copy built files and dependencies
+COPY --from=builder /app/services/metadata-api/dist ./dist
+COPY --from=builder /app/services/metadata-api/node_modules ./node_modules
+COPY --from=builder /app/node_modules ./node_modules
 
-# Copy built application
-COPY --from=builder /app/services/metadata-api/dist ./services/metadata-api/dist
-COPY --from=builder /app/shared ./shared
+# Set environment variables
+ENV NODE_ENV=production
+ENV AWS_LAMBDA_RUNTIME_API=3.2
 
-# Start production server
-CMD ["node", "services/metadata-api/dist/index.js"] 
+# Use Lambda Runtime Interface Client as entrypoint
+ENTRYPOINT ["/usr/local/bin/npx", "aws-lambda-ric"]
+CMD ["dist/index.handler"] 
