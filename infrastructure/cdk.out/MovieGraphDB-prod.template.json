@@ -1,0 +1,536 @@
+{
+ "Resources": {
+  "NeptuneSecurityGroup84C55613": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Security group for Neptune cluster",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": {
+       "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputFnGetAttVPCB9E5F0B4CidrBlock723DF8C0"
+      },
+      "Description": "Allow Gremlin access from VPC",
+      "FromPort": 8182,
+      "IpProtocol": "tcp",
+      "ToPort": 8182
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCB9E5F0B4BD23A326"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/NeptuneSecurityGroup/Resource"
+   }
+  },
+  "NeptuneS3Role8D81371E": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "rds.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "IAM role for Neptune S3 access"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/NeptuneS3Role/Resource"
+   }
+  },
+  "NeptuneS3RoleDefaultPolicy31B36339": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetObject",
+        "s3:ListBucket"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        "arn:aws:s3:::movie-graph-bin",
+        "arn:aws:s3:::movie-graph-bin/*"
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "NeptuneS3RoleDefaultPolicy31B36339",
+    "Roles": [
+     {
+      "Ref": "NeptuneS3Role8D81371E"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/NeptuneS3Role/DefaultPolicy/Resource"
+   }
+  },
+  "NeptuneSubnetGroup": {
+   "Type": "AWS::Neptune::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnet group for Neptune cluster",
+    "DBSubnetGroupName": "movie-graph-prod-neptune",
+    "SubnetIds": [
+     {
+      "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCIsolatedSubnet1SubnetEBD00FC6298E81EF"
+     },
+     {
+      "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCIsolatedSubnet2Subnet4B1C8CAAD8B83B81"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/NeptuneSubnetGroup"
+   }
+  },
+  "MovieGraphDB": {
+   "Type": "AWS::Neptune::DBCluster",
+   "Properties": {
+    "AssociatedRoles": [
+     {
+      "RoleArn": {
+       "Fn::GetAtt": [
+        "NeptuneS3Role8D81371E",
+        "Arn"
+       ]
+      }
+     }
+    ],
+    "DBClusterIdentifier": "movie-graph-prod",
+    "DBSubnetGroupName": {
+     "Ref": "NeptuneSubnetGroup"
+    },
+    "EngineVersion": "1.2.0.2",
+    "IamAuthEnabled": true,
+    "ServerlessScalingConfiguration": {
+     "MaxCapacity": 8,
+     "MinCapacity": 1
+    },
+    "VpcSecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "NeptuneSecurityGroup84C55613",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/MovieGraphDB"
+   }
+  },
+  "DatabaseSecurityGroup7319C0F6": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Security group for RDS instance",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": {
+       "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputFnGetAttVPCB9E5F0B4CidrBlock723DF8C0"
+      },
+      "Description": "Allow PostgreSQL access from VPC",
+      "FromPort": 5432,
+      "IpProtocol": "tcp",
+      "ToPort": 5432
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCB9E5F0B4BD23A326"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/DatabaseSecurityGroup/Resource"
+   }
+  },
+  "MetadataDBSubnetGroupE3C5E100": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnet group for MetadataDB database",
+    "SubnetIds": [
+     {
+      "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCIsolatedSubnet1SubnetEBD00FC6298E81EF"
+     },
+     {
+      "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCIsolatedSubnet2Subnet4B1C8CAAD8B83B81"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/MetadataDB/SubnetGroup/Default"
+   }
+  },
+  "MovieGraphDBprodMetadataDBSecretC031E76C3fdaad7efa858a3daf9490cf0a702aeb": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Generated by the CDK for stack: ",
+       {
+        "Ref": "AWS::StackName"
+       }
+      ]
+     ]
+    },
+    "GenerateSecretString": {
+     "ExcludeCharacters": " %+~`#$&*()|[]{}:;<>?!'/@\"\\",
+     "GenerateStringKey": "password",
+     "PasswordLength": 30,
+     "SecretStringTemplate": "{\"username\":\"postgres\"}"
+    },
+    "Name": "/prod/movie-graph/db/credentials"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/MetadataDB/Secret/Resource"
+   }
+  },
+  "MetadataDBSecretAttachment385A4A26": {
+   "Type": "AWS::SecretsManager::SecretTargetAttachment",
+   "Properties": {
+    "SecretId": {
+     "Ref": "MovieGraphDBprodMetadataDBSecretC031E76C3fdaad7efa858a3daf9490cf0a702aeb"
+    },
+    "TargetId": {
+     "Ref": "MetadataDB03FD9DCA"
+    },
+    "TargetType": "AWS::RDS::DBInstance"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/MetadataDB/Secret/Attachment/Resource"
+   }
+  },
+  "MetadataDB03FD9DCA": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "AllocatedStorage": "100",
+    "BackupRetentionPeriod": 7,
+    "CopyTagsToSnapshot": true,
+    "DBInstanceClass": "db.t4g.micro",
+    "DBName": "moviemetadata",
+    "DBSubnetGroupName": {
+     "Ref": "MetadataDBSubnetGroupE3C5E100"
+    },
+    "DeleteAutomatedBackups": false,
+    "DeletionProtection": true,
+    "Engine": "postgres",
+    "EngineVersion": "15",
+    "MasterUserPassword": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "MovieGraphDBprodMetadataDBSecretC031E76C3fdaad7efa858a3daf9490cf0a702aeb"
+       },
+       ":SecretString:password::}}"
+      ]
+     ]
+    },
+    "MasterUsername": "postgres",
+    "PubliclyAccessible": false,
+    "StorageType": "gp2",
+    "VPCSecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "DatabaseSecurityGroup7319C0F6",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/MetadataDB/Resource"
+   }
+  },
+  "NeptuneLoaderProxyServiceRole14990FAA": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/NeptuneLoaderProxy/ServiceRole/Resource"
+   }
+  },
+  "NeptuneLoaderProxyServiceRoleDefaultPolicyA4E8CCA8": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "neptune-db:*",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:neptune-db:us-west-2:688567301885:",
+          {
+           "Ref": "MovieGraphDB"
+          },
+          "/*"
+         ]
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "NeptuneLoaderProxyServiceRoleDefaultPolicyA4E8CCA8",
+    "Roles": [
+     {
+      "Ref": "NeptuneLoaderProxyServiceRole14990FAA"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/NeptuneLoaderProxy/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "NeptuneLoaderProxy89B19938": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-688567301885-us-west-2",
+     "S3Key": "d6335d6b3222b3d54b7ef40c8341e38d0567e195f8dd6b121b9e61ae9e086821.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "NEPTUNE_ENDPOINT": {
+       "Fn::GetAtt": [
+        "MovieGraphDB",
+        "Endpoint"
+       ]
+      }
+     }
+    },
+    "Handler": "index.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "NeptuneLoaderProxyServiceRole14990FAA",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Timeout": 30,
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "NeptuneSecurityGroup84C55613",
+        "GroupId"
+       ]
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCIsolatedSubnet1SubnetEBD00FC6298E81EF"
+      },
+      {
+       "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCIsolatedSubnet2Subnet4B1C8CAAD8B83B81"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "NeptuneLoaderProxyServiceRoleDefaultPolicyA4E8CCA8",
+    "NeptuneLoaderProxyServiceRole14990FAA"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/NeptuneLoaderProxy/Resource",
+    "aws:asset:path": "asset.d6335d6b3222b3d54b7ef40c8341e38d0567e195f8dd6b121b9e61ae9e086821",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "NeptuneLoaderProxyFunctionUrlFA8744B7": {
+   "Type": "AWS::Lambda::Url",
+   "Properties": {
+    "AuthType": "AWS_IAM",
+    "TargetFunctionArn": {
+     "Fn::GetAtt": [
+      "NeptuneLoaderProxy89B19938",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/NeptuneLoaderProxy/FunctionUrl/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/2WQzW7CMBCEn4W72TZpX4CAWvXUipQz2jhLMCQb5F0XIcvvXiUB1J/TjGc+29LkkGXPkM3wLHNbH+etqyCWivZo8CzbSDaHWJIN3unl1ffhZJY7/hUkI09QBHskLVDIOOwgrvuWBnLUj7519jIcJ5cM00kDE8TljldFGSomvb++KpZtECWfjK8F4goVKxR6Y1FkS+Yf/zO40SVZTzr1t5vJyJhKh4wN+fH/KzjJJ/qGdKGKdt8Rq7kDf5tkWuyqGiG+BLbqeh7Yu7+ZjW+HfOPbYactipAKLAZJZk3SB2/Hpd6DnoKasSkVG8fNOOAVSYb7muAgD195DlkGj7ODODf3gdV1BOtJvwF1bowu0AEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "NeptuneEndpoint": {
+   "Description": "Neptune Serverless cluster endpoint",
+   "Value": {
+    "Fn::GetAtt": [
+     "MovieGraphDB",
+     "Endpoint"
+    ]
+   }
+  },
+  "RdsEndpoint": {
+   "Description": "RDS instance endpoint",
+   "Value": {
+    "Fn::GetAtt": [
+     "MetadataDB03FD9DCA",
+     "Endpoint.Address"
+    ]
+   }
+  },
+  "DbSecretArn": {
+   "Description": "Database credentials secret ARN",
+   "Value": {
+    "Ref": "MetadataDBSecretAttachment385A4A26"
+   }
+  },
+  "LoaderEndpoint": {
+   "Description": "Neptune loader proxy endpoint",
+   "Value": {
+    "Fn::GetAtt": [
+     "NeptuneLoaderProxyFunctionUrlFA8744B7",
+     "FunctionUrl"
+    ]
+   }
+  },
+  "ExportsOutputFnGetAttMovieGraphDBEndpoint3FD79C33": {
+   "Value": {
+    "Fn::GetAtt": [
+     "MovieGraphDB",
+     "Endpoint"
+    ]
+   },
+   "Export": {
+    "Name": "MovieGraphDB-prod:ExportsOutputFnGetAttMovieGraphDBEndpoint3FD79C33"
+   }
+  },
+  "ExportsOutputRefMetadataDBSecretAttachment385A4A26DA23339E": {
+   "Value": {
+    "Ref": "MetadataDBSecretAttachment385A4A26"
+   },
+   "Export": {
+    "Name": "MovieGraphDB-prod:ExportsOutputRefMetadataDBSecretAttachment385A4A26DA23339E"
+   }
+  },
+  "ExportsOutputFnGetAttMetadataDB03FD9DCAEndpointAddress3C132751": {
+   "Value": {
+    "Fn::GetAtt": [
+     "MetadataDB03FD9DCA",
+     "Endpoint.Address"
+    ]
+   },
+   "Export": {
+    "Name": "MovieGraphDB-prod:ExportsOutputFnGetAttMetadataDB03FD9DCAEndpointAddress3C132751"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

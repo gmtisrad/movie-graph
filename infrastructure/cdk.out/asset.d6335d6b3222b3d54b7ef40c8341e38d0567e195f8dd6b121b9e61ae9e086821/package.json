@@ -1,0 +1,13 @@
+{
+  "name": "neptune-loader-proxy",
+  "version": "1.0.0",
+  "dependencies": {
+    "@aws-sdk/signature-v4": "^3.485.0",
+    "@aws-crypto/sha256-js": "^5.2.0",
+    "@aws-sdk/credential-provider-node": "^3.485.0",
+    "@aws-sdk/protocol-http": "^3.485.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5"
+  }
+} 

@@ -1,0 +1,34 @@
+{
+  "version": "35.0.0",
+  "files": {
+    "dd5711540f04e06aa955d7f4862fc04e8cdea464cb590dae91ed2976bb78098e": {
+      "source": {
+        "path": "asset.dd5711540f04e06aa955d7f4862fc04e8cdea464cb590dae91ed2976bb78098e",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "688567301885-us-west-2": {
+          "bucketName": "cdk-hnb659fds-assets-688567301885-us-west-2",
+          "objectKey": "dd5711540f04e06aa955d7f4862fc04e8cdea464cb590dae91ed2976bb78098e.zip",
+          "region": "us-west-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-file-publishing-role-688567301885-us-west-2"
+        }
+      }
+    },
+    "5b47fa765158173830577246fa8c745c0b3c3eca4396d3af9d7a8900966cb09e": {
+      "source": {
+        "path": "MovieGraphVPC-prod.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "688567301885-us-west-2": {
+          "bucketName": "cdk-hnb659fds-assets-688567301885-us-west-2",
+          "objectKey": "5b47fa765158173830577246fa8c745c0b3c3eca4396d3af9d7a8900966cb09e.json",
+          "region": "us-west-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-file-publishing-role-688567301885-us-west-2"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

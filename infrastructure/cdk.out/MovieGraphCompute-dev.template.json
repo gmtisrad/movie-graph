@@ -1,0 +1,386 @@
+{
+ "Resources": {
+  "Certificate4E7ABB08": {
+   "Type": "AWS::CertificateManager::Certificate",
+   "Properties": {
+    "DomainName": "movie-graph-dev.gabetimm.me",
+    "DomainValidationOptions": [
+     {
+      "DomainName": "movie-graph-dev.gabetimm.me",
+      "HostedZoneId": "Z0163319167XOPZDZTJN6"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MovieGraphCompute-dev/Certificate"
+     }
+    ],
+    "ValidationMethod": "DNS"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphCompute-dev/Certificate/Resource"
+   }
+  },
+  "NeptuneLoaderFunctionServiceRoleEC466C25": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphCompute-dev/NeptuneLoaderFunction/ServiceRole/Resource"
+   }
+  },
+  "NeptuneLoaderFunctionSecurityGroup96C9B469": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatic security group for Lambda Function MovieGraphComputedevNeptuneLoaderFunction1879206D",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "MovieGraphVPC-dev:ExportsOutputRefVPCB9E5F0B4BD23A326"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphCompute-dev/NeptuneLoaderFunction/SecurityGroup/Resource"
+   }
+  },
+  "NeptuneLoaderFunction36609461": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "ZipFile": {
+      "Fn::Join": [
+       "",
+       [
+        "\n        const AWS = require('aws-sdk');\n        const neptune = new AWS.Neptune();\n        \n        exports.handler = async (event) => {\n          const params = {\n            Source: 's3://movie-graph-bin',\n            Format: 'csv',\n            Region: 'us-west-2',\n            IamRoleArn: '",
+        {
+         "Fn::ImportValue": "MovieGraphDB-dev:ExportsOutputFnGetAttMovieGraphDBEndpoint3FD79C33"
+        },
+        "',\n            FailOnError: 'TRUE',\n            Parallelism: 'MEDIUM',\n          };\n          \n          try {\n            const response = await neptune.startLoaderJob({\n              ...params,\n              LoaderJobId: `load-${Date.now()}`,\n            }).promise();\n            \n            console.log('Started Neptune loader job:', response);\n            return response;\n          } catch (error) {\n            console.error('Error starting loader job:', error);\n            throw error;\n          }\n        }\n      "
+       ]
+      ]
+     }
+    },
+    "Environment": {
+     "Variables": {
+      "NEPTUNE_ENDPOINT": {
+       "Fn::ImportValue": "MovieGraphDB-dev:ExportsOutputFnGetAttMovieGraphDBEndpoint3FD79C33"
+      },
+      "RDS_SECRET_ARN": {
+       "Fn::ImportValue": "MovieGraphDB-dev:ExportsOutputRefMetadataDBSecretAttachment385A4A26DA23339E"
+      },
+      "RDS_ENDPOINT": {
+       "Fn::ImportValue": "MovieGraphDB-dev:ExportsOutputFnGetAttMetadataDB03FD9DCAEndpointAddress3C132751"
+      }
+     }
+    },
+    "Handler": "index.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "NeptuneLoaderFunctionServiceRoleEC466C25",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Timeout": 300,
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "NeptuneLoaderFunctionSecurityGroup96C9B469",
+        "GroupId"
+       ]
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Fn::ImportValue": "MovieGraphVPC-dev:ExportsOutputRefVPCPrivateSubnet1Subnet8BCA10E01F79A1B7"
+      },
+      {
+       "Fn::ImportValue": "MovieGraphVPC-dev:ExportsOutputRefVPCPrivateSubnet2SubnetCFCDAA7AB22CF85D"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "NeptuneLoaderFunctionServiceRoleEC466C25"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphCompute-dev/NeptuneLoaderFunction/Resource"
+   }
+  },
+  "MovieGraphApi6532AD29": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "Movie Graph API",
+    "EndpointConfiguration": {
+     "Types": [
+      "REGIONAL"
+     ]
+    },
+    "Name": "movie-graph-dev"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphCompute-dev/MovieGraphApi/Resource"
+   }
+  },
+  "MovieGraphApiDeployment2FC68C046017ca7503fe32ce5eed76a44975efac": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "Movie Graph API",
+    "RestApiId": {
+     "Ref": "MovieGraphApi6532AD29"
+    }
+   },
+   "DependsOn": [
+    "MovieGraphApiOPTIONS7B41449C"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphCompute-dev/MovieGraphApi/Deployment/Resource"
+   }
+  },
+  "MovieGraphApiDeploymentStagedevDA1016BB": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "DeploymentId": {
+     "Ref": "MovieGraphApiDeployment2FC68C046017ca7503fe32ce5eed76a44975efac"
+    },
+    "RestApiId": {
+     "Ref": "MovieGraphApi6532AD29"
+    },
+    "StageName": "dev",
+    "TracingEnabled": true
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphCompute-dev/MovieGraphApi/DeploymentStage.dev/Resource"
+   }
+  },
+  "MovieGraphApiCustomDomain113EE1F3": {
+   "Type": "AWS::ApiGateway::DomainName",
+   "Properties": {
+    "DomainName": "movie-graph-dev.gabetimm.me",
+    "EndpointConfiguration": {
+     "Types": [
+      "REGIONAL"
+     ]
+    },
+    "RegionalCertificateArn": {
+     "Ref": "Certificate4E7ABB08"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphCompute-dev/MovieGraphApi/CustomDomain/Resource"
+   }
+  },
+  "MovieGraphApiCustomDomainMapMovieGraphComputedevMovieGraphApi29E4B03439CD291D": {
+   "Type": "AWS::ApiGateway::BasePathMapping",
+   "Properties": {
+    "DomainName": {
+     "Ref": "MovieGraphApiCustomDomain113EE1F3"
+    },
+    "RestApiId": {
+     "Ref": "MovieGraphApi6532AD29"
+    },
+    "Stage": {
+     "Ref": "MovieGraphApiDeploymentStagedevDA1016BB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphCompute-dev/MovieGraphApi/CustomDomain/Map:--=>MovieGraphComputedevMovieGraphApi29E4B034/Resource"
+   }
+  },
+  "MovieGraphApiOPTIONS7B41449C": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE'",
+        "method.response.header.Access-Control-Max-Age": "'86400'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "MovieGraphApi6532AD29",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "MovieGraphApi6532AD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphCompute-dev/MovieGraphApi/Default/OPTIONS/Resource"
+   }
+  },
+  "ApiAliasRecordBCE933A3": {
+   "Type": "AWS::Route53::RecordSet",
+   "Properties": {
+    "AliasTarget": {
+     "DNSName": {
+      "Fn::GetAtt": [
+       "MovieGraphApiCustomDomain113EE1F3",
+       "RegionalDomainName"
+      ]
+     },
+     "HostedZoneId": {
+      "Fn::GetAtt": [
+       "MovieGraphApiCustomDomain113EE1F3",
+       "RegionalHostedZoneId"
+      ]
+     }
+    },
+    "HostedZoneId": "Z0163319167XOPZDZTJN6",
+    "Name": "movie-graph-dev.gabetimm.me.",
+    "Type": "A"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphCompute-dev/ApiAliasRecord/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/12QW07DMBBF19J/dyABFlBala8CShaAps40dRs/ZI+pKst7R05aEfiae888NTVU1TNUC7yEpezOy0HtIbWM8iwaCjZ6SQIv4StJ8qwOSiKTRoM9eUjrXybWBzOzWQyo9x1C2kYjWVlTCu46C4UaUmOHsa/ELEjWkFqS0Su+vnkbXcn9AVmgUz0yXfAKqaHAK6fGCTe5ITfYqybDhc5cy9iPuyaxsRqVeUc9spl7xUCfyMcdOqdMX7L/0f0thYsd8dF2pWxSWXgbmV6eIK0aktZ303lFtcQ5F/sR2UW+3T3OysLYjuAUHr7rGqoKHhenoNTSR8NKEzRT/AFt+yhNrQEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphCompute-dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "MovieGraphApiEndpoint6509C5CE": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "MovieGraphApi6532AD29"
+      },
+      ".execute-api.us-west-2.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "MovieGraphApiDeploymentStagedevDA1016BB"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "ApiUrl": {
+   "Description": "API Gateway endpoint URL",
+   "Value": "https://movie-graph-dev.gabetimm.me"
+  },
+  "LoaderFunctionName": {
+   "Description": "Neptune loader Lambda function name",
+   "Value": {
+    "Ref": "NeptuneLoaderFunction36609461"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

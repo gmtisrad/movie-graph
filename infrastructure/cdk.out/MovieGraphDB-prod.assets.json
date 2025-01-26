@@ -1,0 +1,34 @@
+{
+  "version": "35.0.0",
+  "files": {
+    "d6335d6b3222b3d54b7ef40c8341e38d0567e195f8dd6b121b9e61ae9e086821": {
+      "source": {
+        "path": "asset.d6335d6b3222b3d54b7ef40c8341e38d0567e195f8dd6b121b9e61ae9e086821",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "688567301885-us-west-2": {
+          "bucketName": "cdk-hnb659fds-assets-688567301885-us-west-2",
+          "objectKey": "d6335d6b3222b3d54b7ef40c8341e38d0567e195f8dd6b121b9e61ae9e086821.zip",
+          "region": "us-west-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-file-publishing-role-688567301885-us-west-2"
+        }
+      }
+    },
+    "8b1001a4789d213d0c1974fc440638b41e4a03d39586d21317427753ff908334": {
+      "source": {
+        "path": "MovieGraphDB-prod.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "688567301885-us-west-2": {
+          "bucketName": "cdk-hnb659fds-assets-688567301885-us-west-2",
+          "objectKey": "8b1001a4789d213d0c1974fc440638b41e4a03d39586d21317427753ff908334.json",
+          "region": "us-west-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-file-publishing-role-688567301885-us-west-2"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

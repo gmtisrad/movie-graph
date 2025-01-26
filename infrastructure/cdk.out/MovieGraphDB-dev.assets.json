@@ -1,0 +1,20 @@
+{
+  "version": "35.0.0",
+  "files": {
+    "b5fbba48ca146b526bfb7c7fa265e4db3d054d98d383fa3ae246a2a42b2e9551": {
+      "source": {
+        "path": "MovieGraphDB-dev.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "688567301885-us-west-2": {
+          "bucketName": "cdk-hnb659fds-assets-688567301885-us-west-2",
+          "objectKey": "b5fbba48ca146b526bfb7c7fa265e4db3d054d98d383fa3ae246a2a42b2e9551.json",
+          "region": "us-west-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-file-publishing-role-688567301885-us-west-2"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

@@ -8,6 +8,7 @@ import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as targets from 'aws-cdk-lib/aws-route53-targets';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as neptune from 'aws-cdk-lib/aws-neptune';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 
 interface ApiStackProps extends cdk.StackProps {
@@ -105,9 +106,89 @@ export class ApiStack extends cdk.Stack {
         minCapacity: 1.0, // Minimum NCUs
         maxCapacity: 8.0, // Maximum NCUs
       },
+      iamAuthEnabled: true, // Enable IAM authentication
     });
 
-    // ... rest of your stack (RDS, Neptune, Lambda functions, etc.)
+    // Create IAM role for Neptune loader
+    const loaderRole = new iam.Role(this, 'NeptuneLoaderRole', {
+      assumedBy: new iam.ServicePrincipal('rds.amazonaws.com'),
+      description: 'IAM role for Neptune bulk loader',
+    });
+
+    // Grant access to S3 bucket
+    loaderRole.addToPolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: [
+        's3:Get*',
+        's3:List*',
+      ],
+      resources: [
+        'arn:aws:s3:::movie-graph-bin',
+        'arn:aws:s3:::movie-graph-bin/*',
+      ],
+    }));
+
+    // Create Neptune loader function
+    const loaderFunction = new lambda.Function(this, 'NeptuneLoaderFunction', {
+      runtime: lambda.Runtime.NODEJS_18_X,
+      handler: 'index.handler',
+      code: lambda.Code.fromInline(`
+        const AWS = require('aws-sdk');
+        const neptune = new AWS.Neptune();
+        
+        exports.handler = async (event) => {
+          const params = {
+            Source: 's3://movie-graph-bin',
+            Format: 'csv',
+            Region: '${this.region}',
+            IamRoleArn: '${loaderRole.roleArn}',
+            FailOnError: 'TRUE',
+            Parallelism: 'MEDIUM',
+          };
+          
+          try {
+            const response = await neptune.startLoaderJob({
+              ...params,
+              LoaderJobId: \`load-\${Date.now()}\`,
+            }).promise();
+            
+            console.log('Started Neptune loader job:', response);
+            return response;
+          } catch (error) {
+            console.error('Error starting loader job:', error);
+            throw error;
+          }
+        }
+      `),
+      environment: {
+        NEPTUNE_ENDPOINT: neptuneCluster.attrEndpoint,
+      },
+      timeout: cdk.Duration.minutes(5),
+      vpc,
+      vpcSubnets: {
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      },
+    });
+
+    // Grant loader function permissions to start loader jobs
+    loaderFunction.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: [
+        'neptune-db:*',
+        'neptune:StartLoaderJob',
+        'neptune:GetLoaderJobStatus',
+      ],
+      resources: [
+        `arn:aws:neptune-db:${this.region}:${this.account}:${neptuneCluster.ref}/*`,
+        `arn:aws:neptune:${this.region}:${this.account}:*`,
+      ],
+    }));
+
+    // Add loader function URL to outputs
+    new cdk.CfnOutput(this, 'LoaderFunctionName', {
+      value: loaderFunction.functionName,
+      description: 'Neptune loader Lambda function name',
+    });
 
     // Outputs
     new cdk.CfnOutput(this, 'ApiUrl', {

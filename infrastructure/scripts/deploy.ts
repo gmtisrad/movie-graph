@@ -124,9 +124,12 @@ async function deploy() {
     console.log(chalk.blue('\nStarting deployment...'));
 
     // Run CDK deploy
-    execSync('pnpm run cdk deploy --all', {
+    execSync('pnpm cdk deploy --all', {
       stdio: 'inherit',
-      env: process.env
+      env: {
+        ...process.env,
+        JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION: '1'
+      }
     });
 
     console.log(chalk.green('\nDeployment completed successfully!'));

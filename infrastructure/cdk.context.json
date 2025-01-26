@@ -1,0 +1,12 @@
+{
+  "availability-zones:account=688567301885:region=us-west-2": [
+    "us-west-2a",
+    "us-west-2b",
+    "us-west-2c",
+    "us-west-2d"
+  ],
+  "hosted-zone:account=688567301885:domainName=gabetimm.me:region=us-west-2": {
+    "Id": "/hostedzone/Z0163319167XOPZDZTJN6",
+    "Name": "gabetimm.me."
+  }
+}
