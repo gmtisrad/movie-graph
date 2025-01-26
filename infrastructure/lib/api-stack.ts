@@ -7,6 +7,7 @@ import * as apigatewayIntegrations from '@aws-cdk/aws-apigatewayv2-integrations-
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as targets from 'aws-cdk-lib/aws-route53-targets';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
+import * as neptune from 'aws-cdk-lib/aws-neptune';
 import { Construct } from 'constructs';
 
 interface ApiStackProps extends cdk.StackProps {
@@ -44,9 +45,14 @@ export class ApiStack extends cdk.Stack {
       domainName: 'gabetimm.me',
     });
 
+    // Generate stage-specific subdomain
+    const subdomain = props.stage === 'prod' 
+      ? 'movie-graph.gabetimm.me'
+      : `movie-graph-${props.stage}.gabetimm.me`;
+
     // Create ACM certificate for the subdomain
     const certificate = new acm.Certificate(this, 'Certificate', {
-      domainName: 'movie-graph.gabetimm.me',
+      domainName: subdomain,
       validation: acm.CertificateValidation.fromDns(hostedZone),
     });
 
@@ -69,7 +75,7 @@ export class ApiStack extends cdk.Stack {
 
     // Configure custom domain
     const domain = new apigateway.DomainName(this, 'CustomDomain', {
-      domainName: 'movie-graph.gabetimm.me',
+      domainName: subdomain,
       certificate: certificate,
     });
 
@@ -83,19 +89,36 @@ export class ApiStack extends cdk.Stack {
     // Create Route 53 alias record
     new route53.ARecord(this, 'ApiAliasRecord', {
       zone: hostedZone,
-      recordName: 'movie-graph',
+      recordName: props.stage === 'prod' ? 'movie-graph' : `movie-graph-${props.stage}`,
       target: route53.RecordTarget.fromAlias(new targets.ApiGatewayv2DomainProperties(
         domain.regionalDomainName,
         domain.regionalHostedZoneId
       )),
     });
 
+    // Create Neptune Serverless Cluster
+    const neptuneCluster = new neptune.CfnDBCluster(this, 'MovieGraphDB', {
+      engineVersion: '2.3.1',
+      dbClusterIdentifier: `movie-graph-${props.stage}`,
+      vpcSecurityGroupIds: [vpc.vpcDefaultSecurityGroup],
+      serverlessScalingConfiguration: {
+        minCapacity: 1.0, // Minimum NCUs
+        maxCapacity: 8.0, // Maximum NCUs
+      },
+    });
+
     // ... rest of your stack (RDS, Neptune, Lambda functions, etc.)
 
     // Outputs
     new cdk.CfnOutput(this, 'ApiUrl', {
-      value: `https://movie-graph.gabetimm.me`,
+      value: `https://${subdomain}`,
       description: 'API Gateway endpoint URL',
+    });
+
+    // Add Neptune endpoint to outputs
+    new cdk.CfnOutput(this, 'NeptuneEndpoint', {
+      value: neptuneCluster.attrEndpoint,
+      description: 'Neptune Serverless cluster endpoint',
     });
   }
 } 
