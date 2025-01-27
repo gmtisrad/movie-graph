@@ -75,6 +75,8 @@ export class DatabaseStack extends cdk.Stack {
         maxCapacity: 8.0,
       },
       iamAuthEnabled: true,
+      availabilityZones: props.vpc.availabilityZones.slice(0, 2),
+      preferredMaintenanceWindow: 'sun:04:00-sun:05:00',
     });
 
     // Create RDS Instance for metadata
@@ -114,6 +116,21 @@ export class DatabaseStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'NeptuneEndpoint', {
       value: this.neptuneCluster.attrEndpoint,
       description: 'Neptune Serverless cluster endpoint',
+    });
+
+    new cdk.CfnOutput(this, 'NeptuneClusterId', {
+      value: this.neptuneCluster.ref,
+      description: 'Neptune cluster ID',
+    });
+
+    new cdk.CfnOutput(this, 'NeptuneSecurityGroupId', {
+      value: neptuneSecurityGroup.securityGroupId,
+      description: 'Neptune security group ID',
+    });
+
+    new cdk.CfnOutput(this, 'NeptuneSubnetGroupName', {
+      value: this.neptuneCluster.dbSubnetGroupName || '',
+      description: 'Neptune subnet group name',
     });
 
     new cdk.CfnOutput(this, 'RdsEndpoint', {
@@ -179,6 +196,13 @@ export class DatabaseStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'EICEndpointId', {
       value: eicEndpoint.attrId,
       description: 'EC2 Instance Connect Endpoint ID',
+    });
+
+    // Create Neptune instance
+    new neptune.CfnDBInstance(this, 'NeptuneInstance', {
+      dbInstanceClass: 'db.serverless',
+      dbClusterIdentifier: this.neptuneCluster.ref,
+      availabilityZone: props.vpc.availabilityZones[0],
     });
   }
 } 

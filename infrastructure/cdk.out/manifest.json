@@ -300,7 +300,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-deploy-role-688567301885-us-west-2",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-cfn-exec-role-688567301885-us-west-2",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-688567301885-us-west-2/f977670056cb37c52290a761e458d64fa69f42e9c9dc8ef88a5edd897cf0f6d8.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-688567301885-us-west-2/a2dcf9352b22ef928e034d24594cd01711c05a0c7ec8308b90c9560c82bae09f.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -383,6 +383,24 @@
             "data": "NeptuneEndpoint"
           }
         ],
+        "/MovieGraphDB-prod/NeptuneClusterId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NeptuneClusterId"
+          }
+        ],
+        "/MovieGraphDB-prod/NeptuneSecurityGroupId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NeptuneSecurityGroupId"
+          }
+        ],
+        "/MovieGraphDB-prod/NeptuneSubnetGroupName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NeptuneSubnetGroupName"
+          }
+        ],
         "/MovieGraphDB-prod/RdsEndpoint": [
           {
             "type": "aws:cdk:logicalId",
@@ -441,6 +459,12 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "EICEndpointId"
+          }
+        ],
+        "/MovieGraphDB-prod/NeptuneInstance": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NeptuneInstance"
           }
         ],
         "/MovieGraphDB-prod/CDKMetadata/Default": [

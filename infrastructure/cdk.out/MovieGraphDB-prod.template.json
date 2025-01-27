@@ -106,12 +106,17 @@
   "MovieGraphDB": {
    "Type": "AWS::Neptune::DBCluster",
    "Properties": {
+    "AvailabilityZones": [
+     "us-west-2a",
+     "us-west-2b"
+    ],
     "DBClusterIdentifier": "movie-graph-prod",
     "DBSubnetGroupName": {
      "Ref": "NeptuneSubnetGroup"
     },
     "EngineVersion": "1.2.0.2",
     "IamAuthEnabled": true,
+    "PreferredMaintenanceWindow": "sun:04:00-sun:05:00",
     "ServerlessScalingConfiguration": {
      "MaxCapacity": 8,
      "MinCapacity": 1
@@ -417,10 +422,23 @@
     "aws:cdk:path": "MovieGraphDB-prod/NeptuneManager/Resource"
    }
   },
+  "NeptuneInstance": {
+   "Type": "AWS::Neptune::DBInstance",
+   "Properties": {
+    "AvailabilityZone": "us-west-2a",
+    "DBClusterIdentifier": {
+     "Ref": "MovieGraphDB"
+    },
+    "DBInstanceClass": "db.serverless"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-prod/NeptuneInstance"
+   }
+  },
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/2WQwW6DMBBEvyV34xbaHyhQVT0VQe/VYpbUAdbIXjeKkP+9CgSKmtPYM0+zaycyjp9lfICzi1TTRb2u5VQxqE7A2X1NqBI5Vai81Xx5s8aPImvpzngnx0AKM0OEil+pGY0mFqu/Z4JwTzL1qkNOwaEgHNkTyilrKU8rXxPyVpynWe8dow3CNk5OOTDU4HArvuP3xkpXqCzyku/WmF03AMER7Tz/Bi7yCfaI/MIM6ntAYrEB/5MgNAxyKk0/v3TWwvRaXa7Xv9M6u7Cm1T2GcDU/PI+eRYnOeLt8VQEWBmS0c9stCIJMg/LkHn6SRMaxfDycnNaR9cR6QFku+gvYMFTG0gEAAA=="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/2WQ0W6DMAxFv6XvIRtsPzBgmvY0VPY+ucHtUsBBsbOqivj3qVDaqn268fHNdeJMp+mrTldw4MQ0bdLZjY61gGkVHPgnosl0rNEEb+X44V0YVLGlB/BJLEAGC0eERt6pGZwlUQu/9YyKX3QeTIuSA6MiHCQQ6lhsqczrsCGUS3CZF11gQT8X1wzfsI4lCGyA8TLm4fYtWNw1Go9yH8gT5R4Iduin15yNs3yD36G8iYD57ZFEXQz3nVFZ6HVcu27696SV66w5nsrraZldebe1HY7jCX4FGYKoNbILfl5cBR56PO9gaYyKXIN6z09/WabTVD+v9mxt4gOJ7VGvZ/0Ha+SRKeABAAA="
    },
    "Metadata": {
     "aws:cdk:path": "MovieGraphDB-prod/CDKMetadata/Default"
@@ -435,6 +453,27 @@
      "MovieGraphDB",
      "Endpoint"
     ]
+   }
+  },
+  "NeptuneClusterId": {
+   "Description": "Neptune cluster ID",
+   "Value": {
+    "Ref": "MovieGraphDB"
+   }
+  },
+  "NeptuneSecurityGroupId": {
+   "Description": "Neptune security group ID",
+   "Value": {
+    "Fn::GetAtt": [
+     "NeptuneSecurityGroup84C55613",
+     "GroupId"
+    ]
+   }
+  },
+  "NeptuneSubnetGroupName": {
+   "Description": "Neptune subnet group name",
+   "Value": {
+    "Ref": "NeptuneSubnetGroup"
    }
   },
   "RdsEndpoint": {

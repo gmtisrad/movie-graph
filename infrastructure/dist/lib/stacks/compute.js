@@ -58,49 +58,6 @@ class ComputeStack extends cdk.Stack {
             domainName: subdomain,
             validation: acm.CertificateValidation.fromDns(hostedZone),
         });
-        // Create Neptune loader function
-        const loaderFunction = new lambda.Function(this, 'NeptuneLoaderFunction', {
-            runtime: lambda.Runtime.NODEJS_18_X,
-            handler: 'index.handler',
-            code: lambda.Code.fromInline(`
-        const AWS = require('aws-sdk');
-        const neptune = new AWS.Neptune();
-        
-        exports.handler = async (event) => {
-          const params = {
-            Source: 's3://movie-graph-bin',
-            Format: 'csv',
-            Region: '${this.region}',
-            IamRoleArn: '${props.neptuneCluster.attrEndpoint}',
-            FailOnError: 'TRUE',
-            Parallelism: 'MEDIUM',
-          };
-          
-          try {
-            const response = await neptune.startLoaderJob({
-              ...params,
-              LoaderJobId: \`load-\${Date.now()}\`,
-            }).promise();
-            
-            console.log('Started Neptune loader job:', response);
-            return response;
-          } catch (error) {
-            console.error('Error starting loader job:', error);
-            throw error;
-          }
-        }
-      `),
-            environment: {
-                NEPTUNE_ENDPOINT: props.neptuneCluster.attrEndpoint,
-                RDS_SECRET_ARN: ((_a = props.rdsInstance.secret) === null || _a === void 0 ? void 0 : _a.secretArn) || '',
-                RDS_ENDPOINT: props.rdsInstance.instanceEndpoint.hostname,
-            },
-            timeout: cdk.Duration.minutes(5),
-            vpc: props.vpc,
-            vpcSubnets: {
-                subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
-            },
-        });
         // Create API Gateway REST API
         const api = new apigw.RestApi(this, 'MovieGraphApi', {
             restApiName: `movie-graph-${props.stage}`,

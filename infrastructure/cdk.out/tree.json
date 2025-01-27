@@ -1128,12 +1128,17 @@
             "attributes": {
               "aws:cdk:cloudformation:type": "AWS::Neptune::DBCluster",
               "aws:cdk:cloudformation:props": {
+                "availabilityZones": [
+                  "us-west-2a",
+                  "us-west-2b"
+                ],
                 "dbClusterIdentifier": "movie-graph-prod",
                 "dbSubnetGroupName": {
                   "Ref": "NeptuneSubnetGroup"
                 },
                 "engineVersion": "1.2.0.2",
                 "iamAuthEnabled": true,
+                "preferredMaintenanceWindow": "sun:04:00-sun:05:00",
                 "serverlessScalingConfiguration": {
                   "minCapacity": 1,
                   "maxCapacity": 8
@@ -1362,6 +1367,30 @@
           "NeptuneEndpoint": {
             "id": "NeptuneEndpoint",
             "path": "MovieGraphDB-prod/NeptuneEndpoint",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.114.1"
+            }
+          },
+          "NeptuneClusterId": {
+            "id": "NeptuneClusterId",
+            "path": "MovieGraphDB-prod/NeptuneClusterId",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.114.1"
+            }
+          },
+          "NeptuneSecurityGroupId": {
+            "id": "NeptuneSecurityGroupId",
+            "path": "MovieGraphDB-prod/NeptuneSecurityGroupId",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.114.1"
+            }
+          },
+          "NeptuneSubnetGroupName": {
+            "id": "NeptuneSubnetGroupName",
+            "path": "MovieGraphDB-prod/NeptuneSubnetGroupName",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -1622,6 +1651,24 @@
             "path": "MovieGraphDB-prod/EICEndpointId",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.114.1"
+            }
+          },
+          "NeptuneInstance": {
+            "id": "NeptuneInstance",
+            "path": "MovieGraphDB-prod/NeptuneInstance",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::Neptune::DBInstance",
+              "aws:cdk:cloudformation:props": {
+                "availabilityZone": "us-west-2a",
+                "dbClusterIdentifier": {
+                  "Ref": "MovieGraphDB"
+                },
+                "dbInstanceClass": "db.serverless"
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_neptune.CfnDBInstance",
               "version": "2.114.1"
             }
           },
