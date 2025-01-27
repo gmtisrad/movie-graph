@@ -20,6 +20,7 @@ program
   .option('-r, --region <region>', 'AWS region')
   .option('-y, --yes', 'Skip confirmation prompts')
   .option('--destroy', 'Destroy the infrastructure instead of deploying')
+  .option('--force', 'Force destruction without waiting for deletions')
   .parse(process.argv);
 
 const opts = program.opts();
@@ -146,8 +147,8 @@ async function deploy() {
 
       console.log(chalk.red('\nStarting destruction...'));
 
-      // Run CDK destroy
-      execSync(`pnpm cdk destroy MovieGraphCompute-${options.stage} MovieGraphDB-${options.stage} MovieGraphVPC-${options.stage}`, {
+      // Run CDK destroy with force flag if specified
+      execSync(`pnpm cdk destroy ${opts.force ? '--force' : ''} MovieGraphCompute-${options.stage} MovieGraphDB-${options.stage} MovieGraphVPC-${options.stage}`, {
         stdio: 'inherit',
         env: {
           ...process.env,

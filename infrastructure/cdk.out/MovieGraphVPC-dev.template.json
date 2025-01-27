@@ -706,22 +706,6 @@
    "Export": {
     "Name": "MovieGraphVPC-dev:ExportsOutputFnGetAttVPCB9E5F0B4CidrBlock723DF8C0"
    }
-  },
-  "ExportsOutputRefVPCPrivateSubnet1Subnet8BCA10E01F79A1B7": {
-   "Value": {
-    "Ref": "VPCPrivateSubnet1Subnet8BCA10E0"
-   },
-   "Export": {
-    "Name": "MovieGraphVPC-dev:ExportsOutputRefVPCPrivateSubnet1Subnet8BCA10E01F79A1B7"
-   }
-  },
-  "ExportsOutputRefVPCPrivateSubnet2SubnetCFCDAA7AB22CF85D": {
-   "Value": {
-    "Ref": "VPCPrivateSubnet2SubnetCFCDAA7A"
-   },
-   "Export": {
-    "Name": "MovieGraphVPC-dev:ExportsOutputRefVPCPrivateSubnet2SubnetCFCDAA7AB22CF85D"
-   }
   }
  },
  "Parameters": {

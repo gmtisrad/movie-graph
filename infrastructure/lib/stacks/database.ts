@@ -77,7 +77,11 @@ export class DatabaseStack extends cdk.Stack {
       iamAuthEnabled: true,
       availabilityZones: props.vpc.availabilityZones.slice(0, 2),
       preferredMaintenanceWindow: 'sun:04:00-sun:05:00',
+      deletionProtection: false,
     });
+
+    // Add removal policy
+    this.neptuneCluster.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY);
 
     // Create RDS Instance for metadata
     const dbSecurityGroup = new ec2.SecurityGroup(this, 'DatabaseSecurityGroup', {
@@ -106,9 +110,9 @@ export class DatabaseStack extends cdk.Stack {
       credentials: rds.Credentials.fromGeneratedSecret('postgres', {
         secretName: `/${props.stage}/movie-graph/db/credentials`,
       }),
-      backupRetention: cdk.Duration.days(props.stage === 'prod' ? 7 : 1),
-      deleteAutomatedBackups: props.stage !== 'prod',
-      removalPolicy: props.stage === 'prod' ? cdk.RemovalPolicy.RETAIN : cdk.RemovalPolicy.DESTROY,
+      backupRetention: cdk.Duration.days(1),
+      deleteAutomatedBackups: true,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
       deletionProtection: false,
     });
 
@@ -158,9 +162,44 @@ export class DatabaseStack extends cdk.Stack {
       description: 'Role for Neptune manager EC2 instance',
       managedPolicies: [
         iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'),
-        iam.ManagedPolicy.fromAwsManagedPolicyName('NeptuneFullAccess'),
       ],
     });
+
+    // Add Neptune access policy
+    managerRole.addToPolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: [
+        'neptune-db:*'
+      ],
+      resources: [`arn:aws:neptune-db:${cdk.Stack.of(this).region}:${cdk.Stack.of(this).account}:${this.neptuneCluster.ref}/*`],
+    }));
+
+    // Add S3 access policy
+    managerRole.addToPolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: [
+        's3:GetObject',
+        's3:ListBucket'
+      ],
+      resources: [
+        'arn:aws:s3:::movie-graph-bin',
+        'arn:aws:s3:::movie-graph-bin/*'
+      ],
+    }));
+
+    // Add IAM auth policy
+    managerRole.addToPolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: [
+        'neptune-db:connect',
+        'neptune-db:GetEngineStatus',
+        'neptune-db:GetStreamRecords',
+        'neptune-db:ListStreams',
+        'neptune-db:GetStatisticsStatus',
+        'neptune-db:GetGraphSummary'
+      ],
+      resources: [`arn:aws:neptune-db:${cdk.Stack.of(this).region}:${cdk.Stack.of(this).account}:${this.neptuneCluster.ref}/*`],
+    }));
 
     // Grant access to S3 bucket
     dataBucket.grantRead(managerRole);
@@ -199,10 +238,16 @@ export class DatabaseStack extends cdk.Stack {
     });
 
     // Create Neptune instance
-    new neptune.CfnDBInstance(this, 'NeptuneInstance', {
+    const neptuneInstance = new neptune.CfnDBInstance(this, 'NeptuneInstance', {
       dbInstanceClass: 'db.serverless',
       dbClusterIdentifier: this.neptuneCluster.ref,
       availabilityZone: props.vpc.availabilityZones[0],
     });
+
+    // Add removal policy to instance
+    neptuneInstance.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY);
+
+    // Ensure instance is deleted before cluster
+    this.neptuneCluster.addDependency(neptuneInstance);
   }
 } 

@@ -22,136 +22,6 @@
     "aws:cdk:path": "MovieGraphCompute-prod/Certificate/Resource"
    }
   },
-  "NeptuneLoaderFunctionServiceRoleEC466C25": {
-   "Type": "AWS::IAM::Role",
-   "Properties": {
-    "AssumeRolePolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sts:AssumeRole",
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "lambda.amazonaws.com"
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "ManagedPolicyArns": [
-     {
-      "Fn::Join": [
-       "",
-       [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-       ]
-      ]
-     },
-     {
-      "Fn::Join": [
-       "",
-       [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-       ]
-      ]
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-prod/NeptuneLoaderFunction/ServiceRole/Resource"
-   }
-  },
-  "NeptuneLoaderFunctionSecurityGroup96C9B469": {
-   "Type": "AWS::EC2::SecurityGroup",
-   "Properties": {
-    "GroupDescription": "Automatic security group for Lambda Function MovieGraphComputeprodNeptuneLoaderFunction8751471C",
-    "SecurityGroupEgress": [
-     {
-      "CidrIp": "0.0.0.0/0",
-      "Description": "Allow all outbound traffic by default",
-      "IpProtocol": "-1"
-     }
-    ],
-    "VpcId": {
-     "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCB9E5F0B4BD23A326"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-prod/NeptuneLoaderFunction/SecurityGroup/Resource"
-   }
-  },
-  "NeptuneLoaderFunction36609461": {
-   "Type": "AWS::Lambda::Function",
-   "Properties": {
-    "Code": {
-     "ZipFile": {
-      "Fn::Join": [
-       "",
-       [
-        "\n        const AWS = require('aws-sdk');\n        const neptune = new AWS.Neptune();\n        \n        exports.handler = async (event) => {\n          const params = {\n            Source: 's3://movie-graph-bin',\n            Format: 'csv',\n            Region: 'us-west-2',\n            IamRoleArn: '",
-        {
-         "Fn::ImportValue": "MovieGraphDB-prod:ExportsOutputFnGetAttMovieGraphDBEndpoint3FD79C33"
-        },
-        "',\n            FailOnError: 'TRUE',\n            Parallelism: 'MEDIUM',\n          };\n          \n          try {\n            const response = await neptune.startLoaderJob({\n              ...params,\n              LoaderJobId: `load-${Date.now()}`,\n            }).promise();\n            \n            console.log('Started Neptune loader job:', response);\n            return response;\n          } catch (error) {\n            console.error('Error starting loader job:', error);\n            throw error;\n          }\n        }\n      "
-       ]
-      ]
-     }
-    },
-    "Environment": {
-     "Variables": {
-      "NEPTUNE_ENDPOINT": {
-       "Fn::ImportValue": "MovieGraphDB-prod:ExportsOutputFnGetAttMovieGraphDBEndpoint3FD79C33"
-      },
-      "RDS_SECRET_ARN": {
-       "Fn::ImportValue": "MovieGraphDB-prod:ExportsOutputRefMetadataDBSecretAttachment385A4A26DA23339E"
-      },
-      "RDS_ENDPOINT": {
-       "Fn::ImportValue": "MovieGraphDB-prod:ExportsOutputFnGetAttMetadataDB03FD9DCAEndpointAddress3C132751"
-      }
-     }
-    },
-    "Handler": "index.handler",
-    "Role": {
-     "Fn::GetAtt": [
-      "NeptuneLoaderFunctionServiceRoleEC466C25",
-      "Arn"
-     ]
-    },
-    "Runtime": "nodejs18.x",
-    "Timeout": 300,
-    "VpcConfig": {
-     "SecurityGroupIds": [
-      {
-       "Fn::GetAtt": [
-        "NeptuneLoaderFunctionSecurityGroup96C9B469",
-        "GroupId"
-       ]
-      }
-     ],
-     "SubnetIds": [
-      {
-       "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCPrivateSubnet1Subnet8BCA10E01F79A1B7"
-      },
-      {
-       "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCPrivateSubnet2SubnetCFCDAA7AB22CF85D"
-      }
-     ]
-    }
-   },
-   "DependsOn": [
-    "NeptuneLoaderFunctionServiceRoleEC466C25"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-prod/NeptuneLoaderFunction/Resource"
-   }
-  },
   "MovieGraphApi6532AD29": {
    "Type": "AWS::ApiGateway::RestApi",
    "Properties": {
@@ -308,7 +178,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/12QW07DMBBF19J/dyABFlBala8CShaAps40dRs/ZI+pKst7R05aEfiae888NTVU1TNUC7yEpezOy0HtIbWM8iwaCjZ6SQIv4StJ8qwOSiKTRoM9eUjrXybWBzOzWQyo9x1C2kYjWVlTCu46C4UaUmOHsa/ELEjWkFqS0Su+vnkbXcn9AVmgUz0yXfAKqaHAK6fGCTe5ITfYqybDhc5cy9iPuyaxsRqVeUc9spl7xUCfyMcdOqdMX7L/0f0thYsd8dF2pWxSWXgbmV6eIK0aktZ303lFtcQ5F/sR2UW+3T3OysLYjuAUHr7rGqoKHhenoNTSR8NKEzRT/AFt+yhNrQEAAA=="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/12PXU7DMBCEz9J3Z8EBDlDa1wJKDoAWZ5u6rX9kr4kqy3dHTqiIeNqZb0er2RakfAa5wSk2arg0V/0FuWdUF9FRdCkoEjjFz6wosD5qhUwGLY4UIO/+mNgd7coWgV6PyDThDXJHkbde18xd7slf3c2Q5UpXrmcc52uL2DuD2r6hmdnKvWKkD+TTAb3Xdqzb/+j+QOXiQHxyQ40tqojgEtPLE+RtR8qFYalXVU9cSrXviX3i397zrSKsGwjO8eG7bUFKeNyco9ZNSJa1IeiW+QM2xpH5VwEAAA=="
    },
    "Metadata": {
     "aws:cdk:path": "MovieGraphCompute-prod/CDKMetadata/Default"
