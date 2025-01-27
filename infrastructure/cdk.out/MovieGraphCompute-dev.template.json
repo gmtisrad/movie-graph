@@ -341,12 +341,6 @@
   "ApiUrl": {
    "Description": "API Gateway endpoint URL",
    "Value": "https://movie-graph-dev.gabetimm.me"
-  },
-  "LoaderFunctionName": {
-   "Description": "Neptune loader Lambda function name",
-   "Value": {
-    "Ref": "NeptuneLoaderFunction36609461"
-   }
   }
  },
  "Parameters": {

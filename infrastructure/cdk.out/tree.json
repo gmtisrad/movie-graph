@@ -881,14 +881,6 @@
             "id": "Exports",
             "path": "MovieGraphVPC-prod/Exports",
             "children": {
-              "Output{\"Fn::GetAtt\":[\"VPCB9E5F0B4\",\"CidrBlock\"]}": {
-                "id": "Output{\"Fn::GetAtt\":[\"VPCB9E5F0B4\",\"CidrBlock\"]}",
-                "path": "MovieGraphVPC-prod/Exports/Output{\"Fn::GetAtt\":[\"VPCB9E5F0B4\",\"CidrBlock\"]}",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.CfnOutput",
-                  "version": "2.114.1"
-                }
-              },
               "Output{\"Ref\":\"VPCB9E5F0B4\"}": {
                 "id": "Output{\"Ref\":\"VPCB9E5F0B4\"}",
                 "path": "MovieGraphVPC-prod/Exports/Output{\"Ref\":\"VPCB9E5F0B4\"}",
@@ -908,6 +900,14 @@
               "Output{\"Ref\":\"VPCIsolatedSubnet2Subnet4B1C8CAA\"}": {
                 "id": "Output{\"Ref\":\"VPCIsolatedSubnet2Subnet4B1C8CAA\"}",
                 "path": "MovieGraphVPC-prod/Exports/Output{\"Ref\":\"VPCIsolatedSubnet2Subnet4B1C8CAA\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.114.1"
+                }
+              },
+              "Output{\"Fn::GetAtt\":[\"VPCB9E5F0B4\",\"CidrBlock\"]}": {
+                "id": "Output{\"Fn::GetAtt\":[\"VPCB9E5F0B4\",\"CidrBlock\"]}",
+                "path": "MovieGraphVPC-prod/Exports/Output{\"Fn::GetAtt\":[\"VPCB9E5F0B4\",\"CidrBlock\"]}",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.114.1"
@@ -981,13 +981,98 @@
                     ],
                     "securityGroupIngress": [
                       {
-                        "cidrIp": {
-                          "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputFnGetAttVPCB9E5F0B4CidrBlock723DF8C0"
+                        "sourceSecurityGroupId": {
+                          "Fn::GetAtt": [
+                            "NeptuneManagerSecurityGroup8FB518DC",
+                            "GroupId"
+                          ]
                         },
                         "ipProtocol": "tcp",
                         "fromPort": 8182,
                         "toPort": 8182,
-                        "description": "Allow Gremlin access from VPC"
+                        "description": "Allow Neptune access from EC2 instance"
+                      }
+                    ],
+                    "vpcId": {
+                      "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCB9E5F0B4BD23A326"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                  "version": "2.114.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+              "version": "2.114.1"
+            }
+          },
+          "NeptuneManagerSecurityGroup": {
+            "id": "NeptuneManagerSecurityGroup",
+            "path": "MovieGraphDB-prod/NeptuneManagerSecurityGroup",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "MovieGraphDB-prod/NeptuneManagerSecurityGroup/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "groupDescription": "Security group for Neptune manager EC2 instance",
+                    "securityGroupEgress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "description": "Allow all outbound traffic by default",
+                        "ipProtocol": "-1"
+                      }
+                    ],
+                    "securityGroupIngress": [
+                      {
+                        "sourceSecurityGroupId": {
+                          "Fn::GetAtt": [
+                            "EICSecurityGroup9AD6BA19",
+                            "GroupId"
+                          ]
+                        },
+                        "ipProtocol": "tcp",
+                        "fromPort": 22,
+                        "toPort": 22,
+                        "description": "Allow SSH access from EC2 Instance Connect Endpoint"
+                      }
+                    ],
+                    "vpcId": {
+                      "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCB9E5F0B4BD23A326"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                  "version": "2.114.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+              "version": "2.114.1"
+            }
+          },
+          "EICSecurityGroup": {
+            "id": "EICSecurityGroup",
+            "path": "MovieGraphDB-prod/EICSecurityGroup",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "MovieGraphDB-prod/EICSecurityGroup/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "groupDescription": "Security group for EC2 Instance Connect Endpoint",
+                    "securityGroupEgress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "description": "Allow all outbound traffic by default",
+                        "ipProtocol": "-1"
                       }
                     ],
                     "vpcId": {
@@ -1011,95 +1096,6 @@
             "path": "MovieGraphDB-prod/DataBucket",
             "constructInfo": {
               "fqn": "aws-cdk-lib.aws_s3.BucketBase",
-              "version": "2.114.1"
-            }
-          },
-          "NeptuneS3Role": {
-            "id": "NeptuneS3Role",
-            "path": "MovieGraphDB-prod/NeptuneS3Role",
-            "children": {
-              "ImportNeptuneS3Role": {
-                "id": "ImportNeptuneS3Role",
-                "path": "MovieGraphDB-prod/NeptuneS3Role/ImportNeptuneS3Role",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.Resource",
-                  "version": "2.114.1"
-                }
-              },
-              "Resource": {
-                "id": "Resource",
-                "path": "MovieGraphDB-prod/NeptuneS3Role/Resource",
-                "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
-                  "aws:cdk:cloudformation:props": {
-                    "assumeRolePolicyDocument": {
-                      "Statement": [
-                        {
-                          "Action": "sts:AssumeRole",
-                          "Effect": "Allow",
-                          "Principal": {
-                            "Service": "rds.amazonaws.com"
-                          }
-                        }
-                      ],
-                      "Version": "2012-10-17"
-                    },
-                    "description": "IAM role for Neptune S3 access"
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
-                  "version": "2.114.1"
-                }
-              },
-              "DefaultPolicy": {
-                "id": "DefaultPolicy",
-                "path": "MovieGraphDB-prod/NeptuneS3Role/DefaultPolicy",
-                "children": {
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "MovieGraphDB-prod/NeptuneS3Role/DefaultPolicy/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
-                      "aws:cdk:cloudformation:props": {
-                        "policyDocument": {
-                          "Statement": [
-                            {
-                              "Action": [
-                                "s3:GetObject",
-                                "s3:ListBucket"
-                              ],
-                              "Effect": "Allow",
-                              "Resource": [
-                                "arn:aws:s3:::movie-graph-bin",
-                                "arn:aws:s3:::movie-graph-bin/*"
-                              ]
-                            }
-                          ],
-                          "Version": "2012-10-17"
-                        },
-                        "policyName": "NeptuneS3RoleDefaultPolicy31B36339",
-                        "roles": [
-                          {
-                            "Ref": "NeptuneS3Role8D81371E"
-                          }
-                        ]
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
-                      "version": "2.114.1"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_iam.Policy",
-                  "version": "2.114.1"
-                }
-              }
-            },
-            "constructInfo": {
-              "fqn": "aws-cdk-lib.aws_iam.Role",
               "version": "2.114.1"
             }
           },
@@ -1132,16 +1128,6 @@
             "attributes": {
               "aws:cdk:cloudformation:type": "AWS::Neptune::DBCluster",
               "aws:cdk:cloudformation:props": {
-                "associatedRoles": [
-                  {
-                    "roleArn": {
-                      "Fn::GetAtt": [
-                        "NeptuneS3Role8D81371E",
-                        "Arn"
-                      ]
-                    }
-                  }
-                ],
                 "dbClusterIdentifier": "movie-graph-prod",
                 "dbSubnetGroupName": {
                   "Ref": "NeptuneSubnetGroup"
@@ -1334,7 +1320,7 @@
                       "Ref": "MetadataDBSubnetGroupE3C5E100"
                     },
                     "deleteAutomatedBackups": false,
-                    "deletionProtection": true,
+                    "deletionProtection": false,
                     "engine": "postgres",
                     "engineVersion": "15",
                     "masterUsername": "postgres",
@@ -1397,248 +1383,243 @@
               "version": "2.114.1"
             }
           },
-          "NeptuneLoaderProxy": {
-            "id": "NeptuneLoaderProxy",
-            "path": "MovieGraphDB-prod/NeptuneLoaderProxy",
-            "children": {
-              "ServiceRole": {
-                "id": "ServiceRole",
-                "path": "MovieGraphDB-prod/NeptuneLoaderProxy/ServiceRole",
-                "children": {
-                  "ImportServiceRole": {
-                    "id": "ImportServiceRole",
-                    "path": "MovieGraphDB-prod/NeptuneLoaderProxy/ServiceRole/ImportServiceRole",
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.Resource",
-                      "version": "2.114.1"
-                    }
-                  },
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "MovieGraphDB-prod/NeptuneLoaderProxy/ServiceRole/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
-                      "aws:cdk:cloudformation:props": {
-                        "assumeRolePolicyDocument": {
-                          "Statement": [
-                            {
-                              "Action": "sts:AssumeRole",
-                              "Effect": "Allow",
-                              "Principal": {
-                                "Service": "lambda.amazonaws.com"
-                              }
-                            }
-                          ],
-                          "Version": "2012-10-17"
-                        },
-                        "managedPolicyArns": [
-                          {
-                            "Fn::Join": [
-                              "",
-                              [
-                                "arn:",
-                                {
-                                  "Ref": "AWS::Partition"
-                                },
-                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-                              ]
-                            ]
-                          },
-                          {
-                            "Fn::Join": [
-                              "",
-                              [
-                                "arn:",
-                                {
-                                  "Ref": "AWS::Partition"
-                                },
-                                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-                              ]
-                            ]
-                          }
-                        ]
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
-                      "version": "2.114.1"
-                    }
-                  },
-                  "DefaultPolicy": {
-                    "id": "DefaultPolicy",
-                    "path": "MovieGraphDB-prod/NeptuneLoaderProxy/ServiceRole/DefaultPolicy",
-                    "children": {
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "MovieGraphDB-prod/NeptuneLoaderProxy/ServiceRole/DefaultPolicy/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
-                          "aws:cdk:cloudformation:props": {
-                            "policyDocument": {
-                              "Statement": [
-                                {
-                                  "Action": "neptune-db:*",
-                                  "Effect": "Allow",
-                                  "Resource": {
-                                    "Fn::Join": [
-                                      "",
-                                      [
-                                        "arn:aws:neptune-db:us-west-2:688567301885:",
-                                        {
-                                          "Ref": "MovieGraphDB"
-                                        },
-                                        "/*"
-                                      ]
-                                    ]
-                                  }
-                                }
-                              ],
-                              "Version": "2012-10-17"
-                            },
-                            "policyName": "NeptuneLoaderProxyServiceRoleDefaultPolicyA4E8CCA8",
-                            "roles": [
-                              {
-                                "Ref": "NeptuneLoaderProxyServiceRole14990FAA"
-                              }
-                            ]
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
-                          "version": "2.114.1"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_iam.Policy",
-                      "version": "2.114.1"
-                    }
+          "NeptuneManagerEICEndpoint": {
+            "id": "NeptuneManagerEICEndpoint",
+            "path": "MovieGraphDB-prod/NeptuneManagerEICEndpoint",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::EC2::InstanceConnectEndpoint",
+              "aws:cdk:cloudformation:props": {
+                "preserveClientIp": true,
+                "securityGroupIds": [
+                  {
+                    "Fn::GetAtt": [
+                      "EICSecurityGroup9AD6BA19",
+                      "GroupId"
+                    ]
                   }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_iam.Role",
-                  "version": "2.114.1"
+                ],
+                "subnetId": {
+                  "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCIsolatedSubnet1SubnetEBD00FC6298E81EF"
                 }
-              },
-              "Code": {
-                "id": "Code",
-                "path": "MovieGraphDB-prod/NeptuneLoaderProxy/Code",
-                "children": {
-                  "Stage": {
-                    "id": "Stage",
-                    "path": "MovieGraphDB-prod/NeptuneLoaderProxy/Code/Stage",
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.AssetStaging",
-                      "version": "2.114.1"
-                    }
-                  },
-                  "AssetBucket": {
-                    "id": "AssetBucket",
-                    "path": "MovieGraphDB-prod/NeptuneLoaderProxy/Code/AssetBucket",
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
-                      "version": "2.114.1"
-                    }
-                  }
-                },
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.CfnInstanceConnectEndpoint",
+              "version": "2.114.1"
+            }
+          },
+          "NeptuneManagerRole": {
+            "id": "NeptuneManagerRole",
+            "path": "MovieGraphDB-prod/NeptuneManagerRole",
+            "children": {
+              "ImportNeptuneManagerRole": {
+                "id": "ImportNeptuneManagerRole",
+                "path": "MovieGraphDB-prod/NeptuneManagerRole/ImportNeptuneManagerRole",
                 "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "fqn": "aws-cdk-lib.Resource",
                   "version": "2.114.1"
                 }
               },
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphDB-prod/NeptuneLoaderProxy/Resource",
+                "path": "MovieGraphDB-prod/NeptuneManagerRole/Resource",
                 "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                   "aws:cdk:cloudformation:props": {
-                    "code": {
-                      "s3Bucket": "cdk-hnb659fds-assets-688567301885-us-west-2",
-                      "s3Key": "d6335d6b3222b3d54b7ef40c8341e38d0567e195f8dd6b121b9e61ae9e086821.zip"
-                    },
-                    "environment": {
-                      "variables": {
-                        "NEPTUNE_ENDPOINT": {
-                          "Fn::GetAtt": [
-                            "MovieGraphDB",
-                            "Endpoint"
-                          ]
-                        }
-                      }
-                    },
-                    "handler": "index.handler",
-                    "role": {
-                      "Fn::GetAtt": [
-                        "NeptuneLoaderProxyServiceRole14990FAA",
-                        "Arn"
-                      ]
-                    },
-                    "runtime": "nodejs18.x",
-                    "timeout": 30,
-                    "vpcConfig": {
-                      "subnetIds": [
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
                         {
-                          "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCIsolatedSubnet1SubnetEBD00FC6298E81EF"
-                        },
-                        {
-                          "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCIsolatedSubnet2Subnet4B1C8CAAD8B83B81"
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "ec2.amazonaws.com"
+                          }
                         }
                       ],
-                      "securityGroupIds": [
-                        {
-                          "Fn::GetAtt": [
-                            "NeptuneSecurityGroup84C55613",
-                            "GroupId"
+                      "Version": "2012-10-17"
+                    },
+                    "description": "Role for Neptune manager EC2 instance",
+                    "managedPolicyArns": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/AmazonSSMManagedInstanceCore"
                           ]
-                        }
-                      ]
-                    }
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/NeptuneFullAccess"
+                          ]
+                        ]
+                      }
+                    ]
                   }
                 },
                 "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
                   "version": "2.114.1"
                 }
               },
-              "FunctionUrl": {
-                "id": "FunctionUrl",
-                "path": "MovieGraphDB-prod/NeptuneLoaderProxy/FunctionUrl",
+              "DefaultPolicy": {
+                "id": "DefaultPolicy",
+                "path": "MovieGraphDB-prod/NeptuneManagerRole/DefaultPolicy",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "MovieGraphDB-prod/NeptuneLoaderProxy/FunctionUrl/Resource",
+                    "path": "MovieGraphDB-prod/NeptuneManagerRole/DefaultPolicy/Resource",
                     "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::Lambda::Url",
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                       "aws:cdk:cloudformation:props": {
-                        "authType": "AWS_IAM",
-                        "targetFunctionArn": {
-                          "Fn::GetAtt": [
-                            "NeptuneLoaderProxy89B19938",
-                            "Arn"
-                          ]
-                        }
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "s3:GetBucket*",
+                                "s3:GetObject*",
+                                "s3:List*"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": [
+                                "arn:aws:s3:::movie-graph-bin",
+                                "arn:aws:s3:::movie-graph-bin/*"
+                              ]
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "policyName": "NeptuneManagerRoleDefaultPolicyC7C39058",
+                        "roles": [
+                          {
+                            "Ref": "NeptuneManagerRoleFBAA80C1"
+                          }
+                        ]
                       }
                     },
                     "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_lambda.CfnUrl",
+                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
                       "version": "2.114.1"
                     }
                   }
                 },
                 "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_lambda.FunctionUrl",
+                  "fqn": "aws-cdk-lib.aws_iam.Policy",
                   "version": "2.114.1"
                 }
               }
             },
             "constructInfo": {
-              "fqn": "aws-cdk-lib.aws_lambda.Function",
+              "fqn": "aws-cdk-lib.aws_iam.Role",
               "version": "2.114.1"
             }
           },
-          "LoaderEndpoint": {
-            "id": "LoaderEndpoint",
-            "path": "MovieGraphDB-prod/LoaderEndpoint",
+          "NeptuneManager": {
+            "id": "NeptuneManager",
+            "path": "MovieGraphDB-prod/NeptuneManager",
+            "children": {
+              "InstanceProfile": {
+                "id": "InstanceProfile",
+                "path": "MovieGraphDB-prod/NeptuneManager/InstanceProfile",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::InstanceProfile",
+                  "aws:cdk:cloudformation:props": {
+                    "roles": [
+                      {
+                        "Ref": "NeptuneManagerRoleFBAA80C1"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnInstanceProfile",
+                  "version": "2.114.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "MovieGraphDB-prod/NeptuneManager/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::Instance",
+                  "aws:cdk:cloudformation:props": {
+                    "availabilityZone": "us-west-2a",
+                    "iamInstanceProfile": {
+                      "Ref": "NeptuneManagerInstanceProfileB8488BF7"
+                    },
+                    "imageId": {
+                      "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61arm64C96584B6F00A464EAD1953AFF4B05118Parameter"
+                    },
+                    "instanceType": "t4g.micro",
+                    "securityGroupIds": [
+                      {
+                        "Fn::GetAtt": [
+                          "NeptuneManagerSecurityGroup8FB518DC",
+                          "GroupId"
+                        ]
+                      }
+                    ],
+                    "subnetId": {
+                      "Fn::ImportValue": "MovieGraphVPC-prod:ExportsOutputRefVPCIsolatedSubnet1SubnetEBD00FC6298E81EF"
+                    },
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "MovieGraphDB-prod/NeptuneManager"
+                      }
+                    ],
+                    "userData": {
+                      "Fn::Base64": "#!/bin/bash\nyum update -y\nyum install -y amazon-neptune-tools python3-pip git\npip3 install neptune-python-utils\npip3 install awscli"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnInstance",
+                  "version": "2.114.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.Instance",
+              "version": "2.114.1"
+            }
+          },
+          "SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": {
+            "id": "SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter",
+            "path": "MovieGraphDB-prod/SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.114.1"
+            }
+          },
+          "SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118": {
+            "id": "SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118",
+            "path": "MovieGraphDB-prod/SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.Resource",
+              "version": "2.114.1"
+            }
+          },
+          "ManagerInstanceId": {
+            "id": "ManagerInstanceId",
+            "path": "MovieGraphDB-prod/ManagerInstanceId",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.114.1"
+            }
+          },
+          "EICEndpointId": {
+            "id": "EICEndpointId",
+            "path": "MovieGraphDB-prod/EICEndpointId",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -2223,14 +2204,6 @@
           "ApiUrl": {
             "id": "ApiUrl",
             "path": "MovieGraphCompute-prod/ApiUrl",
-            "constructInfo": {
-              "fqn": "aws-cdk-lib.CfnOutput",
-              "version": "2.114.1"
-            }
-          },
-          "LoaderFunctionName": {
-            "id": "LoaderFunctionName",
-            "path": "MovieGraphCompute-prod/LoaderFunctionName",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"

@@ -184,12 +184,6 @@ export class ApiStack extends cdk.Stack {
       ],
     }));
 
-    // Add loader function URL to outputs
-    new cdk.CfnOutput(this, 'LoaderFunctionName', {
-      value: loaderFunction.functionName,
-      description: 'Neptune loader Lambda function name',
-    });
-
     // Outputs
     new cdk.CfnOutput(this, 'ApiUrl', {
       value: `https://${subdomain}`,

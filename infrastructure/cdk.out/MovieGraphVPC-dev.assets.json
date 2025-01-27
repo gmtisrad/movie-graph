@@ -15,7 +15,7 @@
         }
       }
     },
-    "b63462b7befad592265fb7da8e26afacf7d75587acc1907c6d1d865e3dc26b59": {
+    "c59532c374967cffbe7231e5fc2fc53d9dc30f426314c865804ca78799353c4d": {
       "source": {
         "path": "MovieGraphVPC-dev.template.json",
         "packaging": "file"
@@ -23,7 +23,7 @@
       "destinations": {
         "688567301885-us-west-2": {
           "bucketName": "cdk-hnb659fds-assets-688567301885-us-west-2",
-          "objectKey": "b63462b7befad592265fb7da8e26afacf7d75587acc1907c6d1d865e3dc26b59.json",
+          "objectKey": "c59532c374967cffbe7231e5fc2fc53d9dc30f426314c865804ca78799353c4d.json",
           "region": "us-west-2",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-file-publishing-role-688567301885-us-west-2"
         }

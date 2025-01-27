@@ -13,12 +13,15 @@
     ],
     "SecurityGroupIngress": [
      {
-      "CidrIp": {
-       "Fn::ImportValue": "MovieGraphVPC-dev:ExportsOutputFnGetAttVPCB9E5F0B4CidrBlock723DF8C0"
-      },
-      "Description": "Allow Gremlin access from VPC",
+      "Description": "Allow Neptune access from EC2 instance",
       "FromPort": 8182,
       "IpProtocol": "tcp",
+      "SourceSecurityGroupId": {
+       "Fn::GetAtt": [
+        "NeptuneManagerSecurityGroup8FB518DC",
+        "GroupId"
+       ]
+      },
       "ToPort": 8182
      }
     ],
@@ -28,6 +31,58 @@
    },
    "Metadata": {
     "aws:cdk:path": "MovieGraphDB-dev/NeptuneSecurityGroup/Resource"
+   }
+  },
+  "NeptuneManagerSecurityGroup8FB518DC": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Security group for Neptune manager EC2 instance",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "Description": "Allow SSH access from EC2 Instance Connect Endpoint",
+      "FromPort": 22,
+      "IpProtocol": "tcp",
+      "SourceSecurityGroupId": {
+       "Fn::GetAtt": [
+        "EICSecurityGroup9AD6BA19",
+        "GroupId"
+       ]
+      },
+      "ToPort": 22
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "MovieGraphVPC-dev:ExportsOutputRefVPCB9E5F0B4BD23A326"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-dev/NeptuneManagerSecurityGroup/Resource"
+   }
+  },
+  "EICSecurityGroup9AD6BA19": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Security group for EC2 Instance Connect Endpoint",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "MovieGraphVPC-dev:ExportsOutputRefVPCB9E5F0B4BD23A326"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-dev/EICSecurityGroup/Resource"
    }
   },
   "NeptuneSubnetGroup": {
@@ -208,7 +263,27 @@
     "aws:cdk:path": "MovieGraphDB-dev/MetadataDB/Resource"
    }
   },
-  "NeptuneLoaderRole2F08F9F8": {
+  "NeptuneManagerEICEndpoint": {
+   "Type": "AWS::EC2::InstanceConnectEndpoint",
+   "Properties": {
+    "PreserveClientIp": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "EICSecurityGroup9AD6BA19",
+       "GroupId"
+      ]
+     }
+    ],
+    "SubnetId": {
+     "Fn::ImportValue": "MovieGraphVPC-dev:ExportsOutputRefVPCIsolatedSubnet1SubnetEBD00FC6298E81EF"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-dev/NeptuneManagerEICEndpoint"
+   }
+  },
+  "NeptuneManagerRoleFBAA80C1": {
    "Type": "AWS::IAM::Role",
    "Properties": {
     "AssumeRolePolicyDocument": {
@@ -217,26 +292,53 @@
        "Action": "sts:AssumeRole",
        "Effect": "Allow",
        "Principal": {
-        "Service": "rds.amazonaws.com"
+        "Service": "ec2.amazonaws.com"
        }
       }
      ],
      "Version": "2012-10-17"
     },
-    "Description": "IAM role for Neptune bulk loader"
+    "Description": "Role for Neptune manager EC2 instance",
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AmazonSSMManagedInstanceCore"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/NeptuneFullAccess"
+       ]
+      ]
+     }
+    ]
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDB-dev/NeptuneLoaderRole/Resource"
+    "aws:cdk:path": "MovieGraphDB-dev/NeptuneManagerRole/Resource"
    }
   },
-  "NeptuneLoaderRoleDefaultPolicy8D58FA8B": {
+  "NeptuneManagerRoleDefaultPolicyC7C39058": {
    "Type": "AWS::IAM::Policy",
    "Properties": {
     "PolicyDocument": {
      "Statement": [
       {
        "Action": [
-        "s3:Get*",
+        "s3:GetBucket*",
+        "s3:GetObject*",
         "s3:List*"
        ],
        "Effect": "Allow",
@@ -248,21 +350,74 @@
      ],
      "Version": "2012-10-17"
     },
-    "PolicyName": "NeptuneLoaderRoleDefaultPolicy8D58FA8B",
+    "PolicyName": "NeptuneManagerRoleDefaultPolicyC7C39058",
     "Roles": [
      {
-      "Ref": "NeptuneLoaderRole2F08F9F8"
+      "Ref": "NeptuneManagerRoleFBAA80C1"
      }
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDB-dev/NeptuneLoaderRole/DefaultPolicy/Resource"
+    "aws:cdk:path": "MovieGraphDB-dev/NeptuneManagerRole/DefaultPolicy/Resource"
+   }
+  },
+  "NeptuneManagerInstanceProfileB8488BF7": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "NeptuneManagerRoleFBAA80C1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-dev/NeptuneManager/InstanceProfile"
+   }
+  },
+  "NeptuneManager00B42CF1": {
+   "Type": "AWS::EC2::Instance",
+   "Properties": {
+    "AvailabilityZone": "us-west-2a",
+    "IamInstanceProfile": {
+     "Ref": "NeptuneManagerInstanceProfileB8488BF7"
+    },
+    "ImageId": {
+     "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61arm64C96584B6F00A464EAD1953AFF4B05118Parameter"
+    },
+    "InstanceType": "t4g.micro",
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "NeptuneManagerSecurityGroup8FB518DC",
+       "GroupId"
+      ]
+     }
+    ],
+    "SubnetId": {
+     "Fn::ImportValue": "MovieGraphVPC-dev:ExportsOutputRefVPCIsolatedSubnet1SubnetEBD00FC6298E81EF"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MovieGraphDB-dev/NeptuneManager"
+     }
+    ],
+    "UserData": {
+     "Fn::Base64": "#!/bin/bash\nyum update -y\nyum install -y amazon-neptune-tools python3-pip git\npip3 install neptune-python-utils\npip3 install awscli"
+    }
+   },
+   "DependsOn": [
+    "NeptuneManagerRoleDefaultPolicyC7C39058",
+    "NeptuneManagerRoleFBAA80C1"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphDB-dev/NeptuneManager/Resource"
    }
   },
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/2WNTW6DQAxGz5L94BbUCzQgVV21gu4jMzjpJGDQ2JMoGs3dq0CJ+rP67Odnu4A8f4J8gxfJbHfKetdCbBTtyeBFdpFsAbEhG7zT64sfw2TKPf8CyTBNGpgglnuutk1omfTuVtuyD6Lkk/GdQKxQsUWhVxZFtmT++T/BajdkPekyXzeTkZnKgIwH8vP/b3GJD/QH0mdVtJ8DsZq78HeSjMMBYj32dJPmfB97Z6+3dqlSMjXJGLydnbegU5hPrjQZHjuCozyciwLyHB43R3Eu84HVDQT1kl/SBqJLdAEAAA=="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/2WQwW6DMBBEvyV34xbaHyhQVT0VQe/VYpbUAdbIXjeKkP+9CgSKmtPYM0+zaycyjp9lfICzi1TTRb2u5VQxqE7A2X1NqBI5Vai81Xx5s8aPImvpzngnx0AKM0OEil+pGY0mFqu/Z4JwTzL1qkNOwaEgHNkTyilrKU8rXxPyVpynWe8dow3CNk5OOTDU4HArvuP3xkpXqCzyku/WmF03AMER7Tz/Bi7yCfaI/MIM6ntAYrEB/5MgNAxyKk0/v3TWwvRaXa7Xv9M6u7Cm1T2GcDU/PI+eRYnOeLt8VQEWBmS0c9stCIJMg/LkHn6SRMaxfDycnNaR9cR6QFku+gvYMFTG0gEAAA=="
    },
    "Metadata": {
     "aws:cdk:path": "MovieGraphDB-dev/CDKMetadata/Default"
@@ -292,6 +447,21 @@
    "Description": "Database credentials secret ARN",
    "Value": {
     "Ref": "MetadataDBSecretAttachment385A4A26"
+   }
+  },
+  "ManagerInstanceId": {
+   "Description": "Neptune manager instance ID",
+   "Value": {
+    "Ref": "NeptuneManager00B42CF1"
+   }
+  },
+  "EICEndpointId": {
+   "Description": "EC2 Instance Connect Endpoint ID",
+   "Value": {
+    "Fn::GetAtt": [
+     "NeptuneManagerEICEndpoint",
+     "Id"
+    ]
    }
   },
   "ExportsOutputFnGetAttMovieGraphDBEndpoint3FD79C33": {
@@ -326,6 +496,10 @@
   }
  },
  "Parameters": {
+  "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61arm64C96584B6F00A464EAD1953AFF4B05118Parameter": {
+   "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+   "Default": "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-arm64"
+  },
   "BootstrapVersion": {
    "Type": "AWS::SSM::Parameter::Value<String>",
    "Default": "/cdk-bootstrap/hnb659fds/version",

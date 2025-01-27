@@ -672,17 +672,6 @@
   }
  },
  "Outputs": {
-  "ExportsOutputFnGetAttVPCB9E5F0B4CidrBlock723DF8C0": {
-   "Value": {
-    "Fn::GetAtt": [
-     "VPCB9E5F0B4",
-     "CidrBlock"
-    ]
-   },
-   "Export": {
-    "Name": "MovieGraphVPC-prod:ExportsOutputFnGetAttVPCB9E5F0B4CidrBlock723DF8C0"
-   }
-  },
   "ExportsOutputRefVPCB9E5F0B4BD23A326": {
    "Value": {
     "Ref": "VPCB9E5F0B4"
@@ -705,6 +694,17 @@
    },
    "Export": {
     "Name": "MovieGraphVPC-prod:ExportsOutputRefVPCIsolatedSubnet2Subnet4B1C8CAAD8B83B81"
+   }
+  },
+  "ExportsOutputFnGetAttVPCB9E5F0B4CidrBlock723DF8C0": {
+   "Value": {
+    "Fn::GetAtt": [
+     "VPCB9E5F0B4",
+     "CidrBlock"
+    ]
+   },
+   "Export": {
+    "Name": "MovieGraphVPC-prod:ExportsOutputFnGetAttVPCB9E5F0B4CidrBlock723DF8C0"
    }
   },
   "ExportsOutputRefVPCPrivateSubnet1Subnet8BCA10E01F79A1B7": {

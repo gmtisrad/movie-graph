@@ -132,10 +132,6 @@ class ComputeStack extends cdk.Stack {
             value: `https://${subdomain}`,
             description: 'API Gateway endpoint URL',
         });
-        new cdk.CfnOutput(this, 'LoaderFunctionName', {
-            value: loaderFunction.functionName,
-            description: 'Neptune loader Lambda function name',
-        });
     }
 }
 exports.ComputeStack = ComputeStack;

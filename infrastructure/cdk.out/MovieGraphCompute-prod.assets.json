@@ -1,7 +1,7 @@
 {
   "version": "35.0.0",
   "files": {
-    "0fb0c92ec5e3fd18dc30619918f520e880544c9cb14ba55daac525d2830f7812": {
+    "181379df3cfab13a4df18202bc3718bab322b2c567e7bde785f3e73918e83698": {
       "source": {
         "path": "MovieGraphCompute-prod.template.json",
         "packaging": "file"
@@ -9,7 +9,7 @@
       "destinations": {
         "688567301885-us-west-2": {
           "bucketName": "cdk-hnb659fds-assets-688567301885-us-west-2",
-          "objectKey": "0fb0c92ec5e3fd18dc30619918f520e880544c9cb14ba55daac525d2830f7812.json",
+          "objectKey": "181379df3cfab13a4df18202bc3718bab322b2c567e7bde785f3e73918e83698.json",
           "region": "us-west-2",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-file-publishing-role-688567301885-us-west-2"
         }

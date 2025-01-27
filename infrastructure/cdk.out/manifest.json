@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-deploy-role-688567301885-us-west-2",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-cfn-exec-role-688567301885-us-west-2",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-688567301885-us-west-2/5b47fa765158173830577246fa8c745c0b3c3eca4396d3af9d7a8900966cb09e.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-688567301885-us-west-2/c900b160043f7a71325ee972d7b372ea9e36cd5575f98b6ae3d065df9fafdde7.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -232,12 +232,6 @@
             "data": "CDKMetadata"
           }
         ],
-        "/MovieGraphVPC-prod/Exports/Output{\"Fn::GetAtt\":[\"VPCB9E5F0B4\",\"CidrBlock\"]}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputFnGetAttVPCB9E5F0B4CidrBlock723DF8C0"
-          }
-        ],
         "/MovieGraphVPC-prod/Exports/Output{\"Ref\":\"VPCB9E5F0B4\"}": [
           {
             "type": "aws:cdk:logicalId",
@@ -254,6 +248,12 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "ExportsOutputRefVPCIsolatedSubnet2Subnet4B1C8CAAD8B83B81"
+          }
+        ],
+        "/MovieGraphVPC-prod/Exports/Output{\"Fn::GetAtt\":[\"VPCB9E5F0B4\",\"CidrBlock\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttVPCB9E5F0B4CidrBlock723DF8C0"
           }
         ],
         "/MovieGraphVPC-prod/Exports/Output{\"Ref\":\"VPCPrivateSubnet1Subnet8BCA10E0\"}": [
@@ -300,7 +300,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-deploy-role-688567301885-us-west-2",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-cfn-exec-role-688567301885-us-west-2",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-688567301885-us-west-2/8b1001a4789d213d0c1974fc440638b41e4a03d39586d21317427753ff908334.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-688567301885-us-west-2/f977670056cb37c52290a761e458d64fa69f42e9c9dc8ef88a5edd897cf0f6d8.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -323,16 +323,16 @@
             "data": "NeptuneSecurityGroup84C55613"
           }
         ],
-        "/MovieGraphDB-prod/NeptuneS3Role/Resource": [
+        "/MovieGraphDB-prod/NeptuneManagerSecurityGroup/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "NeptuneS3Role8D81371E"
+            "data": "NeptuneManagerSecurityGroup8FB518DC"
           }
         ],
-        "/MovieGraphDB-prod/NeptuneS3Role/DefaultPolicy/Resource": [
+        "/MovieGraphDB-prod/EICSecurityGroup/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "NeptuneS3RoleDefaultPolicy31B36339"
+            "data": "EICSecurityGroup9AD6BA19"
           }
         ],
         "/MovieGraphDB-prod/NeptuneSubnetGroup": [
@@ -395,34 +395,52 @@
             "data": "DbSecretArn"
           }
         ],
-        "/MovieGraphDB-prod/NeptuneLoaderProxy/ServiceRole/Resource": [
+        "/MovieGraphDB-prod/NeptuneManagerEICEndpoint": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "NeptuneLoaderProxyServiceRole14990FAA"
+            "data": "NeptuneManagerEICEndpoint"
           }
         ],
-        "/MovieGraphDB-prod/NeptuneLoaderProxy/ServiceRole/DefaultPolicy/Resource": [
+        "/MovieGraphDB-prod/NeptuneManagerRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "NeptuneLoaderProxyServiceRoleDefaultPolicyA4E8CCA8"
+            "data": "NeptuneManagerRoleFBAA80C1"
           }
         ],
-        "/MovieGraphDB-prod/NeptuneLoaderProxy/Resource": [
+        "/MovieGraphDB-prod/NeptuneManagerRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "NeptuneLoaderProxy89B19938"
+            "data": "NeptuneManagerRoleDefaultPolicyC7C39058"
           }
         ],
-        "/MovieGraphDB-prod/NeptuneLoaderProxy/FunctionUrl/Resource": [
+        "/MovieGraphDB-prod/NeptuneManager/InstanceProfile": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "NeptuneLoaderProxyFunctionUrlFA8744B7"
+            "data": "NeptuneManagerInstanceProfileB8488BF7"
           }
         ],
-        "/MovieGraphDB-prod/LoaderEndpoint": [
+        "/MovieGraphDB-prod/NeptuneManager/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "LoaderEndpoint"
+            "data": "NeptuneManager00B42CF1"
+          }
+        ],
+        "/MovieGraphDB-prod/SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61arm64C96584B6F00A464EAD1953AFF4B05118Parameter"
+          }
+        ],
+        "/MovieGraphDB-prod/ManagerInstanceId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ManagerInstanceId"
+          }
+        ],
+        "/MovieGraphDB-prod/EICEndpointId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EICEndpointId"
           }
         ],
         "/MovieGraphDB-prod/CDKMetadata/Default": [
@@ -481,7 +499,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-deploy-role-688567301885-us-west-2",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-cfn-exec-role-688567301885-us-west-2",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-688567301885-us-west-2/0fb0c92ec5e3fd18dc30619918f520e880544c9cb14ba55daac525d2830f7812.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-688567301885-us-west-2/181379df3cfab13a4df18202bc3718bab322b2c567e7bde785f3e73918e83698.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -575,12 +593,6 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "ApiUrl"
-          }
-        ],
-        "/MovieGraphCompute-prod/LoaderFunctionName": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "LoaderFunctionName"
           }
         ],
         "/MovieGraphCompute-prod/CDKMetadata/Default": [

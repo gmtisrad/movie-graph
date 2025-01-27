@@ -28,34 +28,35 @@ export class DatabaseStack extends cdk.Stack {
       allowAllOutbound: true,
     });
 
-    // Import the existing S3 bucket
-    const dataBucket = s3.Bucket.fromBucketName(this, 'DataBucket', 'movie-graph-bin');
-
-    // Create IAM role for Neptune
-    const neptuneRole = new iam.Role(this, 'NeptuneS3Role', {
-      assumedBy: new iam.ServicePrincipal('rds.amazonaws.com'),
-      description: 'IAM role for Neptune S3 access',
+    // Create security group for EC2 instance
+    const ec2SecurityGroup = new ec2.SecurityGroup(this, 'NeptuneManagerSecurityGroup', {
+      vpc: props.vpc,
+      description: 'Security group for Neptune manager EC2 instance',
+      allowAllOutbound: true,
     });
 
-    // Grant S3 access to Neptune for the existing bucket
-    // Note: movie-graph-bin bucket must exist and be accessible
-    neptuneRole.addToPolicy(new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      actions: [
-        's3:GetObject',
-        's3:ListBucket'
-      ],
-      resources: [
-        dataBucket.bucketArn,
-        `${dataBucket.bucketArn}/*`
-      ]
-    }));
+    // Create security group for EIC endpoint
+    const eicSecurityGroup = new ec2.SecurityGroup(this, 'EICSecurityGroup', {
+      vpc: props.vpc,
+      description: 'Security group for EC2 Instance Connect Endpoint',
+      allowAllOutbound: true,
+    });
+
+    // Configure security group rules
+    ec2SecurityGroup.addIngressRule(
+      ec2.Peer.securityGroupId(eicSecurityGroup.securityGroupId),
+      ec2.Port.tcp(22),
+      'Allow SSH access from EC2 Instance Connect Endpoint'
+    );
 
     neptuneSecurityGroup.addIngressRule(
-      ec2.Peer.ipv4(props.vpc.vpcCidrBlock),
+      ec2.Peer.securityGroupId(ec2SecurityGroup.securityGroupId),
       ec2.Port.tcp(8182),
-      'Allow Gremlin access from VPC'
+      'Allow Neptune access from EC2 instance'
     );
+
+    // Import the existing S3 bucket
+    const dataBucket = s3.Bucket.fromBucketName(this, 'DataBucket', 'movie-graph-bin');
 
     // Create Neptune Serverless Cluster
     this.neptuneCluster = new neptune.CfnDBCluster(this, 'MovieGraphDB', {
@@ -74,9 +75,6 @@ export class DatabaseStack extends cdk.Stack {
         maxCapacity: 8.0,
       },
       iamAuthEnabled: true,
-      associatedRoles: [{
-        roleArn: neptuneRole.roleArn
-      }]
     });
 
     // Create RDS Instance for metadata
@@ -109,6 +107,7 @@ export class DatabaseStack extends cdk.Stack {
       backupRetention: cdk.Duration.days(props.stage === 'prod' ? 7 : 1),
       deleteAutomatedBackups: props.stage !== 'prod',
       removalPolicy: props.stage === 'prod' ? cdk.RemovalPolicy.RETAIN : cdk.RemovalPolicy.DESTROY,
+      deletionProtection: false,
     });
 
     // Add outputs
@@ -127,40 +126,59 @@ export class DatabaseStack extends cdk.Stack {
       description: 'Database credentials secret ARN',
     });
 
-    // Create Lambda function for Neptune loader
-    const loaderFunction = new nodejs.NodejsFunction(this, 'NeptuneLoaderProxy', {
-      runtime: lambda.Runtime.NODEJS_18_X,
-      entry: path.join(__dirname, '../../lambda/loader/index.ts'),
-      depsLockFilePath: path.join(__dirname, '../../lambda/loader/package-lock.json'),
-      bundling: {
-        externalModules: ['@aws-sdk/*'],
-      },
+    // Create EC2 Instance Connect Endpoint
+    const eicEndpoint = new ec2.CfnInstanceConnectEndpoint(this, 'NeptuneManagerEICEndpoint', {
+      subnetId: props.vpc.selectSubnets({
+        subnetType: ec2.SubnetType.PRIVATE_ISOLATED
+      }).subnetIds[0],
+      preserveClientIp: true,
+      securityGroupIds: [eicSecurityGroup.securityGroupId],
+    });
+
+    // Create IAM role for Neptune manager instance
+    const managerRole = new iam.Role(this, 'NeptuneManagerRole', {
+      assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
+      description: 'Role for Neptune manager EC2 instance',
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'),
+        iam.ManagedPolicy.fromAwsManagedPolicyName('NeptuneFullAccess'),
+      ],
+    });
+
+    // Grant access to S3 bucket
+    dataBucket.grantRead(managerRole);
+
+    // Create Neptune manager instance
+    const managerInstance = new ec2.Instance(this, 'NeptuneManager', {
       vpc: props.vpc,
       vpcSubnets: {
         subnetType: ec2.SubnetType.PRIVATE_ISOLATED
       },
-      securityGroups: [neptuneSecurityGroup],
-      environment: {
-        NEPTUNE_ENDPOINT: this.neptuneCluster.attrEndpoint
-      },
-      timeout: cdk.Duration.seconds(30)
+      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.MICRO),
+      machineImage: ec2.MachineImage.latestAmazonLinux2023({
+        cpuType: ec2.AmazonLinuxCpuType.ARM_64
+      }),
+      role: managerRole,
+      securityGroup: ec2SecurityGroup,
+      userData: ec2.UserData.forLinux(),
     });
 
-    // Grant Neptune access to the Lambda function
-    loaderFunction.addToRolePolicy(new iam.PolicyStatement({
-      actions: ['neptune-db:*'],
-      resources: [`arn:aws:neptune-db:${cdk.Stack.of(this).region}:${cdk.Stack.of(this).account}:${this.neptuneCluster.ref}/*`],
-      effect: iam.Effect.ALLOW
-    }));
+    managerInstance.addUserData(
+      'yum update -y',
+      'yum install -y amazon-neptune-tools python3-pip git',
+      'pip3 install neptune-python-utils',
+      'pip3 install awscli',
+    );
 
-    // Add Lambda URL for easy access
-    const functionUrl = loaderFunction.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.AWS_IAM
+    // Add outputs
+    new cdk.CfnOutput(this, 'ManagerInstanceId', {
+      value: managerInstance.instanceId,
+      description: 'Neptune manager instance ID',
     });
 
-    new cdk.CfnOutput(this, 'LoaderEndpoint', {
-      value: functionUrl.url,
-      description: 'Neptune loader proxy endpoint'
+    new cdk.CfnOutput(this, 'EICEndpointId', {
+      value: eicEndpoint.attrId,
+      description: 'EC2 Instance Connect Endpoint ID',
     });
   }
 } 
