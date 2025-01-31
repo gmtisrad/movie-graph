@@ -57,29 +57,19 @@ export class NetworkStack extends cdk.Stack {
     cdk.Tags.of(this.vpc).add('Environment', props.stage);
     cdk.Tags.of(this.vpc).add('ManagedBy', 'CDK');
 
-    // Create VPC Endpoints for serverless architecture
-    new ec2.InterfaceVpcEndpoint(this, 'NeptuneEndpoint', {
-      vpc: this.vpc,
-      service: {
-        name: 'neptune-db',
-        port: 8182
-      },
-      subnets: {
-        subnetType: ec2.SubnetType.PRIVATE_ISOLATED
-      }
-    });
-
-    // Add CloudWatch endpoint for logging
+    // Add required VPC endpoints
     this.vpc.addInterfaceEndpoint('CloudWatchEndpoint', {
-      service: ec2.InterfaceVpcEndpointAwsService.CLOUDWATCH_LOGS
+      service: ec2.InterfaceVpcEndpointAwsService.CLOUDWATCH_LOGS,
+      subnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }
     });
 
     this.vpc.addInterfaceEndpoint('SecretsEndpoint', {
       service: ec2.InterfaceVpcEndpointAwsService.SECRETS_MANAGER,
+      subnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }
     });
 
     this.vpc.addGatewayEndpoint('S3Endpoint', {
-      service: ec2.GatewayVpcEndpointAwsService.S3,
+      service: ec2.GatewayVpcEndpointAwsService.S3
     });
 
     // Add outputs

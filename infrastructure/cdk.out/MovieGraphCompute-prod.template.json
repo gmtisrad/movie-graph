@@ -12,8 +12,20 @@
     ],
     "Tags": [
      {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
       "Key": "Name",
       "Value": "MovieGraphCompute-prod/Certificate"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
      }
     ],
     "ValidationMethod": "DNS"
@@ -22,132 +34,142 @@
     "aws:cdk:path": "MovieGraphCompute-prod/Certificate/Resource"
    }
   },
-  "MovieGraphApi6532AD29": {
-   "Type": "AWS::ApiGateway::RestApi",
+  "ApiGatewayLogs22899D9B": {
+   "Type": "AWS::Logs::LogGroup",
    "Properties": {
-    "Description": "Movie Graph API",
-    "EndpointConfiguration": {
-     "Types": [
-      "REGIONAL"
-     ]
+    "LogGroupName": "/aws/apigateway/movie-graph-prod",
+    "RetentionInDays": 30,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphCompute-prod/ApiGatewayLogs/Resource"
+   }
+  },
+  "MovieGraphApi6532AD29": {
+   "Type": "AWS::ApiGatewayV2::Api",
+   "Properties": {
+    "CorsConfiguration": {
+     "AllowHeaders": [
+      "Content-Type",
+      "Authorization",
+      "X-Api-Key",
+      "X-Amz-Date",
+      "X-Amz-Security-Token"
+     ],
+     "AllowMethods": [
+      "GET",
+      "POST",
+      "PUT",
+      "DELETE",
+      "OPTIONS"
+     ],
+     "AllowOrigins": [
+      "*"
+     ],
+     "ExposeHeaders": [
+      "*"
+     ],
+     "MaxAge": 86400
     },
-    "Name": "movie-graph-prod"
+    "Description": "Movie Graph API",
+    "DisableExecuteApiEndpoint": true,
+    "Name": "movie-graph-prod",
+    "ProtocolType": "HTTP",
+    "Tags": {
+     "Environment": "prod",
+     "ManagedBy": "CDK",
+     "Project": "MovieGraph"
+    }
    },
    "Metadata": {
     "aws:cdk:path": "MovieGraphCompute-prod/MovieGraphApi/Resource"
    }
   },
-  "MovieGraphApiDeployment2FC68C04cca367cc95ef723aa5245a067c0837fe": {
-   "Type": "AWS::ApiGateway::Deployment",
+  "MovieGraphApiDefaultStage8364A6B3": {
+   "Type": "AWS::ApiGatewayV2::Stage",
    "Properties": {
-    "Description": "Movie Graph API",
-    "RestApiId": {
+    "AccessLogSettings": {
+     "DestinationArn": {
+      "Fn::GetAtt": [
+       "ApiGatewayLogs22899D9B",
+       "Arn"
+      ]
+     },
+     "Format": "{\"requestId\":\"$context.requestId\",\"ip\":\"$context.identity.sourceIp\",\"requestTime\":\"$context.requestTime\",\"httpMethod\":\"$context.httpMethod\",\"routeKey\":\"$context.routeKey\",\"status\":\"$context.status\",\"protocol\":\"$context.protocol\",\"responseLength\":\"$context.responseLength\",\"integrationError\":\"$context.integrationErrorMessage\"}"
+    },
+    "ApiId": {
      "Ref": "MovieGraphApi6532AD29"
+    },
+    "AutoDeploy": true,
+    "DefaultRouteSettings": {
+     "DetailedMetricsEnabled": true,
+     "ThrottlingBurstLimit": 100,
+     "ThrottlingRateLimit": 50
+    },
+    "StageName": "$default",
+    "Tags": {
+     "Environment": "prod",
+     "ManagedBy": "CDK",
+     "Project": "MovieGraph"
     }
    },
-   "DependsOn": [
-    "MovieGraphApiOPTIONS7B41449C"
-   ],
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-prod/MovieGraphApi/Deployment/Resource"
+    "aws:cdk:path": "MovieGraphCompute-prod/MovieGraphApi/DefaultStage/Resource"
    }
   },
-  "MovieGraphApiDeploymentStageprodB0838565": {
-   "Type": "AWS::ApiGateway::Stage",
-   "Properties": {
-    "DeploymentId": {
-     "Ref": "MovieGraphApiDeployment2FC68C04cca367cc95ef723aa5245a067c0837fe"
-    },
-    "RestApiId": {
-     "Ref": "MovieGraphApi6532AD29"
-    },
-    "StageName": "prod",
-    "TracingEnabled": true
-   },
-   "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-prod/MovieGraphApi/DeploymentStage.prod/Resource"
-   }
-  },
-  "MovieGraphApiCustomDomain113EE1F3": {
-   "Type": "AWS::ApiGateway::DomainName",
+  "CustomDomain21DD44B6": {
+   "Type": "AWS::ApiGatewayV2::DomainName",
    "Properties": {
     "DomainName": "movie-graph.gabetimm.me",
-    "EndpointConfiguration": {
-     "Types": [
-      "REGIONAL"
-     ]
-    },
-    "RegionalCertificateArn": {
-     "Ref": "Certificate4E7ABB08"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-prod/MovieGraphApi/CustomDomain/Resource"
-   }
-  },
-  "MovieGraphApiCustomDomainMapMovieGraphComputeprodMovieGraphApiD5FECE4EB2F359C3": {
-   "Type": "AWS::ApiGateway::BasePathMapping",
-   "Properties": {
-    "DomainName": {
-     "Ref": "MovieGraphApiCustomDomain113EE1F3"
-    },
-    "RestApiId": {
-     "Ref": "MovieGraphApi6532AD29"
-    },
-    "Stage": {
-     "Ref": "MovieGraphApiDeploymentStageprodB0838565"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-prod/MovieGraphApi/CustomDomain/Map:--=>MovieGraphComputeprodMovieGraphApiD5FECE4E/Resource"
-   }
-  },
-  "MovieGraphApiOPTIONS7B41449C": {
-   "Type": "AWS::ApiGateway::Method",
-   "Properties": {
-    "ApiKeyRequired": false,
-    "AuthorizationType": "NONE",
-    "HttpMethod": "OPTIONS",
-    "Integration": {
-     "IntegrationResponses": [
-      {
-       "ResponseParameters": {
-        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization'",
-        "method.response.header.Access-Control-Allow-Origin": "'*'",
-        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE'",
-        "method.response.header.Access-Control-Max-Age": "'86400'"
-       },
-       "StatusCode": "204"
-      }
-     ],
-     "RequestTemplates": {
-      "application/json": "{ statusCode: 200 }"
-     },
-     "Type": "MOCK"
-    },
-    "MethodResponses": [
+    "DomainNameConfigurations": [
      {
-      "ResponseParameters": {
-       "method.response.header.Access-Control-Allow-Headers": true,
-       "method.response.header.Access-Control-Allow-Origin": true,
-       "method.response.header.Access-Control-Allow-Methods": true,
-       "method.response.header.Access-Control-Max-Age": true
+      "CertificateArn": {
+       "Ref": "Certificate4E7ABB08"
       },
-      "StatusCode": "204"
+      "EndpointType": "REGIONAL"
      }
     ],
-    "ResourceId": {
-     "Fn::GetAtt": [
-      "MovieGraphApi6532AD29",
-      "RootResourceId"
-     ]
-    },
-    "RestApiId": {
-     "Ref": "MovieGraphApi6532AD29"
+    "Tags": {
+     "Environment": "prod",
+     "ManagedBy": "CDK",
+     "Project": "MovieGraph"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-prod/MovieGraphApi/Default/OPTIONS/Resource"
+    "aws:cdk:path": "MovieGraphCompute-prod/CustomDomain/Resource"
+   }
+  },
+  "ApiMapping8F180979": {
+   "Type": "AWS::ApiGatewayV2::ApiMapping",
+   "Properties": {
+    "ApiId": {
+     "Ref": "MovieGraphApi6532AD29"
+    },
+    "DomainName": {
+     "Ref": "CustomDomain21DD44B6"
+    },
+    "Stage": "$default"
+   },
+   "DependsOn": [
+    "MovieGraphApiDefaultStage8364A6B3"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphCompute-prod/ApiMapping/Resource"
    }
   },
   "ApiAliasRecordBCE933A3": {
@@ -156,13 +178,13 @@
     "AliasTarget": {
      "DNSName": {
       "Fn::GetAtt": [
-       "MovieGraphApiCustomDomain113EE1F3",
+       "CustomDomain21DD44B6",
        "RegionalDomainName"
       ]
      },
      "HostedZoneId": {
       "Fn::GetAtt": [
-       "MovieGraphApiCustomDomain113EE1F3",
+       "CustomDomain21DD44B6",
        "RegionalHostedZoneId"
       ]
      }
@@ -178,7 +200,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/12PXU7DMBCEz9J3Z8EBDlDa1wJKDoAWZ5u6rX9kr4kqy3dHTqiIeNqZb0er2RakfAa5wSk2arg0V/0FuWdUF9FRdCkoEjjFz6wosD5qhUwGLY4UIO/+mNgd7coWgV6PyDThDXJHkbde18xd7slf3c2Q5UpXrmcc52uL2DuD2r6hmdnKvWKkD+TTAb3Xdqzb/+j+QOXiQHxyQ40tqojgEtPLE+RtR8qFYalXVU9cSrXviX3i397zrSKsGwjO8eG7bUFKeNyco9ZNSJa1IeiW+QM2xpH5VwEAAA=="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02PzW7EIAyEnyV34l3S9t4oldpDf6TkASqXEMpuAgjMRhXi3Ss2WzWnmfFY1ucGOL+HxCtcQy3Gcz3rL0gDoTizXgYbvZAM1/CZhPSkJy2Q5IIGlfSQuv8Z6yazi5nNVgVIr1Y9extdqf98Zui0QpIr/lwaSN1kWqfLxkCorpee7ILavONyTa3Tb+icNiozbyPJhztIbS+F9WPpNzdIyrnEj0gu0lZsH2TGa5zdN8Kxerx9eii6B7ltpBciV3iKbkA7mh1KZsaOEk7hcGka4ByO1SloXftoSC8S+k1/AaURHPViAQAA"
    },
    "Metadata": {
     "aws:cdk:path": "MovieGraphCompute-prod/CDKMetadata/Default"
@@ -186,31 +208,21 @@
   }
  },
  "Outputs": {
-  "MovieGraphApiEndpoint6509C5CE": {
-   "Value": {
-    "Fn::Join": [
-     "",
-     [
-      "https://",
-      {
-       "Ref": "MovieGraphApi6532AD29"
-      },
-      ".execute-api.us-west-2.",
-      {
-       "Ref": "AWS::URLSuffix"
-      },
-      "/",
-      {
-       "Ref": "MovieGraphApiDeploymentStageprodB0838565"
-      },
-      "/"
-     ]
-    ]
-   }
-  },
   "ApiUrl": {
    "Description": "API Gateway endpoint URL",
    "Value": "https://movie-graph.gabetimm.me"
+  },
+  "ApiId": {
+   "Description": "API Gateway ID",
+   "Value": {
+    "Ref": "MovieGraphApi6532AD29"
+   }
+  },
+  "LogGroupName": {
+   "Description": "API Gateway Log Group Name",
+   "Value": {
+    "Ref": "ApiGatewayLogs22899D9B"
+   }
   }
  },
  "Parameters": {

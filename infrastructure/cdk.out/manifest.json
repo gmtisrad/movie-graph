@@ -1,28 +1,28 @@
 {
   "version": "35.0.0",
   "artifacts": {
-    "MovieGraphVPC-prod.assets": {
+    "MovieGraphNetwork-prod.assets": {
       "type": "cdk:asset-manifest",
       "properties": {
-        "file": "MovieGraphVPC-prod.assets.json",
+        "file": "MovieGraphNetwork-prod.assets.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
       }
     },
-    "MovieGraphVPC-prod": {
+    "MovieGraphNetwork-prod": {
       "type": "aws:cloudformation:stack",
       "environment": "aws://688567301885/us-west-2",
       "properties": {
-        "templateFile": "MovieGraphVPC-prod.template.json",
+        "templateFile": "MovieGraphNetwork-prod.template.json",
         "terminationProtection": false,
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-deploy-role-688567301885-us-west-2",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-cfn-exec-role-688567301885-us-west-2",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-688567301885-us-west-2/6e305200c3317e7fbc475a59b90ae4681bc0d1c8d7260d52f3e6776931c8019d.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-688567301885-us-west-2/97709b4670cd7d47f582f7fb11149808c2dd991c905dd8ef58ec195b555b0070.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
-          "MovieGraphVPC-prod.assets"
+          "MovieGraphNetwork-prod.assets"
         ],
         "lookupRole": {
           "arn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-lookup-role-688567301885-us-west-2",
@@ -31,268 +31,352 @@
         }
       },
       "dependencies": [
-        "MovieGraphVPC-prod.assets"
+        "MovieGraphNetwork-prod.assets"
       ],
       "metadata": {
-        "/MovieGraphVPC-prod/VPC/Resource": [
+        "/MovieGraphNetwork-prod/VPCFlowLogRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCB9E5F0B4"
+            "data": "VPCFlowLogRole9538FF26"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PublicSubnet1/Subnet": [
+        "/MovieGraphNetwork-prod/VPCFlowLogRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPublicSubnet1SubnetB4246D30"
+            "data": "VPCFlowLogRoleDefaultPolicy90D215A5"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PublicSubnet1/RouteTable": [
+        "/MovieGraphNetwork-prod/VPCFlowLogGroup/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPublicSubnet1RouteTableFEE4B781"
+            "data": "VPCFlowLogGroup9559E1E7"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PublicSubnet1/RouteTableAssociation": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPublicSubnet1RouteTableAssociation0B0896DC"
+            "data": "MovieGraphVPC6A9E53F7"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PublicSubnet1/DefaultRoute": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PublicSubnet1/Subnet": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPublicSubnet1DefaultRoute91CEF279"
+            "data": "MovieGraphVPCPublicSubnet1Subnet03AF28BA"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PublicSubnet1/EIP": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PublicSubnet1/RouteTable": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPublicSubnet1EIP6AD938E8"
+            "data": "MovieGraphVPCPublicSubnet1RouteTable01F39212"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PublicSubnet1/NATGateway": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PublicSubnet1/RouteTableAssociation": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPublicSubnet1NATGatewayE0556630"
+            "data": "MovieGraphVPCPublicSubnet1RouteTableAssociation30167CEF"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PublicSubnet2/Subnet": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PublicSubnet1/DefaultRoute": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPublicSubnet2Subnet74179F39"
+            "data": "MovieGraphVPCPublicSubnet1DefaultRoute8F58AC38"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PublicSubnet2/RouteTable": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PublicSubnet1/EIP": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPublicSubnet2RouteTable6F1A15F1"
+            "data": "MovieGraphVPCPublicSubnet1EIP9CF2DE8F"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PublicSubnet2/RouteTableAssociation": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PublicSubnet1/NATGateway": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPublicSubnet2RouteTableAssociation5A808732"
+            "data": "MovieGraphVPCPublicSubnet1NATGateway4F9BC2FA"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PublicSubnet2/DefaultRoute": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PublicSubnet2/Subnet": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPublicSubnet2DefaultRouteB7481BBA"
+            "data": "MovieGraphVPCPublicSubnet2Subnet14CC7176"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PublicSubnet2/EIP": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PublicSubnet2/RouteTable": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPublicSubnet2EIP4947BC00"
+            "data": "MovieGraphVPCPublicSubnet2RouteTable03C47F89"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PublicSubnet2/NATGateway": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PublicSubnet2/RouteTableAssociation": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPublicSubnet2NATGateway3C070193"
+            "data": "MovieGraphVPCPublicSubnet2RouteTableAssociation637160CF"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PrivateSubnet1/Subnet": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PublicSubnet2/DefaultRoute": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPrivateSubnet1Subnet8BCA10E0"
+            "data": "MovieGraphVPCPublicSubnet2DefaultRoute715F7089"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PrivateSubnet1/RouteTable": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PublicSubnet2/EIP": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPrivateSubnet1RouteTableBE8A6027"
+            "data": "MovieGraphVPCPublicSubnet2EIP06E50D8A"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PrivateSubnet1/RouteTableAssociation": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PublicSubnet2/NATGateway": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPrivateSubnet1RouteTableAssociation347902D1"
+            "data": "MovieGraphVPCPublicSubnet2NATGatewayBF613585"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PrivateSubnet1/DefaultRoute": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PrivateSubnet1/Subnet": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPrivateSubnet1DefaultRouteAE1D6490"
+            "data": "MovieGraphVPCPrivateSubnet1SubnetBE1139F7"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PrivateSubnet2/Subnet": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PrivateSubnet1/RouteTable": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPrivateSubnet2SubnetCFCDAA7A"
+            "data": "MovieGraphVPCPrivateSubnet1RouteTable74E4F500"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PrivateSubnet2/RouteTable": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PrivateSubnet1/RouteTableAssociation": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPrivateSubnet2RouteTable0A19E10E"
+            "data": "MovieGraphVPCPrivateSubnet1RouteTableAssociation157763D4"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PrivateSubnet2/RouteTableAssociation": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PrivateSubnet1/DefaultRoute": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPrivateSubnet2RouteTableAssociation0C73D413"
+            "data": "MovieGraphVPCPrivateSubnet1DefaultRoute6B442571"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/PrivateSubnet2/DefaultRoute": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PrivateSubnet2/Subnet": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCPrivateSubnet2DefaultRouteF4F5CFD2"
+            "data": "MovieGraphVPCPrivateSubnet2Subnet2F1A8302"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/IsolatedSubnet1/Subnet": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PrivateSubnet2/RouteTable": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCIsolatedSubnet1SubnetEBD00FC6"
+            "data": "MovieGraphVPCPrivateSubnet2RouteTableA26BE1AD"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/IsolatedSubnet1/RouteTable": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PrivateSubnet2/RouteTableAssociation": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCIsolatedSubnet1RouteTableEB156210"
+            "data": "MovieGraphVPCPrivateSubnet2RouteTableAssociation09D5C918"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/IsolatedSubnet1/RouteTableAssociation": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/PrivateSubnet2/DefaultRoute": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCIsolatedSubnet1RouteTableAssociationA2D18F7C"
+            "data": "MovieGraphVPCPrivateSubnet2DefaultRoute4B0D6623"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/IsolatedSubnet2/Subnet": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/IsolatedSubnet1/Subnet": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCIsolatedSubnet2Subnet4B1C8CAA"
+            "data": "MovieGraphVPCIsolatedSubnet1Subnet0FD2B803"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/IsolatedSubnet2/RouteTable": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/IsolatedSubnet1/RouteTable": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCIsolatedSubnet2RouteTable9B4F78DC"
+            "data": "MovieGraphVPCIsolatedSubnet1RouteTable0D752286"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/IsolatedSubnet2/RouteTableAssociation": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/IsolatedSubnet1/RouteTableAssociation": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCIsolatedSubnet2RouteTableAssociation7BF8E0EB"
+            "data": "MovieGraphVPCIsolatedSubnet1RouteTableAssociationB0F32F66"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/IGW": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/IsolatedSubnet2/Subnet": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCIGWB7E252D3"
+            "data": "MovieGraphVPCIsolatedSubnet2Subnet12587EAF"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/VPCGW": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/IsolatedSubnet2/RouteTable": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCVPCGW99B986DC"
+            "data": "MovieGraphVPCIsolatedSubnet2RouteTable05B1CA92"
           }
         ],
-        "/MovieGraphVPC-prod/VPC/RestrictDefaultSecurityGroupCustomResource/Default": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/IsolatedSubnet2/RouteTableAssociation": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "VPCRestrictDefaultSecurityGroupCustomResource59474679"
+            "data": "MovieGraphVPCIsolatedSubnet2RouteTableAssociationB030DE72"
           }
         ],
-        "/MovieGraphVPC-prod/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role": [
+        "/MovieGraphNetwork-prod/MovieGraphVPC/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MovieGraphVPCIGW25ED71BD"
+          }
+        ],
+        "/MovieGraphNetwork-prod/MovieGraphVPC/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MovieGraphVPCVPCGW354E4E73"
+          }
+        ],
+        "/MovieGraphNetwork-prod/MovieGraphVPC/flowlog/FlowLog": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MovieGraphVPCflowlogFlowLog89F89374"
+          }
+        ],
+        "/MovieGraphNetwork-prod/MovieGraphVPC/RestrictDefaultSecurityGroupCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MovieGraphVPCRestrictDefaultSecurityGroupCustomResource942ACE80"
+          }
+        ],
+        "/MovieGraphNetwork-prod/MovieGraphVPC/CloudWatchEndpoint/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MovieGraphVPCCloudWatchEndpointSecurityGroupF9025DB0"
+          }
+        ],
+        "/MovieGraphNetwork-prod/MovieGraphVPC/CloudWatchEndpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MovieGraphVPCCloudWatchEndpoint5730DA95"
+          }
+        ],
+        "/MovieGraphNetwork-prod/MovieGraphVPC/SecretsEndpoint/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MovieGraphVPCSecretsEndpointSecurityGroup7B1A11D5"
+          }
+        ],
+        "/MovieGraphNetwork-prod/MovieGraphVPC/SecretsEndpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MovieGraphVPCSecretsEndpoint25A5B131"
+          }
+        ],
+        "/MovieGraphNetwork-prod/MovieGraphVPC/S3Endpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MovieGraphVPCS3EndpointC3187398"
+          }
+        ],
+        "/MovieGraphNetwork-prod/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0"
           }
         ],
-        "/MovieGraphVPC-prod/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler": [
+        "/MovieGraphNetwork-prod/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E"
           }
         ],
-        "/MovieGraphVPC-prod/CDKMetadata/Default": [
+        "/MovieGraphNetwork-prod/VpcId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VpcId"
+          }
+        ],
+        "/MovieGraphNetwork-prod/PublicSubnets": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PublicSubnets"
+          }
+        ],
+        "/MovieGraphNetwork-prod/PrivateSubnets": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PrivateSubnets"
+          }
+        ],
+        "/MovieGraphNetwork-prod/IsolatedSubnets": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IsolatedSubnets"
+          }
+        ],
+        "/MovieGraphNetwork-prod/FlowLogGroup": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FlowLogGroup"
+          }
+        ],
+        "/MovieGraphNetwork-prod/CDKMetadata/Default": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
           }
         ],
-        "/MovieGraphVPC-prod/Exports/Output{\"Ref\":\"VPCB9E5F0B4\"}": [
+        "/MovieGraphNetwork-prod/Exports/Output{\"Ref\":\"MovieGraphVPC6A9E53F7\"}": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefVPCB9E5F0B4BD23A326"
+            "data": "ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
           }
         ],
-        "/MovieGraphVPC-prod/Exports/Output{\"Ref\":\"VPCIsolatedSubnet1SubnetEBD00FC6\"}": [
+        "/MovieGraphNetwork-prod/Exports/Output{\"Ref\":\"MovieGraphVPCIsolatedSubnet1Subnet0FD2B803\"}": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefVPCIsolatedSubnet1SubnetEBD00FC6298E81EF"
+            "data": "ExportsOutputRefMovieGraphVPCIsolatedSubnet1Subnet0FD2B8034C4BDB38"
           }
         ],
-        "/MovieGraphVPC-prod/Exports/Output{\"Ref\":\"VPCIsolatedSubnet2Subnet4B1C8CAA\"}": [
+        "/MovieGraphNetwork-prod/Exports/Output{\"Ref\":\"MovieGraphVPCIsolatedSubnet2Subnet12587EAF\"}": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefVPCIsolatedSubnet2Subnet4B1C8CAAD8B83B81"
+            "data": "ExportsOutputRefMovieGraphVPCIsolatedSubnet2Subnet12587EAF18FFADAC"
           }
         ],
-        "/MovieGraphVPC-prod/Exports/Output{\"Fn::GetAtt\":[\"VPCB9E5F0B4\",\"CidrBlock\"]}": [
+        "/MovieGraphNetwork-prod/Exports/Output{\"Ref\":\"MovieGraphVPCPrivateSubnet1SubnetBE1139F7\"}": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputFnGetAttVPCB9E5F0B4CidrBlock723DF8C0"
+            "data": "ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
           }
         ],
-        "/MovieGraphVPC-prod/BootstrapVersion": [
+        "/MovieGraphNetwork-prod/BootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "BootstrapVersion"
           }
         ],
-        "/MovieGraphVPC-prod/CheckBootstrapVersion": [
+        "/MovieGraphNetwork-prod/CheckBootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CheckBootstrapVersion"
           }
         ]
       },
-      "displayName": "MovieGraphVPC-prod"
+      "displayName": "MovieGraphNetwork-prod"
     },
-    "MovieGraphDB-prod.assets": {
+    "MovieGraphDatabase-prod.assets": {
       "type": "cdk:asset-manifest",
       "properties": {
-        "file": "MovieGraphDB-prod.assets.json",
+        "file": "MovieGraphDatabase-prod.assets.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
       }
     },
-    "MovieGraphDB-prod": {
+    "MovieGraphDatabase-prod": {
       "type": "aws:cloudformation:stack",
       "environment": "aws://688567301885/us-west-2",
       "properties": {
-        "templateFile": "MovieGraphDB-prod.template.json",
+        "templateFile": "MovieGraphDatabase-prod.template.json",
         "terminationProtection": false,
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-deploy-role-688567301885-us-west-2",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-cfn-exec-role-688567301885-us-west-2",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-688567301885-us-west-2/2c6f33d21421b335e830225cf3a56cbb6bfe6227a92f265bc7f61f55d6a03cf6.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-688567301885-us-west-2/773654c8d778ea9ca72d8cb65dbe030ef8de497f18022f5324f71aa2fb740f61.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
-          "MovieGraphDB-prod.assets"
+          "MovieGraphDatabase-prod.assets"
         ],
         "lookupRole": {
           "arn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-lookup-role-688567301885-us-west-2",
@@ -301,180 +385,174 @@
         }
       },
       "dependencies": [
-        "MovieGraphVPC-prod",
-        "MovieGraphDB-prod.assets"
+        "MovieGraphNetwork-prod",
+        "MovieGraphDatabase-prod.assets"
       ],
       "metadata": {
-        "/MovieGraphDB-prod/NeptuneSecurityGroup/Resource": [
+        "/MovieGraphDatabase-prod/NeptuneSecurityGroup/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "NeptuneSecurityGroup84C55613"
           }
         ],
-        "/MovieGraphDB-prod/NeptuneManagerSecurityGroup/Resource": [
+        "/MovieGraphDatabase-prod/NeptuneManagerSecurityGroup/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "NeptuneManagerSecurityGroup8FB518DC"
           }
         ],
-        "/MovieGraphDB-prod/EICSecurityGroup/Resource": [
+        "/MovieGraphDatabase-prod/EICSecurityGroup/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "EICSecurityGroup9AD6BA19"
           }
         ],
-        "/MovieGraphDB-prod/NeptuneSubnetGroup": [
+        "/MovieGraphDatabase-prod/RdsSecurityGroup/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "NeptuneSubnetGroup"
+            "data": "RdsSecurityGroup632A77E4"
           }
         ],
-        "/MovieGraphDB-prod/MovieGraphDB": [
+        "/MovieGraphDatabase-prod/NeptuneS3Role/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "MovieGraphDB"
+            "data": "NeptuneS3Role8D81371E"
           }
         ],
-        "/MovieGraphDB-prod/DatabaseSecurityGroup/Resource": [
+        "/MovieGraphDatabase-prod/NeptuneS3Role/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "DatabaseSecurityGroup7319C0F6"
+            "data": "NeptuneS3RoleDefaultPolicy31B36339"
           }
         ],
-        "/MovieGraphDB-prod/MetadataDB/SubnetGroup/Default": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MetadataDBSubnetGroupE3C5E100"
-          }
-        ],
-        "/MovieGraphDB-prod/MetadataDB/Secret/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MovieGraphDBprodMetadataDBSecretC031E76C3fdaad7efa858a3daf9490cf0a702aeb"
-          }
-        ],
-        "/MovieGraphDB-prod/MetadataDB/Secret/Attachment/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MetadataDBSecretAttachment385A4A26"
-          }
-        ],
-        "/MovieGraphDB-prod/MetadataDB/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MetadataDB03FD9DCA"
-          }
-        ],
-        "/MovieGraphDB-prod/NeptuneEndpoint": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "NeptuneEndpoint"
-          }
-        ],
-        "/MovieGraphDB-prod/NeptuneClusterId": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "NeptuneClusterId"
-          }
-        ],
-        "/MovieGraphDB-prod/NeptuneSecurityGroupId": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "NeptuneSecurityGroupId"
-          }
-        ],
-        "/MovieGraphDB-prod/NeptuneSubnetGroupName": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "NeptuneSubnetGroupName"
-          }
-        ],
-        "/MovieGraphDB-prod/RdsEndpoint": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "RdsEndpoint"
-          }
-        ],
-        "/MovieGraphDB-prod/DbSecretArn": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "DbSecretArn"
-          }
-        ],
-        "/MovieGraphDB-prod/NeptuneManagerEICEndpoint": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "NeptuneManagerEICEndpoint"
-          }
-        ],
-        "/MovieGraphDB-prod/NeptuneManagerRole/Resource": [
+        "/MovieGraphDatabase-prod/NeptuneManagerRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "NeptuneManagerRoleFBAA80C1"
           }
         ],
-        "/MovieGraphDB-prod/NeptuneManagerRole/DefaultPolicy/Resource": [
+        "/MovieGraphDatabase-prod/NeptuneManagerRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "NeptuneManagerRoleDefaultPolicyC7C39058"
           }
         ],
-        "/MovieGraphDB-prod/NeptuneManager/InstanceProfile": [
+        "/MovieGraphDatabase-prod/NeptuneSubnetGroup": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "NeptuneManagerInstanceProfileB8488BF7"
+            "data": "NeptuneSubnetGroup"
           }
         ],
-        "/MovieGraphDB-prod/NeptuneManager/Resource": [
+        "/MovieGraphDatabase-prod/MovieGraphDB": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "NeptuneManager00B42CF1"
+            "data": "MovieGraphDB"
           }
         ],
-        "/MovieGraphDB-prod/SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61arm64C96584B6F00A464EAD1953AFF4B05118Parameter"
-          }
-        ],
-        "/MovieGraphDB-prod/ManagerInstanceId": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ManagerInstanceId"
-          }
-        ],
-        "/MovieGraphDB-prod/EICEndpointId": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "EICEndpointId"
-          }
-        ],
-        "/MovieGraphDB-prod/NeptuneInstance": [
+        "/MovieGraphDatabase-prod/NeptuneInstance": [
           {
             "type": "aws:cdk:logicalId",
             "data": "NeptuneInstance"
           }
         ],
-        "/MovieGraphDB-prod/CDKMetadata/Default": [
+        "/MovieGraphDatabase-prod/MetadataDB/SubnetGroup/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MetadataDBSubnetGroupE3C5E100"
+          }
+        ],
+        "/MovieGraphDatabase-prod/MetadataDB/Secret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MovieGraphDatabaseprodMetadataDBSecret491984813fdaad7efa858a3daf9490cf0a702aeb"
+          }
+        ],
+        "/MovieGraphDatabase-prod/MetadataDB/Secret/Attachment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MetadataDBSecretAttachment385A4A26"
+          }
+        ],
+        "/MovieGraphDatabase-prod/MetadataDB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MetadataDB03FD9DCA"
+          }
+        ],
+        "/MovieGraphDatabase-prod/NeptuneManager/InstanceProfile": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NeptuneManagerInstanceProfileB8488BF7"
+          }
+        ],
+        "/MovieGraphDatabase-prod/NeptuneManager/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NeptuneManager00B42CF1"
+          }
+        ],
+        "/MovieGraphDatabase-prod/SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61arm64C96584B6F00A464EAD1953AFF4B05118Parameter"
+          }
+        ],
+        "/MovieGraphDatabase-prod/NeptuneManagerEICEndpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NeptuneManagerEICEndpoint"
+          }
+        ],
+        "/MovieGraphDatabase-prod/NeptuneEndpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NeptuneEndpoint"
+          }
+        ],
+        "/MovieGraphDatabase-prod/RdsEndpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RdsEndpoint"
+          }
+        ],
+        "/MovieGraphDatabase-prod/ManagerInstanceId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ManagerInstanceId"
+          }
+        ],
+        "/MovieGraphDatabase-prod/EICEndpointId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EICEndpointId"
+          }
+        ],
+        "/MovieGraphDatabase-prod/NeptuneClusterId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NeptuneClusterId"
+          }
+        ],
+        "/MovieGraphDatabase-prod/CDKMetadata/Default": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
           }
         ],
-        "/MovieGraphDB-prod/BootstrapVersion": [
+        "/MovieGraphDatabase-prod/BootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "BootstrapVersion"
           }
         ],
-        "/MovieGraphDB-prod/CheckBootstrapVersion": [
+        "/MovieGraphDatabase-prod/CheckBootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CheckBootstrapVersion"
           }
         ]
       },
-      "displayName": "MovieGraphDB-prod"
+      "displayName": "MovieGraphDatabase-prod"
     },
     "MovieGraphCompute-prod.assets": {
       "type": "cdk:asset-manifest",
@@ -490,10 +568,15 @@
       "properties": {
         "templateFile": "MovieGraphCompute-prod.template.json",
         "terminationProtection": false,
+        "tags": {
+          "Environment": "prod",
+          "ManagedBy": "CDK",
+          "Project": "MovieGraph"
+        },
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-deploy-role-688567301885-us-west-2",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-cfn-exec-role-688567301885-us-west-2",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-688567301885-us-west-2/d1445f8e0e6eaf14519a2ebd57034981fa0bd0be231b8cd59d0ee8c120441e8b.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-688567301885-us-west-2/214d6e5dfd84712f932a5b266a5a5f37a45afb33d93c9cee5afd527245fe7fdd.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -506,13 +589,39 @@
         }
       },
       "dependencies": [
+        "MovieGraphDatabase-prod",
         "MovieGraphCompute-prod.assets"
       ],
       "metadata": {
+        "/MovieGraphCompute-prod": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "prod"
+              },
+              {
+                "Key": "ManagedBy",
+                "Value": "CDK"
+              },
+              {
+                "Key": "Project",
+                "Value": "MovieGraph"
+              }
+            ]
+          }
+        ],
         "/MovieGraphCompute-prod/Certificate/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "Certificate4E7ABB08"
+          }
+        ],
+        "/MovieGraphCompute-prod/ApiGatewayLogs/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiGatewayLogs22899D9B"
           }
         ],
         "/MovieGraphCompute-prod/MovieGraphApi/Resource": [
@@ -521,40 +630,22 @@
             "data": "MovieGraphApi6532AD29"
           }
         ],
-        "/MovieGraphCompute-prod/MovieGraphApi/Deployment/Resource": [
+        "/MovieGraphCompute-prod/MovieGraphApi/DefaultStage/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "MovieGraphApiDeployment2FC68C04cca367cc95ef723aa5245a067c0837fe"
+            "data": "MovieGraphApiDefaultStage8364A6B3"
           }
         ],
-        "/MovieGraphCompute-prod/MovieGraphApi/DeploymentStage.prod/Resource": [
+        "/MovieGraphCompute-prod/CustomDomain/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "MovieGraphApiDeploymentStageprodB0838565"
+            "data": "CustomDomain21DD44B6"
           }
         ],
-        "/MovieGraphCompute-prod/MovieGraphApi/Endpoint": [
+        "/MovieGraphCompute-prod/ApiMapping/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "MovieGraphApiEndpoint6509C5CE"
-          }
-        ],
-        "/MovieGraphCompute-prod/MovieGraphApi/CustomDomain/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MovieGraphApiCustomDomain113EE1F3"
-          }
-        ],
-        "/MovieGraphCompute-prod/MovieGraphApi/CustomDomain/Map:--=>MovieGraphComputeprodMovieGraphApiD5FECE4E/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MovieGraphApiCustomDomainMapMovieGraphComputeprodMovieGraphApiD5FECE4EB2F359C3"
-          }
-        ],
-        "/MovieGraphCompute-prod/MovieGraphApi/Default/OPTIONS/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MovieGraphApiOPTIONS7B41449C"
+            "data": "ApiMapping8F180979"
           }
         ],
         "/MovieGraphCompute-prod/ApiAliasRecord/Resource": [
@@ -567,6 +658,18 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "ApiUrl"
+          }
+        ],
+        "/MovieGraphCompute-prod/ApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiId"
+          }
+        ],
+        "/MovieGraphCompute-prod/LogGroupName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogGroupName"
           }
         ],
         "/MovieGraphCompute-prod/CDKMetadata/Default": [
