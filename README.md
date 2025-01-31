@@ -138,3 +138,49 @@ The React app will be available at `http://localhost:5173` by default.
 - Customizable graph appearance
 - Keyboard controls for navigation (W,A,S,D)
 - Dark/Light mode support
+
+# Movie Graph Infrastructure
+
+## Connecting to Resources
+
+### Connect to Manager Instance
+```bash
+# Using EC2 Instance Connect
+aws ec2-instance-connect ssh --instance-id i-0362f9c42e445ebe8 --endpoint-id eice-020aa4ae36add515c
+
+# Using Systems Manager
+aws ssm start-session --target i-0362f9c42e445ebe8 --region us-west-2
+```
+
+### Neptune Endpoints
+- Writer Endpoint: movie-graph-prod.cluster-cbs6gkg2i3ka.us-west-2.neptune.amazonaws.com
+- Reader Endpoint: neptuneinstance-ypdnj4wefxeu.cbs6gkg2i3ka.us-west-2.neptune.amazonaws.com
+
+### Neptune Bulk Loading
+From the manager instance, use these commands to load data:
+
+```bash
+# The manager instance's IAM role handles authentication automatically
+curl -X POST \
+    -H "Content-Type: application/json" \
+    "https://movie-graph-prod.cluster-cbs6gkg2i3ka.us-west-2.neptune.amazonaws.com:8182/loader" \
+    -d '{
+        "source": "s3://movie-graph-bin/data/",
+        "format": "csv",
+        "iamRoleArn": "arn:aws:iam::688567301885:role/MovieGraphDatabaseV1-prod-NeptuneS3Role",
+        "region": "us-west-2",
+        "failOnError": "FALSE",
+        "parallelism": "MEDIUM",
+        "updateSingleCardinalityProperties": "FALSE"
+    }'
+```
+
+### Check Load Status
+```bash
+curl -G "https://movie-graph-prod.cluster-cbs6gkg2i3ka.us-west-2.neptune.amazonaws.com:8182/loader/<load-id>"
+```
+
+### RDS Metadata Database
+Endpoint: moviegraphdatabasev1-prod-metadatadb03fd9dca-ki4lxwserjxq.cbs6gkg2i3ka.us-west-2.rds.amazonaws.com
+
+Note: All connections to Neptune require IAM authentication and must be signed with AWS Signature V4.

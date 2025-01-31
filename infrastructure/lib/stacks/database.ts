@@ -136,13 +136,13 @@ export class DatabaseStack extends cdk.Stack {
       dbSubnetGroupName: `movie-graph-${props.stage}-neptune`,
       dbSubnetGroupDescription: 'Subnet group for Neptune cluster',
       subnetIds: props.vpc.selectSubnets({
-        subnetType: ec2.SubnetType.PRIVATE_ISOLATED
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS
       }).subnetIds,
     });
 
     // Create Neptune Serverless Cluster with enhanced security
     this.neptuneCluster = new neptune.CfnDBCluster(this, 'MovieGraphDB', {
-      engineVersion: '1.2.0.2',
+      engineVersion: '1.3.2.1',
       dbClusterIdentifier: `movie-graph-${props.stage}`,
       vpcSecurityGroupIds: [neptuneSecurityGroup.securityGroupId],
       dbSubnetGroupName: neptuneSubnetGroup.ref,
@@ -220,7 +220,7 @@ export class DatabaseStack extends cdk.Stack {
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.MICRO),
       vpc: props.vpc,
       vpcSubnets: {
-        subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       },
       securityGroups: [rdsSecurityGroup],
       databaseName: 'moviemetadata',

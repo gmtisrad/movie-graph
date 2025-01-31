@@ -4,6 +4,29 @@ import { program } from 'commander';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 
+// Configuration
+const CONFIG = {
+  domains: {
+    prod: 'movie-graph.gabetimm.me',
+    dev: 'movie-graph-dev.gabetimm.me',
+    staging: 'movie-graph-staging.gabetimm.me'
+  },
+  stacks: ['MovieGraphCompute', 'MovieGraphDB', 'MovieGraphVPC'],
+  regions: [
+    'us-east-1',
+    'us-east-2',
+    'us-west-1',
+    'us-west-2',
+    'eu-west-1',
+    'eu-west-2',
+    'eu-central-1',
+    'ap-southeast-1',
+    'ap-southeast-2',
+    'ap-northeast-1',
+    'sa-east-1'
+  ]
+};
+
 interface DeployOptions {
   stage: string;
   account: string;
@@ -25,6 +48,16 @@ program
 
 const opts = program.opts();
 
+function getEnvironmentVariables(options: DeployOptions) {
+  return {
+    ...process.env,
+    STAGE: options.stage,
+    CDK_DEFAULT_ACCOUNT: options.account,
+    CDK_DEFAULT_REGION: options.region,
+    JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION: '1'
+  };
+}
+
 async function promptForMissingOptions(options: Partial<DeployOptions>): Promise<DeployOptions> {
   const questions = [];
   
@@ -33,7 +66,7 @@ async function promptForMissingOptions(options: Partial<DeployOptions>): Promise
       type: 'list',
       name: 'stage',
       message: 'Which stage do you want to deploy to?',
-      choices: ['dev', 'staging', 'prod'],
+      choices: Object.keys(CONFIG.domains),
       default: 'dev'
     });
   }
@@ -52,16 +85,7 @@ async function promptForMissingOptions(options: Partial<DeployOptions>): Promise
       type: 'list',
       name: 'region',
       message: 'Which AWS region do you want to deploy to?',
-      choices: [
-        'us-east-1',
-        'us-east-2',
-        'us-west-1',
-        'us-west-2',
-        'eu-west-1',
-        'eu-central-1',
-        'ap-southeast-1',
-        'ap-southeast-2'
-      ],
+      choices: CONFIG.regions,
       default: 'us-east-1'
     });
   }
@@ -137,6 +161,8 @@ async function deploy() {
       skipPrompts: opts.yes
     });
 
+    const envVars = getEnvironmentVariables(options);
+
     // Handle destroy command
     if (opts.destroy) {
       const confirmed = await confirmDestroy(options);
@@ -147,16 +173,13 @@ async function deploy() {
 
       console.log(chalk.red('\nStarting destruction...'));
 
-      // Run CDK destroy with force flag if specified
-      execSync(`pnpm cdk destroy ${opts.force ? '--force' : ''} MovieGraphCompute-${options.stage} MovieGraphDB-${options.stage} MovieGraphVPC-${options.stage}`, {
+      // Get stack names for the stage
+      const stackNames = CONFIG.stacks.map(stack => `${stack}-${options.stage}`).join(' ');
+
+      // Run CDK destroy
+      execSync(`pnpm cdk destroy ${opts.force ? '--force' : ''} ${stackNames}`, {
         stdio: 'inherit',
-        env: {
-          ...process.env,
-          STAGE: options.stage,
-          CDK_DEFAULT_ACCOUNT: options.account,
-          CDK_DEFAULT_REGION: options.region,
-          JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION: '1'
-        }
+        env: envVars
       });
 
       console.log(chalk.green('\nDestruction completed successfully!'));
@@ -170,25 +193,24 @@ async function deploy() {
       process.exit(0);
     }
 
-    // Set environment variables
-    process.env.STAGE = options.stage;
-    process.env.CDK_DEFAULT_ACCOUNT = options.account;
-    process.env.CDK_DEFAULT_REGION = options.region;
-
     console.log(chalk.blue('\nStarting deployment...'));
 
-    // Run CDK deploy
-    execSync('pnpm cdk deploy --all', {
-      stdio: 'inherit',
-      env: {
-        ...process.env,
-        JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION: '1'
-      }
-    });
+    try {
+      // Run CDK deploy
+      execSync('pnpm cdk deploy --all', {
+        stdio: 'inherit',
+        env: envVars
+      });
 
-    console.log(chalk.green('\nDeployment completed successfully!'));
+      console.log(chalk.green('\nDeployment completed successfully!'));
+    } catch (deployError) {
+      console.error(chalk.red('\nDeployment failed:'));
+      console.error(chalk.red(deployError instanceof Error ? deployError.message : String(deployError)));
+      process.exit(1);
+    }
   } catch (error) {
-    console.error(chalk.red('\nOperation failed:'), error);
+    console.error(chalk.red('\nOperation failed:'));
+    console.error(chalk.red(error instanceof Error ? error.message : String(error)));
     process.exit(1);
   }
 }

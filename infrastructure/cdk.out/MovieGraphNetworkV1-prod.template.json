@@ -1,0 +1,1825 @@
+{
+ "Resources": {
+  "VPCFlowLogRole9538FF26": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "vpc-flow-logs.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/VPCFlowLogRole/Resource"
+   }
+  },
+  "VPCFlowLogRoleDefaultPolicy90D215A5": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:DescribeLogStreams",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "VPCFlowLogGroup9559E1E7",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": "iam:PassRole",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "VPCFlowLogRole9538FF26",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "VPCFlowLogRoleDefaultPolicy90D215A5",
+    "Roles": [
+     {
+      "Ref": "VPCFlowLogRole9538FF26"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/VPCFlowLogRole/DefaultPolicy/Resource"
+   }
+  },
+  "VPCFlowLogGroup9559E1E7": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "RetentionInDays": 30
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/VPCFlowLogGroup/Resource"
+   }
+  },
+  "MovieGraphVPC6A9E53F7": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/Resource"
+   }
+  },
+  "MovieGraphVPCPublicSubnet1Subnet03AF28BA": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-west-2a",
+    "CidrBlock": "10.0.0.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1/Subnet"
+   }
+  },
+  "MovieGraphVPCPublicSubnet1RouteTable01F39212": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1/RouteTable"
+   }
+  },
+  "MovieGraphVPCPublicSubnet1RouteTableAssociation30167CEF": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MovieGraphVPCPublicSubnet1RouteTable01F39212"
+    },
+    "SubnetId": {
+     "Ref": "MovieGraphVPCPublicSubnet1Subnet03AF28BA"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1/RouteTableAssociation"
+   }
+  },
+  "MovieGraphVPCPublicSubnet1DefaultRoute8F58AC38": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "MovieGraphVPCIGW25ED71BD"
+    },
+    "RouteTableId": {
+     "Ref": "MovieGraphVPCPublicSubnet1RouteTable01F39212"
+    }
+   },
+   "DependsOn": [
+    "MovieGraphVPCVPCGW354E4E73"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1/DefaultRoute"
+   }
+  },
+  "MovieGraphVPCPublicSubnet1EIP9CF2DE8F": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1/EIP"
+   }
+  },
+  "MovieGraphVPCPublicSubnet1NATGateway4F9BC2FA": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "MovieGraphVPCPublicSubnet1EIP9CF2DE8F",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "MovieGraphVPCPublicSubnet1Subnet03AF28BA"
+    },
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ]
+   },
+   "DependsOn": [
+    "MovieGraphVPCPublicSubnet1DefaultRoute8F58AC38",
+    "MovieGraphVPCPublicSubnet1RouteTableAssociation30167CEF"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1/NATGateway"
+   }
+  },
+  "MovieGraphVPCPublicSubnet2Subnet14CC7176": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-west-2b",
+    "CidrBlock": "10.0.1.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2/Subnet"
+   }
+  },
+  "MovieGraphVPCPublicSubnet2RouteTable03C47F89": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2/RouteTable"
+   }
+  },
+  "MovieGraphVPCPublicSubnet2RouteTableAssociation637160CF": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MovieGraphVPCPublicSubnet2RouteTable03C47F89"
+    },
+    "SubnetId": {
+     "Ref": "MovieGraphVPCPublicSubnet2Subnet14CC7176"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2/RouteTableAssociation"
+   }
+  },
+  "MovieGraphVPCPublicSubnet2DefaultRoute715F7089": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "MovieGraphVPCIGW25ED71BD"
+    },
+    "RouteTableId": {
+     "Ref": "MovieGraphVPCPublicSubnet2RouteTable03C47F89"
+    }
+   },
+   "DependsOn": [
+    "MovieGraphVPCVPCGW354E4E73"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2/DefaultRoute"
+   }
+  },
+  "MovieGraphVPCPublicSubnet2EIP06E50D8A": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2/EIP"
+   }
+  },
+  "MovieGraphVPCPublicSubnet2NATGatewayBF613585": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "MovieGraphVPCPublicSubnet2EIP06E50D8A",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "MovieGraphVPCPublicSubnet2Subnet14CC7176"
+    },
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ]
+   },
+   "DependsOn": [
+    "MovieGraphVPCPublicSubnet2DefaultRoute715F7089",
+    "MovieGraphVPCPublicSubnet2RouteTableAssociation637160CF"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2/NATGateway"
+   }
+  },
+  "MovieGraphVPCPrivateSubnet1SubnetBE1139F7": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-west-2a",
+    "CidrBlock": "10.0.2.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet1/Subnet"
+   }
+  },
+  "MovieGraphVPCPrivateSubnet1RouteTable74E4F500": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet1/RouteTable"
+   }
+  },
+  "MovieGraphVPCPrivateSubnet1RouteTableAssociation157763D4": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MovieGraphVPCPrivateSubnet1RouteTable74E4F500"
+    },
+    "SubnetId": {
+     "Ref": "MovieGraphVPCPrivateSubnet1SubnetBE1139F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet1/RouteTableAssociation"
+   }
+  },
+  "MovieGraphVPCPrivateSubnet1DefaultRoute6B442571": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "MovieGraphVPCPublicSubnet1NATGateway4F9BC2FA"
+    },
+    "RouteTableId": {
+     "Ref": "MovieGraphVPCPrivateSubnet1RouteTable74E4F500"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet1/DefaultRoute"
+   }
+  },
+  "MovieGraphVPCPrivateSubnet2Subnet2F1A8302": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-west-2b",
+    "CidrBlock": "10.0.3.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet2/Subnet"
+   }
+  },
+  "MovieGraphVPCPrivateSubnet2RouteTableA26BE1AD": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet2/RouteTable"
+   }
+  },
+  "MovieGraphVPCPrivateSubnet2RouteTableAssociation09D5C918": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MovieGraphVPCPrivateSubnet2RouteTableA26BE1AD"
+    },
+    "SubnetId": {
+     "Ref": "MovieGraphVPCPrivateSubnet2Subnet2F1A8302"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet2/RouteTableAssociation"
+   }
+  },
+  "MovieGraphVPCPrivateSubnet2DefaultRoute4B0D6623": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "MovieGraphVPCPublicSubnet2NATGatewayBF613585"
+    },
+    "RouteTableId": {
+     "Ref": "MovieGraphVPCPrivateSubnet2RouteTableA26BE1AD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet2/DefaultRoute"
+   }
+  },
+  "MovieGraphVPCIsolatedSubnet1Subnet0FD2B803": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-west-2a",
+    "CidrBlock": "10.0.4.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet1/Subnet"
+   }
+  },
+  "MovieGraphVPCIsolatedSubnet1RouteTable0D752286": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet1/RouteTable"
+   }
+  },
+  "MovieGraphVPCIsolatedSubnet1RouteTableAssociationB0F32F66": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MovieGraphVPCIsolatedSubnet1RouteTable0D752286"
+    },
+    "SubnetId": {
+     "Ref": "MovieGraphVPCIsolatedSubnet1Subnet0FD2B803"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet1/RouteTableAssociation"
+   }
+  },
+  "MovieGraphVPCIsolatedSubnet2Subnet12587EAF": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-west-2b",
+    "CidrBlock": "10.0.5.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet2/Subnet"
+   }
+  },
+  "MovieGraphVPCIsolatedSubnet2RouteTable05B1CA92": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet2/RouteTable"
+   }
+  },
+  "MovieGraphVPCIsolatedSubnet2RouteTableAssociationB030DE72": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MovieGraphVPCIsolatedSubnet2RouteTable05B1CA92"
+    },
+    "SubnetId": {
+     "Ref": "MovieGraphVPCIsolatedSubnet2Subnet12587EAF"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet2/RouteTableAssociation"
+   }
+  },
+  "MovieGraphVPCIGW25ED71BD": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IGW"
+   }
+  },
+  "MovieGraphVPCVPCGW354E4E73": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "InternetGatewayId": {
+     "Ref": "MovieGraphVPCIGW25ED71BD"
+    },
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/VPCGW"
+   }
+  },
+  "MovieGraphVPCflowlogFlowLog89F89374": {
+   "Type": "AWS::EC2::FlowLog",
+   "Properties": {
+    "DeliverLogsPermissionArn": {
+     "Fn::GetAtt": [
+      "VPCFlowLogRole9538FF26",
+      "Arn"
+     ]
+    },
+    "LogDestinationType": "cloud-watch-logs",
+    "LogGroupName": {
+     "Ref": "VPCFlowLogGroup9559E1E7"
+    },
+    "ResourceId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    },
+    "ResourceType": "VPC",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC/flowlog"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "TrafficType": "ALL"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/flowlog/FlowLog"
+   }
+  },
+  "MovieGraphVPCRestrictDefaultSecurityGroupCustomResource942ACE80": {
+   "Type": "Custom::VpcRestrictDefaultSG",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E",
+      "Arn"
+     ]
+    },
+    "DefaultSecurityGroupId": {
+     "Fn::GetAtt": [
+      "MovieGraphVPC6A9E53F7",
+      "DefaultSecurityGroup"
+     ]
+    },
+    "Account": "688567301885"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/RestrictDefaultSecurityGroupCustomResource/Default"
+   }
+  },
+  "MovieGraphVPCCloudWatchEndpointSecurityGroupF9025DB0": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "MovieGraphNetworkV1-prod/MovieGraphVPC/CloudWatchEndpoint/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": {
+       "Fn::GetAtt": [
+        "MovieGraphVPC6A9E53F7",
+        "CidrBlock"
+       ]
+      },
+      "Description": {
+       "Fn::Join": [
+        "",
+        [
+         "from ",
+         {
+          "Fn::GetAtt": [
+           "MovieGraphVPC6A9E53F7",
+           "CidrBlock"
+          ]
+         },
+         ":443"
+        ]
+       ]
+      },
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/CloudWatchEndpoint/SecurityGroup/Resource"
+   }
+  },
+  "MovieGraphVPCCloudWatchEndpoint5730DA95": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "MovieGraphVPCCloudWatchEndpointSecurityGroupF9025DB0",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-west-2.logs",
+    "SubnetIds": [
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet1SubnetBE1139F7"
+     },
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet2Subnet2F1A8302"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/CloudWatchEndpoint/Resource"
+   }
+  },
+  "MovieGraphVPCSecretsEndpointSecurityGroup7B1A11D5": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "MovieGraphNetworkV1-prod/MovieGraphVPC/SecretsEndpoint/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": {
+       "Fn::GetAtt": [
+        "MovieGraphVPC6A9E53F7",
+        "CidrBlock"
+       ]
+      },
+      "Description": {
+       "Fn::Join": [
+        "",
+        [
+         "from ",
+         {
+          "Fn::GetAtt": [
+           "MovieGraphVPC6A9E53F7",
+           "CidrBlock"
+          ]
+         },
+         ":443"
+        ]
+       ]
+      },
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SecretsEndpoint/SecurityGroup/Resource"
+   }
+  },
+  "MovieGraphVPCSecretsEndpoint25A5B131": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "MovieGraphVPCSecretsEndpointSecurityGroup7B1A11D5",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-west-2.secretsmanager",
+    "SubnetIds": [
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet1SubnetBE1139F7"
+     },
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet2Subnet2F1A8302"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SecretsEndpoint/Resource"
+   }
+  },
+  "MovieGraphVPCS3EndpointC3187398": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "RouteTableIds": [
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet1RouteTable74E4F500"
+     },
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet2RouteTableA26BE1AD"
+     },
+     {
+      "Ref": "MovieGraphVPCPublicSubnet1RouteTable01F39212"
+     },
+     {
+      "Ref": "MovieGraphVPCPublicSubnet2RouteTable03C47F89"
+     },
+     {
+      "Ref": "MovieGraphVPCIsolatedSubnet1RouteTable0D752286"
+     },
+     {
+      "Ref": "MovieGraphVPCIsolatedSubnet2RouteTable05B1CA92"
+     }
+    ],
+    "ServiceName": {
+     "Fn::Join": [
+      "",
+      [
+       "com.amazonaws.",
+       {
+        "Ref": "AWS::Region"
+       },
+       ".s3"
+      ]
+     ]
+    },
+    "VpcEndpointType": "Gateway",
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/S3Endpoint/Resource"
+   }
+  },
+  "MovieGraphVPCApiGatewayEndpointSecurityGroup2A08E6C5": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "MovieGraphNetworkV1-prod/MovieGraphVPC/ApiGatewayEndpoint/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": {
+       "Fn::GetAtt": [
+        "MovieGraphVPC6A9E53F7",
+        "CidrBlock"
+       ]
+      },
+      "Description": {
+       "Fn::Join": [
+        "",
+        [
+         "from ",
+         {
+          "Fn::GetAtt": [
+           "MovieGraphVPC6A9E53F7",
+           "CidrBlock"
+          ]
+         },
+         ":443"
+        ]
+       ]
+      },
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/ApiGatewayEndpoint/SecurityGroup/Resource"
+   }
+  },
+  "MovieGraphVPCApiGatewayEndpoint9DC9889B": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "MovieGraphVPCApiGatewayEndpointSecurityGroup2A08E6C5",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-west-2.execute-api",
+    "SubnetIds": [
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet1SubnetBE1139F7"
+     },
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet2Subnet2F1A8302"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/ApiGatewayEndpoint/Resource"
+   }
+  },
+  "MovieGraphVPCSsmEndpointSecurityGroupC7C2C6F9": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmEndpoint/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": {
+       "Fn::GetAtt": [
+        "MovieGraphVPC6A9E53F7",
+        "CidrBlock"
+       ]
+      },
+      "Description": {
+       "Fn::Join": [
+        "",
+        [
+         "from ",
+         {
+          "Fn::GetAtt": [
+           "MovieGraphVPC6A9E53F7",
+           "CidrBlock"
+          ]
+         },
+         ":443"
+        ]
+       ]
+      },
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmEndpoint/SecurityGroup/Resource"
+   }
+  },
+  "MovieGraphVPCSsmEndpoint670D8E6D": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "MovieGraphVPCSsmEndpointSecurityGroupC7C2C6F9",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-west-2.ssm",
+    "SubnetIds": [
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet1SubnetBE1139F7"
+     },
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet2Subnet2F1A8302"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmEndpoint/Resource"
+   }
+  },
+  "MovieGraphVPCSsmMessagesEndpointSecurityGroup5DAC5916": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmMessagesEndpoint/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": {
+       "Fn::GetAtt": [
+        "MovieGraphVPC6A9E53F7",
+        "CidrBlock"
+       ]
+      },
+      "Description": {
+       "Fn::Join": [
+        "",
+        [
+         "from ",
+         {
+          "Fn::GetAtt": [
+           "MovieGraphVPC6A9E53F7",
+           "CidrBlock"
+          ]
+         },
+         ":443"
+        ]
+       ]
+      },
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmMessagesEndpoint/SecurityGroup/Resource"
+   }
+  },
+  "MovieGraphVPCSsmMessagesEndpoint361608DF": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "MovieGraphVPCSsmMessagesEndpointSecurityGroup5DAC5916",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-west-2.ssmmessages",
+    "SubnetIds": [
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet1SubnetBE1139F7"
+     },
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet2Subnet2F1A8302"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmMessagesEndpoint/Resource"
+   }
+  },
+  "MovieGraphVPCEc2MessagesEndpointSecurityGroupBE7E2138": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "MovieGraphNetworkV1-prod/MovieGraphVPC/Ec2MessagesEndpoint/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": {
+       "Fn::GetAtt": [
+        "MovieGraphVPC6A9E53F7",
+        "CidrBlock"
+       ]
+      },
+      "Description": {
+       "Fn::Join": [
+        "",
+        [
+         "from ",
+         {
+          "Fn::GetAtt": [
+           "MovieGraphVPC6A9E53F7",
+           "CidrBlock"
+          ]
+         },
+         ":443"
+        ]
+       ]
+      },
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Name",
+      "Value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
+     },
+     {
+      "Key": "Project",
+      "Value": "MovieGraph"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/Ec2MessagesEndpoint/SecurityGroup/Resource"
+   }
+  },
+  "MovieGraphVPCEc2MessagesEndpoint28B09305": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "MovieGraphVPCEc2MessagesEndpointSecurityGroupBE7E2138",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-west-2.ec2messages",
+    "SubnetIds": [
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet1SubnetBE1139F7"
+     },
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet2Subnet2F1A8302"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/MovieGraphVPC/Ec2MessagesEndpoint/Resource"
+   }
+  },
+  "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Version": "2012-10-17",
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ]
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+     }
+    ],
+    "Policies": [
+     {
+      "PolicyName": "Inline",
+      "PolicyDocument": {
+       "Version": "2012-10-17",
+       "Statement": [
+        {
+         "Effect": "Allow",
+         "Action": [
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:AuthorizeSecurityGroupEgress",
+          "ec2:RevokeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupEgress"
+         ],
+         "Resource": [
+          {
+           "Fn::Join": [
+            "",
+            [
+             "arn:aws:ec2:us-west-2:688567301885:security-group/",
+             {
+              "Fn::GetAtt": [
+               "MovieGraphVPC6A9E53F7",
+               "DefaultSecurityGroup"
+              ]
+             }
+            ]
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role"
+   }
+  },
+  "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-688567301885-us-west-2",
+     "S3Key": "dd5711540f04e06aa955d7f4862fc04e8cdea464cb590dae91ed2976bb78098e.zip"
+    },
+    "Timeout": 900,
+    "MemorySize": 128,
+    "Handler": "__entrypoint__.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Description": "Lambda function for removing all inbound/outbound rules from the VPC default security group"
+   },
+   "DependsOn": [
+    "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler",
+    "aws:asset:path": "asset.dd5711540f04e06aa955d7f4862fc04e8cdea464cb590dae91ed2976bb78098e",
+    "aws:asset:property": "Code"
+   }
+  },
+  "ExecuteApiEndpointSecurityGroup555FA92F": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "MovieGraphNetworkV1-prod/ExecuteApiEndpoint/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": {
+       "Fn::GetAtt": [
+        "MovieGraphVPC6A9E53F7",
+        "CidrBlock"
+       ]
+      },
+      "Description": {
+       "Fn::Join": [
+        "",
+        [
+         "from ",
+         {
+          "Fn::GetAtt": [
+           "MovieGraphVPC6A9E53F7",
+           "CidrBlock"
+          ]
+         },
+         ":443"
+        ]
+       ]
+      },
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/ExecuteApiEndpoint/SecurityGroup/Resource"
+   }
+  },
+  "ExecuteApiEndpoint1E96DB8C": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "ExecuteApiEndpointSecurityGroup555FA92F",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-west-2.execute-api",
+    "SubnetIds": [
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet1SubnetBE1139F7"
+     },
+     {
+      "Ref": "MovieGraphVPCPrivateSubnet2Subnet2F1A8302"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "MovieGraphVPC6A9E53F7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/ExecuteApiEndpoint/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/3VPX2uDMBD/LH1Psyn7AkW6Uiib6PB1xHi112pOkkuliN99pLY6GHv6/c3dJZZR9CajlerdWleXdYOlHHJW+iJU774HVK0cMmpAJEdzx5Qa1LcgJzaKhmonhwPVO0u+C8mTjwJ0LIei08Et0kSkvmxQ5740wMFbWEae4UuV06rJX7yNc6RRMZKZy4Fs92mAD8U7xdCrm0gtXhXDMnhvGKyBuTBd8lAbZqVPLRgW7w31B6pD/qT3p0eloej01lQdoWGRg/YW+Tb/9o9RpMncfuz5NWAcRQaOvNUgEu+Y2kUezT9RaumKFVixcQ44Z1WjuZ/66bnzPApDFcize7nGsYwi+bo6O8S19YaxBZlN+AN8GxT27gEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "MovieGraphNetworkV1-prod/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "VpcId": {
+   "Description": "VPC ID",
+   "Value": {
+    "Ref": "MovieGraphVPC6A9E53F7"
+   }
+  },
+  "PublicSubnets": {
+   "Description": "Public subnet IDs",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "[\"",
+      {
+       "Ref": "MovieGraphVPCPublicSubnet1Subnet03AF28BA"
+      },
+      "\",\"",
+      {
+       "Ref": "MovieGraphVPCPublicSubnet2Subnet14CC7176"
+      },
+      "\"]"
+     ]
+    ]
+   }
+  },
+  "PrivateSubnets": {
+   "Description": "Private subnet IDs",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "[\"",
+      {
+       "Ref": "MovieGraphVPCPrivateSubnet1SubnetBE1139F7"
+      },
+      "\",\"",
+      {
+       "Ref": "MovieGraphVPCPrivateSubnet2Subnet2F1A8302"
+      },
+      "\"]"
+     ]
+    ]
+   }
+  },
+  "IsolatedSubnets": {
+   "Description": "Isolated subnet IDs",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "[\"",
+      {
+       "Ref": "MovieGraphVPCIsolatedSubnet1Subnet0FD2B803"
+      },
+      "\",\"",
+      {
+       "Ref": "MovieGraphVPCIsolatedSubnet2Subnet12587EAF"
+      },
+      "\"]"
+     ]
+    ]
+   }
+  },
+  "FlowLogGroup": {
+   "Description": "VPC Flow Log Group Name",
+   "Value": {
+    "Ref": "VPCFlowLogGroup9559E1E7"
+   }
+  },
+  "ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8": {
+   "Value": {
+    "Ref": "MovieGraphVPC6A9E53F7"
+   },
+   "Export": {
+    "Name": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
+   }
+  },
+  "ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC": {
+   "Value": {
+    "Ref": "MovieGraphVPCPrivateSubnet1SubnetBE1139F7"
+   },
+   "Export": {
+    "Name": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
+   }
+  },
+  "ExportsOutputRefMovieGraphVPCPrivateSubnet2Subnet2F1A83027B90BD2F": {
+   "Value": {
+    "Ref": "MovieGraphVPCPrivateSubnet2Subnet2F1A8302"
+   },
+   "Export": {
+    "Name": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet2Subnet2F1A83027B90BD2F"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

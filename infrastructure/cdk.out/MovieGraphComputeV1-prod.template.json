@@ -3,17 +3,17 @@
   "Certificate4E7ABB08": {
    "Type": "AWS::CertificateManager::Certificate",
    "Properties": {
-    "DomainName": "movie-graph-dev.gabetimm.me",
+    "DomainName": "movie-graph.gabetimm.me",
     "DomainValidationOptions": [
      {
-      "DomainName": "movie-graph-dev.gabetimm.me",
+      "DomainName": "movie-graph.gabetimm.me",
       "HostedZoneId": "Z0163319167XOPZDZTJN6"
      }
     ],
     "Tags": [
      {
       "Key": "Environment",
-      "Value": "dev"
+      "Value": "prod"
      },
      {
       "Key": "ManagedBy",
@@ -21,7 +21,7 @@
      },
      {
       "Key": "Name",
-      "Value": "MovieGraphCompute-dev/Certificate"
+      "Value": "MovieGraphComputeV1-prod/Certificate"
      },
      {
       "Key": "Project",
@@ -31,18 +31,18 @@
     "ValidationMethod": "DNS"
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/Certificate/Resource"
+    "aws:cdk:path": "MovieGraphComputeV1-prod/Certificate/Resource"
    }
   },
   "ApiGatewayLogs22899D9B": {
    "Type": "AWS::Logs::LogGroup",
    "Properties": {
-    "LogGroupName": "/aws/apigateway/movie-graph-dev",
+    "LogGroupName": "/aws/apigateway/movie-graph-prod",
     "RetentionInDays": 30,
     "Tags": [
      {
       "Key": "Environment",
-      "Value": "dev"
+      "Value": "prod"
      },
      {
       "Key": "ManagedBy",
@@ -57,7 +57,7 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/ApiGatewayLogs/Resource"
+    "aws:cdk:path": "MovieGraphComputeV1-prod/ApiGatewayLogs/Resource"
    }
   },
   "MovieGraphApi6532AD29": {
@@ -88,16 +88,16 @@
     },
     "Description": "Movie Graph API",
     "DisableExecuteApiEndpoint": true,
-    "Name": "movie-graph-dev",
+    "Name": "movie-graph-prod",
     "ProtocolType": "HTTP",
     "Tags": {
-     "Environment": "dev",
+     "Environment": "prod",
      "ManagedBy": "CDK",
      "Project": "MovieGraph"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/MovieGraphApi/Resource"
+    "aws:cdk:path": "MovieGraphComputeV1-prod/MovieGraphApi/Resource"
    }
   },
   "MovieGraphApiDefaultStage8364A6B3": {
@@ -123,19 +123,19 @@
     },
     "StageName": "$default",
     "Tags": {
-     "Environment": "dev",
+     "Environment": "prod",
      "ManagedBy": "CDK",
      "Project": "MovieGraph"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/MovieGraphApi/DefaultStage/Resource"
+    "aws:cdk:path": "MovieGraphComputeV1-prod/MovieGraphApi/DefaultStage/Resource"
    }
   },
   "CustomDomain21DD44B6": {
    "Type": "AWS::ApiGatewayV2::DomainName",
    "Properties": {
-    "DomainName": "movie-graph-dev.gabetimm.me",
+    "DomainName": "movie-graph.gabetimm.me",
     "DomainNameConfigurations": [
      {
       "CertificateArn": {
@@ -145,13 +145,13 @@
      }
     ],
     "Tags": {
-     "Environment": "dev",
+     "Environment": "prod",
      "ManagedBy": "CDK",
      "Project": "MovieGraph"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/CustomDomain/Resource"
+    "aws:cdk:path": "MovieGraphComputeV1-prod/CustomDomain/Resource"
    }
   },
   "ApiMapping8F180979": {
@@ -169,7 +169,7 @@
     "MovieGraphApiDefaultStage8364A6B3"
    ],
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/ApiMapping/Resource"
+    "aws:cdk:path": "MovieGraphComputeV1-prod/ApiMapping/Resource"
    }
   },
   "ApiAliasRecordBCE933A3": {
@@ -190,11 +190,11 @@
      }
     },
     "HostedZoneId": "Z0163319167XOPZDZTJN6",
-    "Name": "movie-graph-dev.gabetimm.me.",
+    "Name": "movie-graph.gabetimm.me.",
     "Type": "A"
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/ApiAliasRecord/Resource"
+    "aws:cdk:path": "MovieGraphComputeV1-prod/ApiAliasRecord/Resource"
    }
   },
   "CDKMetadata": {
@@ -203,14 +203,14 @@
     "Analytics": "v2:deflate64:H4sIAAAAAAAA/02PzW7EIAyEnyV34l3S9t4oldpDf6TkASqXEMpuAgjMRhXi3Ss2WzWnmfFY1ucGOL+HxCtcQy3Gcz3rL0gDoTizXgYbvZAM1/CZhPSkJy2Q5IIGlfSQuv8Z6yazi5nNVgVIr1Y9extdqf98Zui0QpIr/lwaSN1kWqfLxkCorpee7ILavONyTa3Tb+icNiozbyPJhztIbS+F9WPpNzdIyrnEj0gu0lZsH2TGa5zdN8Kxerx9eii6B7ltpBciV3iKbkA7mh1KZsaOEk7hcGka4ByO1SloXftoSC8S+k1/AaURHPViAQAA"
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/CDKMetadata/Default"
+    "aws:cdk:path": "MovieGraphComputeV1-prod/CDKMetadata/Default"
    }
   }
  },
  "Outputs": {
   "ApiUrl": {
    "Description": "API Gateway endpoint URL",
-   "Value": "https://movie-graph-dev.gabetimm.me"
+   "Value": "https://movie-graph.gabetimm.me"
   },
   "ApiId": {
    "Description": "API Gateway ID",

@@ -21,7 +21,7 @@
      },
      {
       "Key": "Name",
-      "Value": "MovieGraphCompute-dev/Certificate"
+      "Value": "MovieGraphComputeV1-dev/Certificate"
      },
      {
       "Key": "Project",
@@ -31,7 +31,7 @@
     "ValidationMethod": "DNS"
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/Certificate/Resource"
+    "aws:cdk:path": "MovieGraphComputeV1-dev/Certificate/Resource"
    }
   },
   "ApiGatewayLogs22899D9B": {
@@ -57,7 +57,7 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/ApiGatewayLogs/Resource"
+    "aws:cdk:path": "MovieGraphComputeV1-dev/ApiGatewayLogs/Resource"
    }
   },
   "MovieGraphApi6532AD29": {
@@ -97,7 +97,7 @@
     }
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/MovieGraphApi/Resource"
+    "aws:cdk:path": "MovieGraphComputeV1-dev/MovieGraphApi/Resource"
    }
   },
   "MovieGraphApiDefaultStage8364A6B3": {
@@ -129,7 +129,7 @@
     }
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/MovieGraphApi/DefaultStage/Resource"
+    "aws:cdk:path": "MovieGraphComputeV1-dev/MovieGraphApi/DefaultStage/Resource"
    }
   },
   "CustomDomain21DD44B6": {
@@ -151,7 +151,7 @@
     }
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/CustomDomain/Resource"
+    "aws:cdk:path": "MovieGraphComputeV1-dev/CustomDomain/Resource"
    }
   },
   "ApiMapping8F180979": {
@@ -169,7 +169,7 @@
     "MovieGraphApiDefaultStage8364A6B3"
    ],
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/ApiMapping/Resource"
+    "aws:cdk:path": "MovieGraphComputeV1-dev/ApiMapping/Resource"
    }
   },
   "ApiAliasRecordBCE933A3": {
@@ -194,7 +194,7 @@
     "Type": "A"
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/ApiAliasRecord/Resource"
+    "aws:cdk:path": "MovieGraphComputeV1-dev/ApiAliasRecord/Resource"
    }
   },
   "CDKMetadata": {
@@ -203,7 +203,7 @@
     "Analytics": "v2:deflate64:H4sIAAAAAAAA/02PzW7EIAyEnyV34l3S9t4oldpDf6TkASqXEMpuAgjMRhXi3Ss2WzWnmfFY1ucGOL+HxCtcQy3Gcz3rL0gDoTizXgYbvZAM1/CZhPSkJy2Q5IIGlfSQuv8Z6yazi5nNVgVIr1Y9extdqf98Zui0QpIr/lwaSN1kWqfLxkCorpee7ILavONyTa3Tb+icNiozbyPJhztIbS+F9WPpNzdIyrnEj0gu0lZsH2TGa5zdN8Kxerx9eii6B7ltpBciV3iKbkA7mh1KZsaOEk7hcGka4ByO1SloXftoSC8S+k1/AaURHPViAQAA"
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphCompute-dev/CDKMetadata/Default"
+    "aws:cdk:path": "MovieGraphComputeV1-dev/CDKMetadata/Default"
    }
   }
  },

@@ -72,6 +72,38 @@ export class NetworkStack extends cdk.Stack {
       service: ec2.GatewayVpcEndpointAwsService.S3
     });
 
+    // Add API Gateway VPC endpoints
+    this.vpc.addInterfaceEndpoint('ApiGatewayEndpoint', {
+      service: ec2.InterfaceVpcEndpointAwsService.APIGATEWAY,
+      subnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }
+    });
+
+    // Add endpoint for API Gateway execution
+    new ec2.InterfaceVpcEndpoint(this, 'ExecuteApiEndpoint', {
+      vpc: this.vpc,
+      service: {
+        name: `com.amazonaws.${cdk.Stack.of(this).region}.execute-api`,
+        port: 443
+      },
+      subnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }
+    });
+
+    // Add SSM endpoints for EC2 Instance Connect
+    this.vpc.addInterfaceEndpoint('SsmEndpoint', {
+      service: ec2.InterfaceVpcEndpointAwsService.SSM,
+      subnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }
+    });
+
+    this.vpc.addInterfaceEndpoint('SsmMessagesEndpoint', {
+      service: ec2.InterfaceVpcEndpointAwsService.SSM_MESSAGES,
+      subnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }
+    });
+
+    this.vpc.addInterfaceEndpoint('Ec2MessagesEndpoint', {
+      service: ec2.InterfaceVpcEndpointAwsService.EC2_MESSAGES,
+      subnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }
+    });
+
     // Add outputs
     new cdk.CfnOutput(this, 'VpcId', {
       value: this.vpc.vpcId,

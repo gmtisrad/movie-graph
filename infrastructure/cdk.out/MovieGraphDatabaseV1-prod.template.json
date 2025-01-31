@@ -26,11 +26,11 @@
      }
     ],
     "VpcId": {
-     "Fn::ImportValue": "MovieGraphNetwork-prod:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
+     "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/NeptuneSecurityGroup/Resource"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/NeptuneSecurityGroup/Resource"
    }
   },
   "NeptuneManagerSecurityGroup8FB518DC": {
@@ -59,11 +59,11 @@
      }
     ],
     "VpcId": {
-     "Fn::ImportValue": "MovieGraphNetwork-prod:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
+     "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/NeptuneManagerSecurityGroup/Resource"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/NeptuneManagerSecurityGroup/Resource"
    }
   },
   "EICSecurityGroup9AD6BA19": {
@@ -78,11 +78,11 @@
      }
     ],
     "VpcId": {
-     "Fn::ImportValue": "MovieGraphNetwork-prod:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
+     "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/EICSecurityGroup/Resource"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/EICSecurityGroup/Resource"
    }
   },
   "RdsSecurityGroup632A77E4": {
@@ -111,11 +111,11 @@
      }
     ],
     "VpcId": {
-     "Fn::ImportValue": "MovieGraphNetwork-prod:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
+     "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/RdsSecurityGroup/Resource"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/RdsSecurityGroup/Resource"
    }
   },
   "NeptuneS3Role8D81371E": {
@@ -136,7 +136,7 @@
     "Description": "IAM role for Neptune S3 access"
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/NeptuneS3Role/Resource"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/NeptuneS3Role/Resource"
    }
   },
   "NeptuneS3RoleDefaultPolicy31B36339": {
@@ -174,7 +174,7 @@
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/NeptuneS3Role/DefaultPolicy/Resource"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/NeptuneS3Role/DefaultPolicy/Resource"
    }
   },
   "NeptuneManagerRoleFBAA80C1": {
@@ -233,7 +233,7 @@
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/NeptuneManagerRole/Resource"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/NeptuneManagerRole/Resource"
    }
   },
   "NeptuneManagerRoleDefaultPolicyC7C39058": {
@@ -280,7 +280,7 @@
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/NeptuneManagerRole/DefaultPolicy/Resource"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/NeptuneManagerRole/DefaultPolicy/Resource"
    }
   },
   "NeptuneSubnetGroup": {
@@ -290,15 +290,15 @@
     "DBSubnetGroupName": "movie-graph-prod-neptune",
     "SubnetIds": [
      {
-      "Fn::ImportValue": "MovieGraphNetwork-prod:ExportsOutputRefMovieGraphVPCIsolatedSubnet1Subnet0FD2B8034C4BDB38"
+      "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
      },
      {
-      "Fn::ImportValue": "MovieGraphNetwork-prod:ExportsOutputRefMovieGraphVPCIsolatedSubnet2Subnet12587EAF18FFADAC"
+      "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet2Subnet2F1A83027B90BD2F"
      }
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/NeptuneSubnetGroup"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/NeptuneSubnetGroup"
    }
   },
   "MovieGraphDB": {
@@ -345,7 +345,7 @@
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/MovieGraphDB"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/MovieGraphDB"
    }
   },
   "NeptuneInstance": {
@@ -361,7 +361,7 @@
     "MovieGraphDB"
    ],
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/NeptuneInstance"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/NeptuneInstance"
    }
   },
   "MetadataDBSubnetGroupE3C5E100": {
@@ -370,18 +370,18 @@
     "DBSubnetGroupDescription": "Subnet group for MetadataDB database",
     "SubnetIds": [
      {
-      "Fn::ImportValue": "MovieGraphNetwork-prod:ExportsOutputRefMovieGraphVPCIsolatedSubnet1Subnet0FD2B8034C4BDB38"
+      "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
      },
      {
-      "Fn::ImportValue": "MovieGraphNetwork-prod:ExportsOutputRefMovieGraphVPCIsolatedSubnet2Subnet12587EAF18FFADAC"
+      "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet2Subnet2F1A83027B90BD2F"
      }
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/MetadataDB/SubnetGroup/Default"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/MetadataDB/SubnetGroup/Default"
    }
   },
-  "MovieGraphDatabaseprodMetadataDBSecret491984813fdaad7efa858a3daf9490cf0a702aeb": {
+  "MovieGraphDatabaseV1prodMetadataDBSecretAF1DBE143fdaad7efa858a3daf9490cf0a702aeb": {
    "Type": "AWS::SecretsManager::Secret",
    "Properties": {
     "Description": {
@@ -406,14 +406,14 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/MetadataDB/Secret/Resource"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/MetadataDB/Secret/Resource"
    }
   },
   "MetadataDBSecretAttachment385A4A26": {
    "Type": "AWS::SecretsManager::SecretTargetAttachment",
    "Properties": {
     "SecretId": {
-     "Ref": "MovieGraphDatabaseprodMetadataDBSecret491984813fdaad7efa858a3daf9490cf0a702aeb"
+     "Ref": "MovieGraphDatabaseV1prodMetadataDBSecretAF1DBE143fdaad7efa858a3daf9490cf0a702aeb"
     },
     "TargetId": {
      "Ref": "MetadataDB03FD9DCA"
@@ -421,7 +421,7 @@
     "TargetType": "AWS::RDS::DBInstance"
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/MetadataDB/Secret/Attachment/Resource"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/MetadataDB/Secret/Attachment/Resource"
    }
   },
   "MetadataDB03FD9DCA": {
@@ -445,7 +445,7 @@
       [
        "{{resolve:secretsmanager:",
        {
-        "Ref": "MovieGraphDatabaseprodMetadataDBSecret491984813fdaad7efa858a3daf9490cf0a702aeb"
+        "Ref": "MovieGraphDatabaseV1prodMetadataDBSecretAF1DBE143fdaad7efa858a3daf9490cf0a702aeb"
        },
        ":SecretString:password::}}"
       ]
@@ -466,7 +466,7 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/MetadataDB/Resource"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/MetadataDB/Resource"
    }
   },
   "NeptuneManagerInstanceProfileB8488BF7": {
@@ -479,7 +479,7 @@
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/NeptuneManager/InstanceProfile"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/NeptuneManager/InstanceProfile"
    }
   },
   "NeptuneManager00B42CF1": {
@@ -502,12 +502,12 @@
      }
     ],
     "SubnetId": {
-     "Fn::ImportValue": "MovieGraphNetwork-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
+     "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
     },
     "Tags": [
      {
       "Key": "Name",
-      "Value": "MovieGraphDatabase-prod/NeptuneManager"
+      "Value": "MovieGraphDatabaseV1-prod/NeptuneManager"
      }
     ],
     "UserData": {
@@ -519,7 +519,7 @@
     "NeptuneManagerRoleFBAA80C1"
    ],
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/NeptuneManager/Resource"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/NeptuneManager/Resource"
    }
   },
   "NeptuneManagerEICEndpoint": {
@@ -535,11 +535,11 @@
      }
     ],
     "SubnetId": {
-     "Fn::ImportValue": "MovieGraphNetwork-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
+     "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
     }
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/NeptuneManagerEICEndpoint"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/NeptuneManagerEICEndpoint"
    }
   },
   "CDKMetadata": {
@@ -548,7 +548,7 @@
     "Analytics": "v2:deflate64:H4sIAAAAAAAA/21Q0U7DMAz8lr2ngRZ+gHZo4omq5R15qTeytk4VO0xT1H9Ha9cBg6ezz3fW2ZlO00edruDIiWnapLNbHWsB0yo48ntEk+lYowneymnjXRhUsaPfxAuxABk8T/6rC0eERp6pGZwlGRU/6DyYFiUHRmWh17Fy3eSZsHSdNadz+10ty0rvdrbDUREOEgh1LHa0zuuwJZRrwHVedIEF/dws5lH5hnVcg8AWGK9h/7h/Eou6RuNRbhfyxHIPBHv0U5qLcIY38HuUJxEwHz2SqKvgdjKOqkJ2wc/fK8FDj5cTXoMMYfIuklGRa1Af+O4zy3Sa6vvVga1NfCCxPepqxi/GdrFA4AEAAA=="
    },
    "Metadata": {
-    "aws:cdk:path": "MovieGraphDatabase-prod/CDKMetadata/Default"
+    "aws:cdk:path": "MovieGraphDatabaseV1-prod/CDKMetadata/Default"
    }
   }
  },
