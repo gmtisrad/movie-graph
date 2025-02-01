@@ -1206,7 +1206,7 @@
   "MovieGraphVPCApiGatewayEndpoint9DC9889B": {
    "Type": "AWS::EC2::VPCEndpoint",
    "Properties": {
-    "PrivateDnsEnabled": true,
+    "PrivateDnsEnabled": false,
     "SecurityGroupIds": [
      {
       "Fn::GetAtt": [

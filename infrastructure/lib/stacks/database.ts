@@ -26,51 +26,25 @@ export class DatabaseStack extends cdk.Stack {
       allowAllOutbound: true,
     });
 
-    const managerSecurityGroup = new ec2.SecurityGroup(this, 'NeptuneManagerSecurityGroup', {
-      vpc: props.vpc,
-      description: 'Security group for Neptune manager EC2 instance',
-      allowAllOutbound: true,
-    });
-
-    const eicSecurityGroup = new ec2.SecurityGroup(this, 'EICSecurityGroup', {
-      vpc: props.vpc,
-      description: 'Security group for EC2 Instance Connect Endpoint',
-      allowAllOutbound: true,
-    });
-
     const rdsSecurityGroup = new ec2.SecurityGroup(this, 'RdsSecurityGroup', {
       vpc: props.vpc,
       description: 'Security group for RDS instance',
       allowAllOutbound: true,
     });
 
-    // Configure security group rules
-    neptuneSecurityGroup.addIngressRule(
-      ec2.Peer.securityGroupId(managerSecurityGroup.securityGroupId),
-      ec2.Port.tcp(8182),
-      'Allow Neptune access from manager instance'
+    // Allow Neptune to access S3 VPC endpoint
+    neptuneSecurityGroup.addEgressRule(
+      ec2.Peer.ipv4('0.0.0.0/0'),
+      ec2.Port.tcp(443),
+      'Allow HTTPS egress for S3 access'
     );
-
-    rdsSecurityGroup.addIngressRule(
-      ec2.Peer.securityGroupId(managerSecurityGroup.securityGroupId),
-      ec2.Port.tcp(5432),
-      'Allow PostgreSQL access from manager instance'
-    );
-
-    // Allow SSH access only from EC2 Instance Connect Endpoint
-    managerSecurityGroup.addIngressRule(
-      ec2.Peer.securityGroupId(eicSecurityGroup.securityGroupId),
-      ec2.Port.tcp(22),
-      'Allow SSH access from EC2 Instance Connect Endpoint only'
-    );
-
     // Import the existing S3 bucket
     const dataBucket = s3.Bucket.fromBucketName(this, 'DataBucket', 'movie-graph-bin');
 
     // Add bucket policy for Neptune access
     const bucketPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
-      principals: [new iam.ServicePrincipal('neptune-db.amazonaws.com')],
+      principals: [new iam.ServicePrincipal('rds.amazonaws.com')],
       actions: [
         's3:Get*',
         's3:List*'
@@ -84,7 +58,7 @@ export class DatabaseStack extends cdk.Stack {
           'aws:SourceAccount': cdk.Stack.of(this).account
         },
         ArnLike: {
-          'aws:SourceArn': `arn:aws:neptune-db:${cdk.Stack.of(this).region}:${cdk.Stack.of(this).account}:*/*`
+          'aws:SourceArn': `arn:aws:rds:${cdk.Stack.of(this).region}:${cdk.Stack.of(this).account}:*/*`
         }
       }
     });
@@ -96,16 +70,7 @@ export class DatabaseStack extends cdk.Stack {
     const neptuneRole = new iam.Role(this, 'NeptuneS3Role', {
       assumedBy: new iam.ServicePrincipal('rds.amazonaws.com'),
       description: 'IAM role for Neptune S3 access',
-    });
-
-    const managerRole = new iam.Role(this, 'NeptuneManagerRole', {
-      assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
-      description: 'Role for Neptune manager EC2 instance',
-      managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'),
-        iam.ManagedPolicy.fromAwsManagedPolicyName('EC2InstanceConnect'),
-        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'),
-      ],
+      roleName: `${this.stackName}-${props.stage}-NeptuneS3Role`
     });
 
     // Add S3 access policies for Neptune bulk loading
@@ -159,48 +124,9 @@ export class DatabaseStack extends cdk.Stack {
       deletionProtection: false,
       associatedRoles: [{
         roleArn: neptuneRole.roleArn
-      }],
+      }]
     });
 
-    // Add permissions for Neptune access and IAM authentication
-    managerRole.addToPolicy(new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      actions: [
-        'neptune-db:*',
-        'iam:GetRole',
-        'iam:GetRolePolicy',
-        'iam:ListRoles',
-        'iam:ListRolePolicies',
-        'iam:GetUser',
-        'iam:ListUsers',
-      ],
-      resources: ['*'],
-    }));
-
-    // Add temporary credentials management
-    managerRole.addToPolicy(new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      actions: [
-        'sts:AssumeRole',
-        'sts:GetSessionToken',
-      ],
-      resources: ['*'],
-    }));
-
-    // Add CloudWatch monitoring for bulk loading
-    managerRole.addToPolicy(new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      actions: [
-        'cloudwatch:PutMetricData',
-        'cloudwatch:GetMetricStatistics',
-      ],
-      resources: ['*'],
-      conditions: {
-        StringEquals: {
-          'cloudwatch:namespace': 'AWS/Neptune',
-        },
-      },
-    }));
 
     // Create Neptune instance
     this.neptuneInstance = new neptune.CfnDBInstance(this, 'NeptuneInstance', {
@@ -233,48 +159,6 @@ export class DatabaseStack extends cdk.Stack {
       deletionProtection: false,
     });
 
-    // Create Neptune manager instance in private subnet
-    const managerInstance = new ec2.Instance(this, 'NeptuneManager', {
-      vpc: props.vpc,
-      vpcSubnets: {
-        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
-      },
-      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.MICRO),
-      machineImage: ec2.MachineImage.latestAmazonLinux2023({
-        cpuType: ec2.AmazonLinuxCpuType.ARM_64
-      }),
-      role: managerRole,
-      securityGroup: managerSecurityGroup,
-      userData: ec2.UserData.forLinux(),
-    });
-
-    // Create EC2 Instance Connect Endpoint
-    const eicEndpoint = new ec2.CfnInstanceConnectEndpoint(this, 'NeptuneManagerEICEndpoint', {
-      subnetId: props.vpc.selectSubnets({
-        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS
-      }).subnetIds[0],
-      preserveClientIp: true,
-      securityGroupIds: [eicSecurityGroup.securityGroupId],
-    });
-
-    // Add user data script for Neptune tools installation
-    managerInstance.addUserData(
-      'dnf update -y',
-      'dnf install -y git python3-pip curl jq',
-      'cd /home/ec2-user',
-      'git clone https://github.com/awslabs/amazon-neptune-tools.git',
-      'cd amazon-neptune-tools/neptune-python-utils',
-      'pip3 install .',
-      'cd /home/ec2-user',
-      'git clone https://github.com/awslabs/amazon-neptune-gremlin-client.git',
-      'pip3 install awscli requests requests-aws4auth boto3',
-      // Add Neptune signing utilities
-      'curl -O https://raw.githubusercontent.com/aws-samples/amazon-neptune-samples/master/neptune-sagemaker/notebooks/util/neptune_python_utils.py',
-      'curl -O https://raw.githubusercontent.com/aws-samples/amazon-neptune-samples/master/neptune-sagemaker/notebooks/util/neptune_util.sh',
-      'chmod +x neptune_util.sh',
-      'chown -R ec2-user:ec2-user /home/ec2-user',
-    );
-
     // Add outputs
     new cdk.CfnOutput(this, 'NeptuneEndpoint', {
       value: this.neptuneCluster.attrEndpoint,
@@ -289,16 +173,6 @@ export class DatabaseStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'RdsEndpoint', {
       value: this.rdsInstance.instanceEndpoint.hostname,
       description: 'RDS instance endpoint',
-    });
-
-    new cdk.CfnOutput(this, 'ManagerInstanceId', {
-      value: managerInstance.instanceId,
-      description: 'Neptune manager instance ID',
-    });
-
-    new cdk.CfnOutput(this, 'EICEndpointId', {
-      value: eicEndpoint.ref,
-      description: 'EC2 Instance Connect Endpoint ID',
     });
 
     new cdk.CfnOutput(this, 'NeptuneClusterId', {

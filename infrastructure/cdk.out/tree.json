@@ -4,17 +4,17 @@
     "id": "App",
     "path": "",
     "children": {
-      "MovieGraphNetworkV1-dev": {
-        "id": "MovieGraphNetworkV1-dev",
-        "path": "MovieGraphNetworkV1-dev",
+      "MovieGraphNetworkV1-prod": {
+        "id": "MovieGraphNetworkV1-prod",
+        "path": "MovieGraphNetworkV1-prod",
         "children": {
           "VPCFlowLogRole": {
             "id": "VPCFlowLogRole",
-            "path": "MovieGraphNetworkV1-dev/VPCFlowLogRole",
+            "path": "MovieGraphNetworkV1-prod/VPCFlowLogRole",
             "children": {
               "ImportVPCFlowLogRole": {
                 "id": "ImportVPCFlowLogRole",
-                "path": "MovieGraphNetworkV1-dev/VPCFlowLogRole/ImportVPCFlowLogRole",
+                "path": "MovieGraphNetworkV1-prod/VPCFlowLogRole/ImportVPCFlowLogRole",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.Resource",
                   "version": "2.114.1"
@@ -22,7 +22,7 @@
               },
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphNetworkV1-dev/VPCFlowLogRole/Resource",
+                "path": "MovieGraphNetworkV1-prod/VPCFlowLogRole/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                   "aws:cdk:cloudformation:props": {
@@ -47,11 +47,11 @@
               },
               "DefaultPolicy": {
                 "id": "DefaultPolicy",
-                "path": "MovieGraphNetworkV1-dev/VPCFlowLogRole/DefaultPolicy",
+                "path": "MovieGraphNetworkV1-prod/VPCFlowLogRole/DefaultPolicy",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "MovieGraphNetworkV1-dev/VPCFlowLogRole/DefaultPolicy/Resource",
+                    "path": "MovieGraphNetworkV1-prod/VPCFlowLogRole/DefaultPolicy/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                       "aws:cdk:cloudformation:props": {
@@ -111,11 +111,11 @@
           },
           "VPCFlowLogGroup": {
             "id": "VPCFlowLogGroup",
-            "path": "MovieGraphNetworkV1-dev/VPCFlowLogGroup",
+            "path": "MovieGraphNetworkV1-prod/VPCFlowLogGroup",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphNetworkV1-dev/VPCFlowLogGroup/Resource",
+                "path": "MovieGraphNetworkV1-prod/VPCFlowLogGroup/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::Logs::LogGroup",
                   "aws:cdk:cloudformation:props": {
@@ -135,11 +135,11 @@
           },
           "MovieGraphVPC": {
             "id": "MovieGraphVPC",
-            "path": "MovieGraphNetworkV1-dev/MovieGraphVPC",
+            "path": "MovieGraphNetworkV1-prod/MovieGraphVPC",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/Resource",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::EC2::VPC",
                   "aws:cdk:cloudformation:props": {
@@ -150,7 +150,7 @@
                     "tags": [
                       {
                         "key": "Environment",
-                        "value": "dev"
+                        "value": "prod"
                       },
                       {
                         "key": "ManagedBy",
@@ -158,7 +158,7 @@
                       },
                       {
                         "key": "Name",
-                        "value": "MovieGraphNetworkV1-dev/MovieGraphVPC"
+                        "value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
                       },
                       {
                         "key": "Project",
@@ -174,11 +174,11 @@
               },
               "PublicSubnet1": {
                 "id": "PublicSubnet1",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet1",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1",
                 "children": {
                   "Subnet": {
                     "id": "Subnet",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet1/Subnet",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1/Subnet",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
                       "aws:cdk:cloudformation:props": {
@@ -196,7 +196,7 @@
                           },
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -204,7 +204,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet1"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1"
                           },
                           {
                             "key": "Project",
@@ -223,7 +223,7 @@
                   },
                   "Acl": {
                     "id": "Acl",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet1/Acl",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1/Acl",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.Resource",
                       "version": "2.114.1"
@@ -231,14 +231,14 @@
                   },
                   "RouteTable": {
                     "id": "RouteTable",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet1/RouteTable",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1/RouteTable",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
                       "aws:cdk:cloudformation:props": {
                         "tags": [
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -246,7 +246,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet1"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1"
                           },
                           {
                             "key": "Project",
@@ -265,7 +265,7 @@
                   },
                   "RouteTableAssociation": {
                     "id": "RouteTableAssociation",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet1/RouteTableAssociation",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1/RouteTableAssociation",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
                       "aws:cdk:cloudformation:props": {
@@ -284,7 +284,7 @@
                   },
                   "DefaultRoute": {
                     "id": "DefaultRoute",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet1/DefaultRoute",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1/DefaultRoute",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Route",
                       "aws:cdk:cloudformation:props": {
@@ -304,7 +304,7 @@
                   },
                   "EIP": {
                     "id": "EIP",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet1/EIP",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1/EIP",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::EIP",
                       "aws:cdk:cloudformation:props": {
@@ -312,7 +312,7 @@
                         "tags": [
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -320,7 +320,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet1"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1"
                           },
                           {
                             "key": "Project",
@@ -336,7 +336,7 @@
                   },
                   "NATGateway": {
                     "id": "NATGateway",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet1/NATGateway",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1/NATGateway",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::NatGateway",
                       "aws:cdk:cloudformation:props": {
@@ -352,7 +352,7 @@
                         "tags": [
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -360,7 +360,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet1"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet1"
                           },
                           {
                             "key": "Project",
@@ -382,11 +382,11 @@
               },
               "PublicSubnet2": {
                 "id": "PublicSubnet2",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet2",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2",
                 "children": {
                   "Subnet": {
                     "id": "Subnet",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet2/Subnet",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2/Subnet",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
                       "aws:cdk:cloudformation:props": {
@@ -404,7 +404,7 @@
                           },
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -412,7 +412,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet2"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2"
                           },
                           {
                             "key": "Project",
@@ -431,7 +431,7 @@
                   },
                   "Acl": {
                     "id": "Acl",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet2/Acl",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2/Acl",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.Resource",
                       "version": "2.114.1"
@@ -439,14 +439,14 @@
                   },
                   "RouteTable": {
                     "id": "RouteTable",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet2/RouteTable",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2/RouteTable",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
                       "aws:cdk:cloudformation:props": {
                         "tags": [
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -454,7 +454,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet2"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2"
                           },
                           {
                             "key": "Project",
@@ -473,7 +473,7 @@
                   },
                   "RouteTableAssociation": {
                     "id": "RouteTableAssociation",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet2/RouteTableAssociation",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2/RouteTableAssociation",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
                       "aws:cdk:cloudformation:props": {
@@ -492,7 +492,7 @@
                   },
                   "DefaultRoute": {
                     "id": "DefaultRoute",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet2/DefaultRoute",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2/DefaultRoute",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Route",
                       "aws:cdk:cloudformation:props": {
@@ -512,7 +512,7 @@
                   },
                   "EIP": {
                     "id": "EIP",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet2/EIP",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2/EIP",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::EIP",
                       "aws:cdk:cloudformation:props": {
@@ -520,7 +520,7 @@
                         "tags": [
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -528,7 +528,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet2"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2"
                           },
                           {
                             "key": "Project",
@@ -544,7 +544,7 @@
                   },
                   "NATGateway": {
                     "id": "NATGateway",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet2/NATGateway",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2/NATGateway",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::NatGateway",
                       "aws:cdk:cloudformation:props": {
@@ -560,7 +560,7 @@
                         "tags": [
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -568,7 +568,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/PublicSubnet2"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PublicSubnet2"
                           },
                           {
                             "key": "Project",
@@ -590,11 +590,11 @@
               },
               "PrivateSubnet1": {
                 "id": "PrivateSubnet1",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet1",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet1",
                 "children": {
                   "Subnet": {
                     "id": "Subnet",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet1/Subnet",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet1/Subnet",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
                       "aws:cdk:cloudformation:props": {
@@ -612,7 +612,7 @@
                           },
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -620,7 +620,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet1"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet1"
                           },
                           {
                             "key": "Project",
@@ -639,7 +639,7 @@
                   },
                   "Acl": {
                     "id": "Acl",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet1/Acl",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet1/Acl",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.Resource",
                       "version": "2.114.1"
@@ -647,14 +647,14 @@
                   },
                   "RouteTable": {
                     "id": "RouteTable",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet1/RouteTable",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet1/RouteTable",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
                       "aws:cdk:cloudformation:props": {
                         "tags": [
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -662,7 +662,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet1"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet1"
                           },
                           {
                             "key": "Project",
@@ -681,7 +681,7 @@
                   },
                   "RouteTableAssociation": {
                     "id": "RouteTableAssociation",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet1/RouteTableAssociation",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet1/RouteTableAssociation",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
                       "aws:cdk:cloudformation:props": {
@@ -700,7 +700,7 @@
                   },
                   "DefaultRoute": {
                     "id": "DefaultRoute",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet1/DefaultRoute",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet1/DefaultRoute",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Route",
                       "aws:cdk:cloudformation:props": {
@@ -726,11 +726,11 @@
               },
               "PrivateSubnet2": {
                 "id": "PrivateSubnet2",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet2",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet2",
                 "children": {
                   "Subnet": {
                     "id": "Subnet",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet2/Subnet",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet2/Subnet",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
                       "aws:cdk:cloudformation:props": {
@@ -748,7 +748,7 @@
                           },
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -756,7 +756,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet2"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet2"
                           },
                           {
                             "key": "Project",
@@ -775,7 +775,7 @@
                   },
                   "Acl": {
                     "id": "Acl",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet2/Acl",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet2/Acl",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.Resource",
                       "version": "2.114.1"
@@ -783,14 +783,14 @@
                   },
                   "RouteTable": {
                     "id": "RouteTable",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet2/RouteTable",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet2/RouteTable",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
                       "aws:cdk:cloudformation:props": {
                         "tags": [
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -798,7 +798,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet2"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet2"
                           },
                           {
                             "key": "Project",
@@ -817,7 +817,7 @@
                   },
                   "RouteTableAssociation": {
                     "id": "RouteTableAssociation",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet2/RouteTableAssociation",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet2/RouteTableAssociation",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
                       "aws:cdk:cloudformation:props": {
@@ -836,7 +836,7 @@
                   },
                   "DefaultRoute": {
                     "id": "DefaultRoute",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/PrivateSubnet2/DefaultRoute",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/PrivateSubnet2/DefaultRoute",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Route",
                       "aws:cdk:cloudformation:props": {
@@ -862,11 +862,11 @@
               },
               "IsolatedSubnet1": {
                 "id": "IsolatedSubnet1",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/IsolatedSubnet1",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet1",
                 "children": {
                   "Subnet": {
                     "id": "Subnet",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/IsolatedSubnet1/Subnet",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet1/Subnet",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
                       "aws:cdk:cloudformation:props": {
@@ -884,7 +884,7 @@
                           },
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -892,7 +892,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/IsolatedSubnet1"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet1"
                           },
                           {
                             "key": "Project",
@@ -911,7 +911,7 @@
                   },
                   "Acl": {
                     "id": "Acl",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/IsolatedSubnet1/Acl",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet1/Acl",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.Resource",
                       "version": "2.114.1"
@@ -919,14 +919,14 @@
                   },
                   "RouteTable": {
                     "id": "RouteTable",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/IsolatedSubnet1/RouteTable",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet1/RouteTable",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
                       "aws:cdk:cloudformation:props": {
                         "tags": [
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -934,7 +934,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/IsolatedSubnet1"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet1"
                           },
                           {
                             "key": "Project",
@@ -953,7 +953,7 @@
                   },
                   "RouteTableAssociation": {
                     "id": "RouteTableAssociation",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/IsolatedSubnet1/RouteTableAssociation",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet1/RouteTableAssociation",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
                       "aws:cdk:cloudformation:props": {
@@ -978,11 +978,11 @@
               },
               "IsolatedSubnet2": {
                 "id": "IsolatedSubnet2",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/IsolatedSubnet2",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet2",
                 "children": {
                   "Subnet": {
                     "id": "Subnet",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/IsolatedSubnet2/Subnet",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet2/Subnet",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
                       "aws:cdk:cloudformation:props": {
@@ -1000,7 +1000,7 @@
                           },
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -1008,7 +1008,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/IsolatedSubnet2"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet2"
                           },
                           {
                             "key": "Project",
@@ -1027,7 +1027,7 @@
                   },
                   "Acl": {
                     "id": "Acl",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/IsolatedSubnet2/Acl",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet2/Acl",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.Resource",
                       "version": "2.114.1"
@@ -1035,14 +1035,14 @@
                   },
                   "RouteTable": {
                     "id": "RouteTable",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/IsolatedSubnet2/RouteTable",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet2/RouteTable",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
                       "aws:cdk:cloudformation:props": {
                         "tags": [
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -1050,7 +1050,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/IsolatedSubnet2"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet2"
                           },
                           {
                             "key": "Project",
@@ -1069,7 +1069,7 @@
                   },
                   "RouteTableAssociation": {
                     "id": "RouteTableAssociation",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/IsolatedSubnet2/RouteTableAssociation",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IsolatedSubnet2/RouteTableAssociation",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
                       "aws:cdk:cloudformation:props": {
@@ -1094,14 +1094,14 @@
               },
               "IGW": {
                 "id": "IGW",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/IGW",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/IGW",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::EC2::InternetGateway",
                   "aws:cdk:cloudformation:props": {
                     "tags": [
                       {
                         "key": "Environment",
-                        "value": "dev"
+                        "value": "prod"
                       },
                       {
                         "key": "ManagedBy",
@@ -1109,7 +1109,7 @@
                       },
                       {
                         "key": "Name",
-                        "value": "MovieGraphNetworkV1-dev/MovieGraphVPC"
+                        "value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
                       },
                       {
                         "key": "Project",
@@ -1125,7 +1125,7 @@
               },
               "VPCGW": {
                 "id": "VPCGW",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/VPCGW",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/VPCGW",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::EC2::VPCGatewayAttachment",
                   "aws:cdk:cloudformation:props": {
@@ -1144,11 +1144,11 @@
               },
               "flowlog": {
                 "id": "flowlog",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/flowlog",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/flowlog",
                 "children": {
                   "FlowLog": {
                     "id": "FlowLog",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/flowlog/FlowLog",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/flowlog/FlowLog",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::FlowLog",
                       "aws:cdk:cloudformation:props": {
@@ -1169,7 +1169,7 @@
                         "tags": [
                           {
                             "key": "Environment",
-                            "value": "dev"
+                            "value": "prod"
                           },
                           {
                             "key": "ManagedBy",
@@ -1177,7 +1177,7 @@
                           },
                           {
                             "key": "Name",
-                            "value": "MovieGraphNetworkV1-dev/MovieGraphVPC/flowlog"
+                            "value": "MovieGraphNetworkV1-prod/MovieGraphVPC/flowlog"
                           },
                           {
                             "key": "Project",
@@ -1200,11 +1200,11 @@
               },
               "RestrictDefaultSecurityGroupCustomResource": {
                 "id": "RestrictDefaultSecurityGroupCustomResource",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/RestrictDefaultSecurityGroupCustomResource",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/RestrictDefaultSecurityGroupCustomResource",
                 "children": {
                   "Default": {
                     "id": "Default",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/RestrictDefaultSecurityGroupCustomResource/Default",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/RestrictDefaultSecurityGroupCustomResource/Default",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.CfnResource",
                       "version": "2.114.1"
@@ -1218,19 +1218,19 @@
               },
               "CloudWatchEndpoint": {
                 "id": "CloudWatchEndpoint",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/CloudWatchEndpoint",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/CloudWatchEndpoint",
                 "children": {
                   "SecurityGroup": {
                     "id": "SecurityGroup",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/CloudWatchEndpoint/SecurityGroup",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/CloudWatchEndpoint/SecurityGroup",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/CloudWatchEndpoint/SecurityGroup/Resource",
+                        "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/CloudWatchEndpoint/SecurityGroup/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
                           "aws:cdk:cloudformation:props": {
-                            "groupDescription": "MovieGraphNetworkV1-dev/MovieGraphVPC/CloudWatchEndpoint/SecurityGroup",
+                            "groupDescription": "MovieGraphNetworkV1-prod/MovieGraphVPC/CloudWatchEndpoint/SecurityGroup",
                             "securityGroupEgress": [
                               {
                                 "cidrIp": "0.0.0.0/0",
@@ -1269,7 +1269,7 @@
                             "tags": [
                               {
                                 "key": "Environment",
-                                "value": "dev"
+                                "value": "prod"
                               },
                               {
                                 "key": "ManagedBy",
@@ -1277,7 +1277,7 @@
                               },
                               {
                                 "key": "Name",
-                                "value": "MovieGraphNetworkV1-dev/MovieGraphVPC"
+                                "value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
                               },
                               {
                                 "key": "Project",
@@ -1302,7 +1302,7 @@
                   },
                   "Resource": {
                     "id": "Resource",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/CloudWatchEndpoint/Resource",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/CloudWatchEndpoint/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::VPCEndpoint",
                       "aws:cdk:cloudformation:props": {
@@ -1343,19 +1343,19 @@
               },
               "SecretsEndpoint": {
                 "id": "SecretsEndpoint",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/SecretsEndpoint",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SecretsEndpoint",
                 "children": {
                   "SecurityGroup": {
                     "id": "SecurityGroup",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/SecretsEndpoint/SecurityGroup",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SecretsEndpoint/SecurityGroup",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/SecretsEndpoint/SecurityGroup/Resource",
+                        "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SecretsEndpoint/SecurityGroup/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
                           "aws:cdk:cloudformation:props": {
-                            "groupDescription": "MovieGraphNetworkV1-dev/MovieGraphVPC/SecretsEndpoint/SecurityGroup",
+                            "groupDescription": "MovieGraphNetworkV1-prod/MovieGraphVPC/SecretsEndpoint/SecurityGroup",
                             "securityGroupEgress": [
                               {
                                 "cidrIp": "0.0.0.0/0",
@@ -1394,7 +1394,7 @@
                             "tags": [
                               {
                                 "key": "Environment",
-                                "value": "dev"
+                                "value": "prod"
                               },
                               {
                                 "key": "ManagedBy",
@@ -1402,7 +1402,7 @@
                               },
                               {
                                 "key": "Name",
-                                "value": "MovieGraphNetworkV1-dev/MovieGraphVPC"
+                                "value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
                               },
                               {
                                 "key": "Project",
@@ -1427,7 +1427,7 @@
                   },
                   "Resource": {
                     "id": "Resource",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/SecretsEndpoint/Resource",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SecretsEndpoint/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::VPCEndpoint",
                       "aws:cdk:cloudformation:props": {
@@ -1468,11 +1468,11 @@
               },
               "S3Endpoint": {
                 "id": "S3Endpoint",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/S3Endpoint",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/S3Endpoint",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/S3Endpoint/Resource",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/S3Endpoint/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::VPCEndpoint",
                       "aws:cdk:cloudformation:props": {
@@ -1527,19 +1527,19 @@
               },
               "ApiGatewayEndpoint": {
                 "id": "ApiGatewayEndpoint",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/ApiGatewayEndpoint",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/ApiGatewayEndpoint",
                 "children": {
                   "SecurityGroup": {
                     "id": "SecurityGroup",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/ApiGatewayEndpoint/SecurityGroup",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/ApiGatewayEndpoint/SecurityGroup",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/ApiGatewayEndpoint/SecurityGroup/Resource",
+                        "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/ApiGatewayEndpoint/SecurityGroup/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
                           "aws:cdk:cloudformation:props": {
-                            "groupDescription": "MovieGraphNetworkV1-dev/MovieGraphVPC/ApiGatewayEndpoint/SecurityGroup",
+                            "groupDescription": "MovieGraphNetworkV1-prod/MovieGraphVPC/ApiGatewayEndpoint/SecurityGroup",
                             "securityGroupEgress": [
                               {
                                 "cidrIp": "0.0.0.0/0",
@@ -1578,7 +1578,7 @@
                             "tags": [
                               {
                                 "key": "Environment",
-                                "value": "dev"
+                                "value": "prod"
                               },
                               {
                                 "key": "ManagedBy",
@@ -1586,7 +1586,7 @@
                               },
                               {
                                 "key": "Name",
-                                "value": "MovieGraphNetworkV1-dev/MovieGraphVPC"
+                                "value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
                               },
                               {
                                 "key": "Project",
@@ -1611,11 +1611,11 @@
                   },
                   "Resource": {
                     "id": "Resource",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/ApiGatewayEndpoint/Resource",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/ApiGatewayEndpoint/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::VPCEndpoint",
                       "aws:cdk:cloudformation:props": {
-                        "privateDnsEnabled": true,
+                        "privateDnsEnabled": false,
                         "securityGroupIds": [
                           {
                             "Fn::GetAtt": [
@@ -1652,19 +1652,19 @@
               },
               "SsmEndpoint": {
                 "id": "SsmEndpoint",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/SsmEndpoint",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmEndpoint",
                 "children": {
                   "SecurityGroup": {
                     "id": "SecurityGroup",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/SsmEndpoint/SecurityGroup",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmEndpoint/SecurityGroup",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/SsmEndpoint/SecurityGroup/Resource",
+                        "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmEndpoint/SecurityGroup/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
                           "aws:cdk:cloudformation:props": {
-                            "groupDescription": "MovieGraphNetworkV1-dev/MovieGraphVPC/SsmEndpoint/SecurityGroup",
+                            "groupDescription": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmEndpoint/SecurityGroup",
                             "securityGroupEgress": [
                               {
                                 "cidrIp": "0.0.0.0/0",
@@ -1703,7 +1703,7 @@
                             "tags": [
                               {
                                 "key": "Environment",
-                                "value": "dev"
+                                "value": "prod"
                               },
                               {
                                 "key": "ManagedBy",
@@ -1711,7 +1711,7 @@
                               },
                               {
                                 "key": "Name",
-                                "value": "MovieGraphNetworkV1-dev/MovieGraphVPC"
+                                "value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
                               },
                               {
                                 "key": "Project",
@@ -1736,7 +1736,7 @@
                   },
                   "Resource": {
                     "id": "Resource",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/SsmEndpoint/Resource",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmEndpoint/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::VPCEndpoint",
                       "aws:cdk:cloudformation:props": {
@@ -1777,19 +1777,19 @@
               },
               "SsmMessagesEndpoint": {
                 "id": "SsmMessagesEndpoint",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/SsmMessagesEndpoint",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmMessagesEndpoint",
                 "children": {
                   "SecurityGroup": {
                     "id": "SecurityGroup",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/SsmMessagesEndpoint/SecurityGroup",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmMessagesEndpoint/SecurityGroup",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/SsmMessagesEndpoint/SecurityGroup/Resource",
+                        "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmMessagesEndpoint/SecurityGroup/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
                           "aws:cdk:cloudformation:props": {
-                            "groupDescription": "MovieGraphNetworkV1-dev/MovieGraphVPC/SsmMessagesEndpoint/SecurityGroup",
+                            "groupDescription": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmMessagesEndpoint/SecurityGroup",
                             "securityGroupEgress": [
                               {
                                 "cidrIp": "0.0.0.0/0",
@@ -1828,7 +1828,7 @@
                             "tags": [
                               {
                                 "key": "Environment",
-                                "value": "dev"
+                                "value": "prod"
                               },
                               {
                                 "key": "ManagedBy",
@@ -1836,7 +1836,7 @@
                               },
                               {
                                 "key": "Name",
-                                "value": "MovieGraphNetworkV1-dev/MovieGraphVPC"
+                                "value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
                               },
                               {
                                 "key": "Project",
@@ -1861,7 +1861,7 @@
                   },
                   "Resource": {
                     "id": "Resource",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/SsmMessagesEndpoint/Resource",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/SsmMessagesEndpoint/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::VPCEndpoint",
                       "aws:cdk:cloudformation:props": {
@@ -1902,19 +1902,19 @@
               },
               "Ec2MessagesEndpoint": {
                 "id": "Ec2MessagesEndpoint",
-                "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/Ec2MessagesEndpoint",
+                "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/Ec2MessagesEndpoint",
                 "children": {
                   "SecurityGroup": {
                     "id": "SecurityGroup",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/Ec2MessagesEndpoint/SecurityGroup",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/Ec2MessagesEndpoint/SecurityGroup",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/Ec2MessagesEndpoint/SecurityGroup/Resource",
+                        "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/Ec2MessagesEndpoint/SecurityGroup/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
                           "aws:cdk:cloudformation:props": {
-                            "groupDescription": "MovieGraphNetworkV1-dev/MovieGraphVPC/Ec2MessagesEndpoint/SecurityGroup",
+                            "groupDescription": "MovieGraphNetworkV1-prod/MovieGraphVPC/Ec2MessagesEndpoint/SecurityGroup",
                             "securityGroupEgress": [
                               {
                                 "cidrIp": "0.0.0.0/0",
@@ -1953,7 +1953,7 @@
                             "tags": [
                               {
                                 "key": "Environment",
-                                "value": "dev"
+                                "value": "prod"
                               },
                               {
                                 "key": "ManagedBy",
@@ -1961,7 +1961,7 @@
                               },
                               {
                                 "key": "Name",
-                                "value": "MovieGraphNetworkV1-dev/MovieGraphVPC"
+                                "value": "MovieGraphNetworkV1-prod/MovieGraphVPC"
                               },
                               {
                                 "key": "Project",
@@ -1986,7 +1986,7 @@
                   },
                   "Resource": {
                     "id": "Resource",
-                    "path": "MovieGraphNetworkV1-dev/MovieGraphVPC/Ec2MessagesEndpoint/Resource",
+                    "path": "MovieGraphNetworkV1-prod/MovieGraphVPC/Ec2MessagesEndpoint/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::VPCEndpoint",
                       "aws:cdk:cloudformation:props": {
@@ -2033,11 +2033,11 @@
           },
           "Custom::VpcRestrictDefaultSGCustomResourceProvider": {
             "id": "Custom::VpcRestrictDefaultSGCustomResourceProvider",
-            "path": "MovieGraphNetworkV1-dev/Custom::VpcRestrictDefaultSGCustomResourceProvider",
+            "path": "MovieGraphNetworkV1-prod/Custom::VpcRestrictDefaultSGCustomResourceProvider",
             "children": {
               "Staging": {
                 "id": "Staging",
-                "path": "MovieGraphNetworkV1-dev/Custom::VpcRestrictDefaultSGCustomResourceProvider/Staging",
+                "path": "MovieGraphNetworkV1-prod/Custom::VpcRestrictDefaultSGCustomResourceProvider/Staging",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.AssetStaging",
                   "version": "2.114.1"
@@ -2045,7 +2045,7 @@
               },
               "Role": {
                 "id": "Role",
-                "path": "MovieGraphNetworkV1-dev/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role",
+                "path": "MovieGraphNetworkV1-prod/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnResource",
                   "version": "2.114.1"
@@ -2053,7 +2053,7 @@
               },
               "Handler": {
                 "id": "Handler",
-                "path": "MovieGraphNetworkV1-dev/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler",
+                "path": "MovieGraphNetworkV1-prod/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnResource",
                   "version": "2.114.1"
@@ -2067,19 +2067,19 @@
           },
           "ExecuteApiEndpoint": {
             "id": "ExecuteApiEndpoint",
-            "path": "MovieGraphNetworkV1-dev/ExecuteApiEndpoint",
+            "path": "MovieGraphNetworkV1-prod/ExecuteApiEndpoint",
             "children": {
               "SecurityGroup": {
                 "id": "SecurityGroup",
-                "path": "MovieGraphNetworkV1-dev/ExecuteApiEndpoint/SecurityGroup",
+                "path": "MovieGraphNetworkV1-prod/ExecuteApiEndpoint/SecurityGroup",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "MovieGraphNetworkV1-dev/ExecuteApiEndpoint/SecurityGroup/Resource",
+                    "path": "MovieGraphNetworkV1-prod/ExecuteApiEndpoint/SecurityGroup/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
                       "aws:cdk:cloudformation:props": {
-                        "groupDescription": "MovieGraphNetworkV1-dev/ExecuteApiEndpoint/SecurityGroup",
+                        "groupDescription": "MovieGraphNetworkV1-prod/ExecuteApiEndpoint/SecurityGroup",
                         "securityGroupEgress": [
                           {
                             "cidrIp": "0.0.0.0/0",
@@ -2133,7 +2133,7 @@
               },
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphNetworkV1-dev/ExecuteApiEndpoint/Resource",
+                "path": "MovieGraphNetworkV1-prod/ExecuteApiEndpoint/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::EC2::VPCEndpoint",
                   "aws:cdk:cloudformation:props": {
@@ -2174,7 +2174,7 @@
           },
           "VpcId": {
             "id": "VpcId",
-            "path": "MovieGraphNetworkV1-dev/VpcId",
+            "path": "MovieGraphNetworkV1-prod/VpcId",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -2182,7 +2182,7 @@
           },
           "PublicSubnets": {
             "id": "PublicSubnets",
-            "path": "MovieGraphNetworkV1-dev/PublicSubnets",
+            "path": "MovieGraphNetworkV1-prod/PublicSubnets",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -2190,7 +2190,7 @@
           },
           "PrivateSubnets": {
             "id": "PrivateSubnets",
-            "path": "MovieGraphNetworkV1-dev/PrivateSubnets",
+            "path": "MovieGraphNetworkV1-prod/PrivateSubnets",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -2198,7 +2198,7 @@
           },
           "IsolatedSubnets": {
             "id": "IsolatedSubnets",
-            "path": "MovieGraphNetworkV1-dev/IsolatedSubnets",
+            "path": "MovieGraphNetworkV1-prod/IsolatedSubnets",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -2206,7 +2206,7 @@
           },
           "FlowLogGroup": {
             "id": "FlowLogGroup",
-            "path": "MovieGraphNetworkV1-dev/FlowLogGroup",
+            "path": "MovieGraphNetworkV1-prod/FlowLogGroup",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -2214,11 +2214,11 @@
           },
           "CDKMetadata": {
             "id": "CDKMetadata",
-            "path": "MovieGraphNetworkV1-dev/CDKMetadata",
+            "path": "MovieGraphNetworkV1-prod/CDKMetadata",
             "children": {
               "Default": {
                 "id": "Default",
-                "path": "MovieGraphNetworkV1-dev/CDKMetadata/Default",
+                "path": "MovieGraphNetworkV1-prod/CDKMetadata/Default",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnResource",
                   "version": "2.114.1"
@@ -2232,11 +2232,11 @@
           },
           "Exports": {
             "id": "Exports",
-            "path": "MovieGraphNetworkV1-dev/Exports",
+            "path": "MovieGraphNetworkV1-prod/Exports",
             "children": {
               "Output{\"Ref\":\"MovieGraphVPC6A9E53F7\"}": {
                 "id": "Output{\"Ref\":\"MovieGraphVPC6A9E53F7\"}",
-                "path": "MovieGraphNetworkV1-dev/Exports/Output{\"Ref\":\"MovieGraphVPC6A9E53F7\"}",
+                "path": "MovieGraphNetworkV1-prod/Exports/Output{\"Ref\":\"MovieGraphVPC6A9E53F7\"}",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.114.1"
@@ -2244,7 +2244,7 @@
               },
               "Output{\"Ref\":\"MovieGraphVPCPrivateSubnet1SubnetBE1139F7\"}": {
                 "id": "Output{\"Ref\":\"MovieGraphVPCPrivateSubnet1SubnetBE1139F7\"}",
-                "path": "MovieGraphNetworkV1-dev/Exports/Output{\"Ref\":\"MovieGraphVPCPrivateSubnet1SubnetBE1139F7\"}",
+                "path": "MovieGraphNetworkV1-prod/Exports/Output{\"Ref\":\"MovieGraphVPCPrivateSubnet1SubnetBE1139F7\"}",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.114.1"
@@ -2252,7 +2252,7 @@
               },
               "Output{\"Ref\":\"MovieGraphVPCPrivateSubnet2Subnet2F1A8302\"}": {
                 "id": "Output{\"Ref\":\"MovieGraphVPCPrivateSubnet2Subnet2F1A8302\"}",
-                "path": "MovieGraphNetworkV1-dev/Exports/Output{\"Ref\":\"MovieGraphVPCPrivateSubnet2Subnet2F1A8302\"}",
+                "path": "MovieGraphNetworkV1-prod/Exports/Output{\"Ref\":\"MovieGraphVPCPrivateSubnet2Subnet2F1A8302\"}",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.114.1"
@@ -2266,7 +2266,7 @@
           },
           "BootstrapVersion": {
             "id": "BootstrapVersion",
-            "path": "MovieGraphNetworkV1-dev/BootstrapVersion",
+            "path": "MovieGraphNetworkV1-prod/BootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnParameter",
               "version": "2.114.1"
@@ -2274,7 +2274,7 @@
           },
           "CheckBootstrapVersion": {
             "id": "CheckBootstrapVersion",
-            "path": "MovieGraphNetworkV1-dev/CheckBootstrapVersion",
+            "path": "MovieGraphNetworkV1-prod/CheckBootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnRule",
               "version": "2.114.1"
@@ -2286,17 +2286,17 @@
           "version": "2.114.1"
         }
       },
-      "MovieGraphDatabaseV1-dev": {
-        "id": "MovieGraphDatabaseV1-dev",
-        "path": "MovieGraphDatabaseV1-dev",
+      "MovieGraphDatabaseV1-prod": {
+        "id": "MovieGraphDatabaseV1-prod",
+        "path": "MovieGraphDatabaseV1-prod",
         "children": {
           "NeptuneSecurityGroup": {
             "id": "NeptuneSecurityGroup",
-            "path": "MovieGraphDatabaseV1-dev/NeptuneSecurityGroup",
+            "path": "MovieGraphDatabaseV1-prod/NeptuneSecurityGroup",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphDatabaseV1-dev/NeptuneSecurityGroup/Resource",
+                "path": "MovieGraphDatabaseV1-prod/NeptuneSecurityGroup/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
                   "aws:cdk:cloudformation:props": {
@@ -2323,7 +2323,7 @@
                       }
                     ],
                     "vpcId": {
-                      "Fn::ImportValue": "MovieGraphNetworkV1-dev:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
+                      "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
                     }
                   }
                 },
@@ -2340,11 +2340,11 @@
           },
           "NeptuneManagerSecurityGroup": {
             "id": "NeptuneManagerSecurityGroup",
-            "path": "MovieGraphDatabaseV1-dev/NeptuneManagerSecurityGroup",
+            "path": "MovieGraphDatabaseV1-prod/NeptuneManagerSecurityGroup",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphDatabaseV1-dev/NeptuneManagerSecurityGroup/Resource",
+                "path": "MovieGraphDatabaseV1-prod/NeptuneManagerSecurityGroup/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
                   "aws:cdk:cloudformation:props": {
@@ -2371,7 +2371,7 @@
                       }
                     ],
                     "vpcId": {
-                      "Fn::ImportValue": "MovieGraphNetworkV1-dev:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
+                      "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
                     }
                   }
                 },
@@ -2388,11 +2388,11 @@
           },
           "EICSecurityGroup": {
             "id": "EICSecurityGroup",
-            "path": "MovieGraphDatabaseV1-dev/EICSecurityGroup",
+            "path": "MovieGraphDatabaseV1-prod/EICSecurityGroup",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphDatabaseV1-dev/EICSecurityGroup/Resource",
+                "path": "MovieGraphDatabaseV1-prod/EICSecurityGroup/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
                   "aws:cdk:cloudformation:props": {
@@ -2405,7 +2405,7 @@
                       }
                     ],
                     "vpcId": {
-                      "Fn::ImportValue": "MovieGraphNetworkV1-dev:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
+                      "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
                     }
                   }
                 },
@@ -2422,11 +2422,11 @@
           },
           "RdsSecurityGroup": {
             "id": "RdsSecurityGroup",
-            "path": "MovieGraphDatabaseV1-dev/RdsSecurityGroup",
+            "path": "MovieGraphDatabaseV1-prod/RdsSecurityGroup",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphDatabaseV1-dev/RdsSecurityGroup/Resource",
+                "path": "MovieGraphDatabaseV1-prod/RdsSecurityGroup/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
                   "aws:cdk:cloudformation:props": {
@@ -2453,7 +2453,7 @@
                       }
                     ],
                     "vpcId": {
-                      "Fn::ImportValue": "MovieGraphNetworkV1-dev:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
+                      "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPC6A9E53F799CC39A8"
                     }
                   }
                 },
@@ -2470,7 +2470,7 @@
           },
           "DataBucket": {
             "id": "DataBucket",
-            "path": "MovieGraphDatabaseV1-dev/DataBucket",
+            "path": "MovieGraphDatabaseV1-prod/DataBucket",
             "constructInfo": {
               "fqn": "aws-cdk-lib.aws_s3.BucketBase",
               "version": "2.114.1"
@@ -2478,11 +2478,11 @@
           },
           "NeptuneS3Role": {
             "id": "NeptuneS3Role",
-            "path": "MovieGraphDatabaseV1-dev/NeptuneS3Role",
+            "path": "MovieGraphDatabaseV1-prod/NeptuneS3Role",
             "children": {
               "ImportNeptuneS3Role": {
                 "id": "ImportNeptuneS3Role",
-                "path": "MovieGraphDatabaseV1-dev/NeptuneS3Role/ImportNeptuneS3Role",
+                "path": "MovieGraphDatabaseV1-prod/NeptuneS3Role/ImportNeptuneS3Role",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.Resource",
                   "version": "2.114.1"
@@ -2490,7 +2490,7 @@
               },
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphDatabaseV1-dev/NeptuneS3Role/Resource",
+                "path": "MovieGraphDatabaseV1-prod/NeptuneS3Role/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                   "aws:cdk:cloudformation:props": {
@@ -2506,7 +2506,8 @@
                       ],
                       "Version": "2012-10-17"
                     },
-                    "description": "IAM role for Neptune S3 access"
+                    "description": "IAM role for Neptune S3 access",
+                    "roleName": "MovieGraphDatabaseV1-prod-prod-NeptuneS3Role"
                   }
                 },
                 "constructInfo": {
@@ -2516,11 +2517,11 @@
               },
               "DefaultPolicy": {
                 "id": "DefaultPolicy",
-                "path": "MovieGraphDatabaseV1-dev/NeptuneS3Role/DefaultPolicy",
+                "path": "MovieGraphDatabaseV1-prod/NeptuneS3Role/DefaultPolicy",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "MovieGraphDatabaseV1-dev/NeptuneS3Role/DefaultPolicy/Resource",
+                    "path": "MovieGraphDatabaseV1-prod/NeptuneS3Role/DefaultPolicy/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                       "aws:cdk:cloudformation:props": {
@@ -2575,11 +2576,11 @@
           },
           "NeptuneManagerRole": {
             "id": "NeptuneManagerRole",
-            "path": "MovieGraphDatabaseV1-dev/NeptuneManagerRole",
+            "path": "MovieGraphDatabaseV1-prod/NeptuneManagerRole",
             "children": {
               "ImportNeptuneManagerRole": {
                 "id": "ImportNeptuneManagerRole",
-                "path": "MovieGraphDatabaseV1-dev/NeptuneManagerRole/ImportNeptuneManagerRole",
+                "path": "MovieGraphDatabaseV1-prod/NeptuneManagerRole/ImportNeptuneManagerRole",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.Resource",
                   "version": "2.114.1"
@@ -2587,7 +2588,7 @@
               },
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphDatabaseV1-dev/NeptuneManagerRole/Resource",
+                "path": "MovieGraphDatabaseV1-prod/NeptuneManagerRole/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                   "aws:cdk:cloudformation:props": {
@@ -2651,11 +2652,11 @@
               },
               "DefaultPolicy": {
                 "id": "DefaultPolicy",
-                "path": "MovieGraphDatabaseV1-dev/NeptuneManagerRole/DefaultPolicy",
+                "path": "MovieGraphDatabaseV1-prod/NeptuneManagerRole/DefaultPolicy",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "MovieGraphDatabaseV1-dev/NeptuneManagerRole/DefaultPolicy/Resource",
+                    "path": "MovieGraphDatabaseV1-prod/NeptuneManagerRole/DefaultPolicy/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                       "aws:cdk:cloudformation:props": {
@@ -2719,18 +2720,18 @@
           },
           "NeptuneSubnetGroup": {
             "id": "NeptuneSubnetGroup",
-            "path": "MovieGraphDatabaseV1-dev/NeptuneSubnetGroup",
+            "path": "MovieGraphDatabaseV1-prod/NeptuneSubnetGroup",
             "attributes": {
               "aws:cdk:cloudformation:type": "AWS::Neptune::DBSubnetGroup",
               "aws:cdk:cloudformation:props": {
                 "dbSubnetGroupDescription": "Subnet group for Neptune cluster",
-                "dbSubnetGroupName": "movie-graph-dev-neptune",
+                "dbSubnetGroupName": "movie-graph-prod-neptune",
                 "subnetIds": [
                   {
-                    "Fn::ImportValue": "MovieGraphNetworkV1-dev:ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
+                    "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
                   },
                   {
-                    "Fn::ImportValue": "MovieGraphNetworkV1-dev:ExportsOutputRefMovieGraphVPCPrivateSubnet2Subnet2F1A83027B90BD2F"
+                    "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet2Subnet2F1A83027B90BD2F"
                   }
                 ]
               }
@@ -2742,7 +2743,7 @@
           },
           "MovieGraphDB": {
             "id": "MovieGraphDB",
-            "path": "MovieGraphDatabaseV1-dev/MovieGraphDB",
+            "path": "MovieGraphDatabaseV1-prod/MovieGraphDB",
             "attributes": {
               "aws:cdk:cloudformation:type": "AWS::Neptune::DBCluster",
               "aws:cdk:cloudformation:props": {
@@ -2760,7 +2761,7 @@
                   "us-west-2a",
                   "us-west-2b"
                 ],
-                "dbClusterIdentifier": "movie-graph-dev",
+                "dbClusterIdentifier": "movie-graph-prod",
                 "dbPort": 8182,
                 "dbSubnetGroupName": {
                   "Ref": "NeptuneSubnetGroup"
@@ -2794,7 +2795,7 @@
           },
           "NeptuneInstance": {
             "id": "NeptuneInstance",
-            "path": "MovieGraphDatabaseV1-dev/NeptuneInstance",
+            "path": "MovieGraphDatabaseV1-prod/NeptuneInstance",
             "attributes": {
               "aws:cdk:cloudformation:type": "AWS::Neptune::DBInstance",
               "aws:cdk:cloudformation:props": {
@@ -2812,25 +2813,25 @@
           },
           "MetadataDB": {
             "id": "MetadataDB",
-            "path": "MovieGraphDatabaseV1-dev/MetadataDB",
+            "path": "MovieGraphDatabaseV1-prod/MetadataDB",
             "children": {
               "SubnetGroup": {
                 "id": "SubnetGroup",
-                "path": "MovieGraphDatabaseV1-dev/MetadataDB/SubnetGroup",
+                "path": "MovieGraphDatabaseV1-prod/MetadataDB/SubnetGroup",
                 "children": {
                   "Default": {
                     "id": "Default",
-                    "path": "MovieGraphDatabaseV1-dev/MetadataDB/SubnetGroup/Default",
+                    "path": "MovieGraphDatabaseV1-prod/MetadataDB/SubnetGroup/Default",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::RDS::DBSubnetGroup",
                       "aws:cdk:cloudformation:props": {
                         "dbSubnetGroupDescription": "Subnet group for MetadataDB database",
                         "subnetIds": [
                           {
-                            "Fn::ImportValue": "MovieGraphNetworkV1-dev:ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
+                            "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
                           },
                           {
-                            "Fn::ImportValue": "MovieGraphNetworkV1-dev:ExportsOutputRefMovieGraphVPCPrivateSubnet2Subnet2F1A83027B90BD2F"
+                            "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet2Subnet2F1A83027B90BD2F"
                           }
                         ]
                       }
@@ -2848,11 +2849,11 @@
               },
               "Secret": {
                 "id": "Secret",
-                "path": "MovieGraphDatabaseV1-dev/MetadataDB/Secret",
+                "path": "MovieGraphDatabaseV1-prod/MetadataDB/Secret",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "MovieGraphDatabaseV1-dev/MetadataDB/Secret/Resource",
+                    "path": "MovieGraphDatabaseV1-prod/MetadataDB/Secret/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
                       "aws:cdk:cloudformation:props": {
@@ -2873,7 +2874,7 @@
                           "generateStringKey": "password",
                           "excludeCharacters": " %+~`#$&*()|[]{}:;<>?!'/@\"\\"
                         },
-                        "name": "/dev/movie-graph/db/credentials"
+                        "name": "/prod/movie-graph/db/credentials"
                       }
                     },
                     "constructInfo": {
@@ -2883,16 +2884,16 @@
                   },
                   "Attachment": {
                     "id": "Attachment",
-                    "path": "MovieGraphDatabaseV1-dev/MetadataDB/Secret/Attachment",
+                    "path": "MovieGraphDatabaseV1-prod/MetadataDB/Secret/Attachment",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "MovieGraphDatabaseV1-dev/MetadataDB/Secret/Attachment/Resource",
+                        "path": "MovieGraphDatabaseV1-prod/MetadataDB/Secret/Attachment/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::SecretsManager::SecretTargetAttachment",
                           "aws:cdk:cloudformation:props": {
                             "secretId": {
-                              "Ref": "MovieGraphDatabaseV1devMetadataDBSecretD89BAFD83fdaad7efa858a3daf9490cf0a702aeb"
+                              "Ref": "MovieGraphDatabaseV1prodMetadataDBSecretAF1DBE143fdaad7efa858a3daf9490cf0a702aeb"
                             },
                             "targetId": {
                               "Ref": "MetadataDB03FD9DCA"
@@ -2919,7 +2920,7 @@
               },
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphDatabaseV1-dev/MetadataDB/Resource",
+                "path": "MovieGraphDatabaseV1-prod/MetadataDB/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::RDS::DBInstance",
                   "aws:cdk:cloudformation:props": {
@@ -2942,7 +2943,7 @@
                         [
                           "{{resolve:secretsmanager:",
                           {
-                            "Ref": "MovieGraphDatabaseV1devMetadataDBSecretD89BAFD83fdaad7efa858a3daf9490cf0a702aeb"
+                            "Ref": "MovieGraphDatabaseV1prodMetadataDBSecretAF1DBE143fdaad7efa858a3daf9490cf0a702aeb"
                           },
                           ":SecretString:password::}}"
                         ]
@@ -2973,11 +2974,11 @@
           },
           "NeptuneManager": {
             "id": "NeptuneManager",
-            "path": "MovieGraphDatabaseV1-dev/NeptuneManager",
+            "path": "MovieGraphDatabaseV1-prod/NeptuneManager",
             "children": {
               "InstanceProfile": {
                 "id": "InstanceProfile",
-                "path": "MovieGraphDatabaseV1-dev/NeptuneManager/InstanceProfile",
+                "path": "MovieGraphDatabaseV1-prod/NeptuneManager/InstanceProfile",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::IAM::InstanceProfile",
                   "aws:cdk:cloudformation:props": {
@@ -2995,7 +2996,7 @@
               },
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphDatabaseV1-dev/NeptuneManager/Resource",
+                "path": "MovieGraphDatabaseV1-prod/NeptuneManager/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::EC2::Instance",
                   "aws:cdk:cloudformation:props": {
@@ -3016,12 +3017,12 @@
                       }
                     ],
                     "subnetId": {
-                      "Fn::ImportValue": "MovieGraphNetworkV1-dev:ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
+                      "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
                     },
                     "tags": [
                       {
                         "key": "Name",
-                        "value": "MovieGraphDatabaseV1-dev/NeptuneManager"
+                        "value": "MovieGraphDatabaseV1-prod/NeptuneManager"
                       }
                     ],
                     "userData": {
@@ -3042,7 +3043,7 @@
           },
           "SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": {
             "id": "SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter",
-            "path": "MovieGraphDatabaseV1-dev/SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter",
+            "path": "MovieGraphDatabaseV1-prod/SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnParameter",
               "version": "2.114.1"
@@ -3050,7 +3051,7 @@
           },
           "SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118": {
             "id": "SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118",
-            "path": "MovieGraphDatabaseV1-dev/SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118",
+            "path": "MovieGraphDatabaseV1-prod/SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-arm64:C96584B6-F00A-464E-AD19-53AFF4B05118",
             "constructInfo": {
               "fqn": "aws-cdk-lib.Resource",
               "version": "2.114.1"
@@ -3058,7 +3059,7 @@
           },
           "NeptuneManagerEICEndpoint": {
             "id": "NeptuneManagerEICEndpoint",
-            "path": "MovieGraphDatabaseV1-dev/NeptuneManagerEICEndpoint",
+            "path": "MovieGraphDatabaseV1-prod/NeptuneManagerEICEndpoint",
             "attributes": {
               "aws:cdk:cloudformation:type": "AWS::EC2::InstanceConnectEndpoint",
               "aws:cdk:cloudformation:props": {
@@ -3072,7 +3073,7 @@
                   }
                 ],
                 "subnetId": {
-                  "Fn::ImportValue": "MovieGraphNetworkV1-dev:ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
+                  "Fn::ImportValue": "MovieGraphNetworkV1-prod:ExportsOutputRefMovieGraphVPCPrivateSubnet1SubnetBE1139F727083ADC"
                 }
               }
             },
@@ -3083,7 +3084,7 @@
           },
           "NeptuneEndpoint": {
             "id": "NeptuneEndpoint",
-            "path": "MovieGraphDatabaseV1-dev/NeptuneEndpoint",
+            "path": "MovieGraphDatabaseV1-prod/NeptuneEndpoint",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -3091,7 +3092,7 @@
           },
           "NeptuneInstanceEndpoint": {
             "id": "NeptuneInstanceEndpoint",
-            "path": "MovieGraphDatabaseV1-dev/NeptuneInstanceEndpoint",
+            "path": "MovieGraphDatabaseV1-prod/NeptuneInstanceEndpoint",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -3099,7 +3100,7 @@
           },
           "RdsEndpoint": {
             "id": "RdsEndpoint",
-            "path": "MovieGraphDatabaseV1-dev/RdsEndpoint",
+            "path": "MovieGraphDatabaseV1-prod/RdsEndpoint",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -3107,7 +3108,7 @@
           },
           "ManagerInstanceId": {
             "id": "ManagerInstanceId",
-            "path": "MovieGraphDatabaseV1-dev/ManagerInstanceId",
+            "path": "MovieGraphDatabaseV1-prod/ManagerInstanceId",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -3115,7 +3116,7 @@
           },
           "EICEndpointId": {
             "id": "EICEndpointId",
-            "path": "MovieGraphDatabaseV1-dev/EICEndpointId",
+            "path": "MovieGraphDatabaseV1-prod/EICEndpointId",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -3123,7 +3124,7 @@
           },
           "NeptuneClusterId": {
             "id": "NeptuneClusterId",
-            "path": "MovieGraphDatabaseV1-dev/NeptuneClusterId",
+            "path": "MovieGraphDatabaseV1-prod/NeptuneClusterId",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -3131,11 +3132,11 @@
           },
           "CDKMetadata": {
             "id": "CDKMetadata",
-            "path": "MovieGraphDatabaseV1-dev/CDKMetadata",
+            "path": "MovieGraphDatabaseV1-prod/CDKMetadata",
             "children": {
               "Default": {
                 "id": "Default",
-                "path": "MovieGraphDatabaseV1-dev/CDKMetadata/Default",
+                "path": "MovieGraphDatabaseV1-prod/CDKMetadata/Default",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnResource",
                   "version": "2.114.1"
@@ -3149,7 +3150,7 @@
           },
           "BootstrapVersion": {
             "id": "BootstrapVersion",
-            "path": "MovieGraphDatabaseV1-dev/BootstrapVersion",
+            "path": "MovieGraphDatabaseV1-prod/BootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnParameter",
               "version": "2.114.1"
@@ -3157,7 +3158,7 @@
           },
           "CheckBootstrapVersion": {
             "id": "CheckBootstrapVersion",
-            "path": "MovieGraphDatabaseV1-dev/CheckBootstrapVersion",
+            "path": "MovieGraphDatabaseV1-prod/CheckBootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnRule",
               "version": "2.114.1"
@@ -3169,13 +3170,13 @@
           "version": "2.114.1"
         }
       },
-      "MovieGraphComputeV1-dev": {
-        "id": "MovieGraphComputeV1-dev",
-        "path": "MovieGraphComputeV1-dev",
+      "MovieGraphComputeV1-prod": {
+        "id": "MovieGraphComputeV1-prod",
+        "path": "MovieGraphComputeV1-prod",
         "children": {
           "HostedZone": {
             "id": "HostedZone",
-            "path": "MovieGraphComputeV1-dev/HostedZone",
+            "path": "MovieGraphComputeV1-prod/HostedZone",
             "constructInfo": {
               "fqn": "aws-cdk-lib.Resource",
               "version": "2.114.1"
@@ -3183,25 +3184,25 @@
           },
           "Certificate": {
             "id": "Certificate",
-            "path": "MovieGraphComputeV1-dev/Certificate",
+            "path": "MovieGraphComputeV1-prod/Certificate",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphComputeV1-dev/Certificate/Resource",
+                "path": "MovieGraphComputeV1-prod/Certificate/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::CertificateManager::Certificate",
                   "aws:cdk:cloudformation:props": {
-                    "domainName": "movie-graph-dev.gabetimm.me",
+                    "domainName": "movie-graph.gabetimm.me",
                     "domainValidationOptions": [
                       {
-                        "domainName": "movie-graph-dev.gabetimm.me",
+                        "domainName": "movie-graph.gabetimm.me",
                         "hostedZoneId": "Z0163319167XOPZDZTJN6"
                       }
                     ],
                     "tags": [
                       {
                         "key": "Environment",
-                        "value": "dev"
+                        "value": "prod"
                       },
                       {
                         "key": "ManagedBy",
@@ -3209,7 +3210,7 @@
                       },
                       {
                         "key": "Name",
-                        "value": "MovieGraphComputeV1-dev/Certificate"
+                        "value": "MovieGraphComputeV1-prod/Certificate"
                       },
                       {
                         "key": "Project",
@@ -3232,20 +3233,20 @@
           },
           "ApiGatewayLogs": {
             "id": "ApiGatewayLogs",
-            "path": "MovieGraphComputeV1-dev/ApiGatewayLogs",
+            "path": "MovieGraphComputeV1-prod/ApiGatewayLogs",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphComputeV1-dev/ApiGatewayLogs/Resource",
+                "path": "MovieGraphComputeV1-prod/ApiGatewayLogs/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::Logs::LogGroup",
                   "aws:cdk:cloudformation:props": {
-                    "logGroupName": "/aws/apigateway/movie-graph-dev",
+                    "logGroupName": "/aws/apigateway/movie-graph-prod",
                     "retentionInDays": 30,
                     "tags": [
                       {
                         "key": "Environment",
-                        "value": "dev"
+                        "value": "prod"
                       },
                       {
                         "key": "ManagedBy",
@@ -3271,11 +3272,11 @@
           },
           "MovieGraphApi": {
             "id": "MovieGraphApi",
-            "path": "MovieGraphComputeV1-dev/MovieGraphApi",
+            "path": "MovieGraphComputeV1-prod/MovieGraphApi",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphComputeV1-dev/MovieGraphApi/Resource",
+                "path": "MovieGraphComputeV1-prod/MovieGraphApi/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::ApiGatewayV2::Api",
                   "aws:cdk:cloudformation:props": {
@@ -3304,10 +3305,10 @@
                     },
                     "description": "Movie Graph API",
                     "disableExecuteApiEndpoint": true,
-                    "name": "movie-graph-dev",
+                    "name": "movie-graph-prod",
                     "protocolType": "HTTP",
                     "tags": {
-                      "Environment": "dev",
+                      "Environment": "prod",
                       "ManagedBy": "CDK",
                       "Project": "MovieGraph"
                     }
@@ -3320,11 +3321,11 @@
               },
               "DefaultStage": {
                 "id": "DefaultStage",
-                "path": "MovieGraphComputeV1-dev/MovieGraphApi/DefaultStage",
+                "path": "MovieGraphComputeV1-prod/MovieGraphApi/DefaultStage",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "MovieGraphComputeV1-dev/MovieGraphApi/DefaultStage/Resource",
+                    "path": "MovieGraphComputeV1-prod/MovieGraphApi/DefaultStage/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::ApiGatewayV2::Stage",
                       "aws:cdk:cloudformation:props": {
@@ -3348,7 +3349,7 @@
                         },
                         "stageName": "$default",
                         "tags": {
-                          "Environment": "dev",
+                          "Environment": "prod",
                           "ManagedBy": "CDK",
                           "Project": "MovieGraph"
                         }
@@ -3373,15 +3374,15 @@
           },
           "CustomDomain": {
             "id": "CustomDomain",
-            "path": "MovieGraphComputeV1-dev/CustomDomain",
+            "path": "MovieGraphComputeV1-prod/CustomDomain",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphComputeV1-dev/CustomDomain/Resource",
+                "path": "MovieGraphComputeV1-prod/CustomDomain/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::ApiGatewayV2::DomainName",
                   "aws:cdk:cloudformation:props": {
-                    "domainName": "movie-graph-dev.gabetimm.me",
+                    "domainName": "movie-graph.gabetimm.me",
                     "domainNameConfigurations": [
                       {
                         "certificateArn": {
@@ -3391,7 +3392,7 @@
                       }
                     ],
                     "tags": {
-                      "Environment": "dev",
+                      "Environment": "prod",
                       "ManagedBy": "CDK",
                       "Project": "MovieGraph"
                     }
@@ -3410,11 +3411,11 @@
           },
           "ApiMapping": {
             "id": "ApiMapping",
-            "path": "MovieGraphComputeV1-dev/ApiMapping",
+            "path": "MovieGraphComputeV1-prod/ApiMapping",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphComputeV1-dev/ApiMapping/Resource",
+                "path": "MovieGraphComputeV1-prod/ApiMapping/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::ApiGatewayV2::ApiMapping",
                   "aws:cdk:cloudformation:props": {
@@ -3440,11 +3441,11 @@
           },
           "ApiAliasRecord": {
             "id": "ApiAliasRecord",
-            "path": "MovieGraphComputeV1-dev/ApiAliasRecord",
+            "path": "MovieGraphComputeV1-prod/ApiAliasRecord",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "MovieGraphComputeV1-dev/ApiAliasRecord/Resource",
+                "path": "MovieGraphComputeV1-prod/ApiAliasRecord/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::Route53::RecordSet",
                   "aws:cdk:cloudformation:props": {
@@ -3463,7 +3464,7 @@
                       }
                     },
                     "hostedZoneId": "Z0163319167XOPZDZTJN6",
-                    "name": "movie-graph-dev.gabetimm.me.",
+                    "name": "movie-graph.gabetimm.me.",
                     "type": "A"
                   }
                 },
@@ -3480,7 +3481,7 @@
           },
           "ApiUrl": {
             "id": "ApiUrl",
-            "path": "MovieGraphComputeV1-dev/ApiUrl",
+            "path": "MovieGraphComputeV1-prod/ApiUrl",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -3488,7 +3489,7 @@
           },
           "ApiId": {
             "id": "ApiId",
-            "path": "MovieGraphComputeV1-dev/ApiId",
+            "path": "MovieGraphComputeV1-prod/ApiId",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -3496,7 +3497,7 @@
           },
           "LogGroupName": {
             "id": "LogGroupName",
-            "path": "MovieGraphComputeV1-dev/LogGroupName",
+            "path": "MovieGraphComputeV1-prod/LogGroupName",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.114.1"
@@ -3504,11 +3505,11 @@
           },
           "CDKMetadata": {
             "id": "CDKMetadata",
-            "path": "MovieGraphComputeV1-dev/CDKMetadata",
+            "path": "MovieGraphComputeV1-prod/CDKMetadata",
             "children": {
               "Default": {
                 "id": "Default",
-                "path": "MovieGraphComputeV1-dev/CDKMetadata/Default",
+                "path": "MovieGraphComputeV1-prod/CDKMetadata/Default",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnResource",
                   "version": "2.114.1"
@@ -3522,7 +3523,7 @@
           },
           "BootstrapVersion": {
             "id": "BootstrapVersion",
-            "path": "MovieGraphComputeV1-dev/BootstrapVersion",
+            "path": "MovieGraphComputeV1-prod/BootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnParameter",
               "version": "2.114.1"
@@ -3530,7 +3531,7 @@
           },
           "CheckBootstrapVersion": {
             "id": "CheckBootstrapVersion",
-            "path": "MovieGraphComputeV1-dev/CheckBootstrapVersion",
+            "path": "MovieGraphComputeV1-prod/CheckBootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnRule",
               "version": "2.114.1"

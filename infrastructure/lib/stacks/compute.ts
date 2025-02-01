@@ -1,7 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as apigateway from '@aws-cdk/aws-apigatewayv2-alpha';
-import * as apigatewayIntegrations from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as targets from 'aws-cdk-lib/aws-route53-targets';

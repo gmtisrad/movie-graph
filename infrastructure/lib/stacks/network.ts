@@ -75,7 +75,8 @@ export class NetworkStack extends cdk.Stack {
     // Add API Gateway VPC endpoints
     this.vpc.addInterfaceEndpoint('ApiGatewayEndpoint', {
       service: ec2.InterfaceVpcEndpointAwsService.APIGATEWAY,
-      subnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }
+      subnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
+      privateDnsEnabled: false
     });
 
     // Add endpoint for API Gateway execution
@@ -85,7 +86,8 @@ export class NetworkStack extends cdk.Stack {
         name: `com.amazonaws.${cdk.Stack.of(this).region}.execute-api`,
         port: 443
       },
-      subnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }
+      subnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
+      privateDnsEnabled: true
     });
 
     // Add SSM endpoints for EC2 Instance Connect

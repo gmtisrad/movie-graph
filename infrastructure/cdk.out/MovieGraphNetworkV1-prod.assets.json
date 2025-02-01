@@ -15,7 +15,7 @@
         }
       }
     },
-    "d7f9749ddb29f3831980df8954ad09534462be32d1979db6c7246d8990f6ee45": {
+    "00c22c3a519a1e08a1b46e14391f8f4038ae5f2acc9c82a5544b064d27fba0e8": {
       "source": {
         "path": "MovieGraphNetworkV1-prod.template.json",
         "packaging": "file"
@@ -23,7 +23,7 @@
       "destinations": {
         "688567301885-us-west-2": {
           "bucketName": "cdk-hnb659fds-assets-688567301885-us-west-2",
-          "objectKey": "d7f9749ddb29f3831980df8954ad09534462be32d1979db6c7246d8990f6ee45.json",
+          "objectKey": "00c22c3a519a1e08a1b46e14391f8f4038ae5f2acc9c82a5544b064d27fba0e8.json",
           "region": "us-west-2",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::688567301885:role/cdk-hnb659fds-file-publishing-role-688567301885-us-west-2"
         }
