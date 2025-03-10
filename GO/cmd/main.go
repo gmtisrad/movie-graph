@@ -18,7 +18,7 @@ import (
 
 func main() {
 	// Set up logging
-	SetupLogging()
+	// SetupLogging()
 
 	var movieGraph *graph.Graph
 	reader := bufio.NewReader(os.Stdin)

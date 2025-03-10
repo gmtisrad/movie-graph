@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"math/rand"
 	"movie-graph/internal/graph"
 	"movie-graph/internal/importer/nameIndexer"
 	"movie-graph/internal/importer/titleIndexer"
@@ -19,15 +18,11 @@ func IndexTitleNode(tconst string, movieGraph *graph.Graph) *graph.Node {
 	principalTitle := titleIndexer.Find(tconst)
 
 	var principalTitleNode *graph.Node
-	randomX := rand.Intn(40000000) - 20000000
-	randomY := rand.Intn(40000000) - 20000000
-	randomZ := rand.Intn(40000000) - 20000000
 
 	if principalTitle != nil {
 		principalTitleNode = &graph.Node{
 			ID: principalTitle.ID,
 			Value: principalTitle,
-			Position: [3]float64{float64(randomX), float64(randomY), float64(randomZ)},
 		}
 		graph.AddVertex(movieGraph, principalTitleNode)
 		// log.Printf("Added title node to graph: %s", principalTitle.ID)
@@ -42,20 +37,13 @@ func IndexPersonNode(nconst string, movieGraph *graph.Graph) *graph.Node {
 	// log.Printf("Indexing person node for nconst: %s", nconst)
 	principalPerson := nameIndexer.Find(nconst)
 
-	// Random X,Y,Z coordinates between -20000000 and 20000000
-	randomX := rand.Intn(40000000) - 20000000
-	randomY := rand.Intn(40000000) - 20000000
-	randomZ := rand.Intn(40000000) - 20000000
-
 	var principalPersonNode *graph.Node
 	if principalPerson != nil {
 		principalPersonNode = &graph.Node{
 			ID: principalPerson.ID,
 			Value: principalPerson,
-			Position: [3]float64{float64(randomX), float64(randomY), float64(randomZ)},
 		}
 		graph.AddVertex(movieGraph, principalPersonNode)
-		// log.Printf("Added person node to graph: %s", principalPerson.ID)
 	} else {
 		// log.Printf("Principal Person not found for nconst: %s", nconst)
 		// fmt.Printf("Principal Person not found for nconst: %s\n", nconst)
@@ -63,6 +51,7 @@ func IndexPersonNode(nconst string, movieGraph *graph.Graph) *graph.Node {
 	return principalPersonNode
 }
 
+// Adds a principal record to the graph and indexes the person and title nodes
 func ProcessPrincipalRecord(principalRecord []string, movieGraph *graph.Graph) { 
 	// log.Printf("Processing principal record")
 	tconst, nconst := principalRecord[0], principalRecord[2]
@@ -147,12 +136,16 @@ func GenerateGraph() *graph.Graph {
 	jobs := make(chan []string, numWorkers)
 	results := make(chan interface{}, numWorkers)
 
+
+	// Spin up workers
 	for i := 0; i < numWorkers; i++ {
 		workerWg.Add(1)
+		// goroutine to 
 		go worker(&workerWg, jobs, results, movieGraph)
 	}
 
 	// Goroutine to read records and send them to the jobs channel
+	// CSV Readers are not thread safe, so we implement a messaging system to send records to the workers
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
@@ -185,6 +178,7 @@ func GenerateGraph() *graph.Graph {
 	}()
 
 	// Goroutine to handle results
+	// CSV Readers are not thread safe, so we implement a messaging system to send records to the workers
 	wg.Add(1)
 	go func() {
 		defer wg.Done()

@@ -14,7 +14,6 @@ import (
 type Node struct {
 	ID    string
 	Value interface{}
-	Position [3]float64
 }
 
 type Graph struct {
