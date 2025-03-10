@@ -18,7 +18,7 @@ func getCsvReader() *csv.Reader {
 		return csvReader
 	}
 	log.Println("Creating CSV Singleton")
-	nameBasicsFile, err := os.Open("./data/name.basics.tsv")
+	nameBasicsFile, err := os.Open("./graph-builder/data/name.basics.tsv")
 	if err != nil {
 		log.Printf("Error opening file: %s", err)
 		return nil
@@ -41,6 +41,7 @@ var indexComplete bool = false
 var indexFlagMutex sync.Mutex 
 var indexerOnce sync.Once
 
+// An indexer is a goroutine that indexes the file and adds records to an index
 func spawnIndexer() {
 	go func() {
 		var recordCounter int = 0

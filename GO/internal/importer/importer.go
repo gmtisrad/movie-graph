@@ -33,6 +33,7 @@ func IndexTitleNode(tconst string, movieGraph *graph.Graph) *graph.Node {
 	return nil
 }
 
+// Indexes a person node and adds it to the graph
 func IndexPersonNode(nconst string, movieGraph *graph.Graph) *graph.Node {
 	// log.Printf("Indexing person node for nconst: %s", nconst)
 	principalPerson := nameIndexer.Find(nconst)
@@ -86,7 +87,7 @@ func ProcessPrincipalRecord(principalRecord []string, movieGraph *graph.Graph) {
 
 func getCsvReader() *csv.Reader {
 	log.Printf("Getting CSV reader")
-	principalsFile, err := os.Open("./data/title.principals.tsv")
+	principalsFile, err := os.Open("./graph-builder/data/title.principals.tsv")
 	if err != nil {
 		log.Printf("Error opening file: %v", err)
 		panic(err)

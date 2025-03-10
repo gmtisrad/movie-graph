@@ -18,7 +18,7 @@ func getCsvReader() *csv.Reader {
 		return csvReader
 	}
 	log.Println("Creating CSV Singleton")
-	titleBasicsFile, err := os.Open("./data/title.basics.tsv")
+	titleBasicsFile, err := os.Open("./graph-builder/data/title.basics.tsv")
 	if err != nil {
 		log.Printf("Error opening file: %v", err)
 		return nil
